@@ -31,11 +31,15 @@ class SiteParser: # ProductsFactory
                 if self.isMaxResponseNumber():
                     # TODO: продумать дальнейшую логику
                     # записать html
-                    logger.error('Error: Максимальное количество попыток получить ответ от сайта достигнуто')
+                    logger.error(f'[Error:] Максимальное количество попыток [{self.maxResponseNumber}] получить ответ от сайта достигнуто')
+                    logger.info( f'[Error:] [{response}]')
                     exit(1)
+                else:
+                    logger.info(f'[!] Неверерный ответ от сервера: попытка номер [{self.currentResponseNumber}]')
+                    logger.info(f'[!] [{response}]')
             products = self.getProductsFromResponse(response)
             self.products += products
-            logger.warning(f'[!] {len(self.products.products)=}')
+            logger.warning(f'[LEN] {len(self.products.products)=}')
             isNextPage = self.isNextPage(response)
         return self.products
 

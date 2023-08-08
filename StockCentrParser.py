@@ -104,6 +104,7 @@ class StockCentrParser(SiteParser): # rename in SeleniumParser
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
 
     parser = StockCentrParser("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     products = parser.getProductsFromSite()
@@ -112,6 +113,106 @@ def main():
     print('\n\nproducts')
     render.render(products, DataStrFormat.WIDE)
 
+    # from DataRenderer import DataRenderer
+    # from Products import Products
+    # from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    products_utils = ProductsUtils()
+    products_utils.saveProductsToFile(products, "stock_centr_save_file.txt")
+
+
+def main2():
+    from DataRenderer import DataRenderer
+    # from Products import Products
+    from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
+    from ElementName import ElementName
+
+    products_utils = ProductsUtils()
+    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+    print(len(products))
+    products_utils.saveProductsToFile(products, "cleaned_stock_centr_save_file.txt")
+
+    stop_list = [
+        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
+        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино"
+        # "клей"
+    ]
+
+    cleaned_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+
+    print('Очистка по стоп словам')
+
+    render.render(cleaned_products, DataStrFormat.WIDE)
+    print(len(cleaned_products))
+
+    print()
+
+def main3():
+    from DataRenderer import DataRenderer
+    # from Products import Products
+    from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
+    from ElementName import ElementName
+    from UnitsTypes import UnitsTypes
+
+    products_utils = ProductsUtils()
+    products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
+
+    render = DataRenderer()
+    # render.render(products, DataStrFormat.WIDE)
+    print(len(products))
+
+    print('elementName.getUnitsFromName():')
+
+    for name in products.products.keys():
+        elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
+
+        valuesFromName = elementName.getValueOfUnitsInName()
+        if  valuesFromName != "":
+            # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
+            print(f'[+] {name:>100} | {valuesFromName}')
+        else:
+            print(f'[-] Null')
+
+
+
+
+
+
+    print()
+
+
+
+
+
 
 if __name__ == '__main__':
-    main()
+    main3()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

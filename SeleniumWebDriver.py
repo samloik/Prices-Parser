@@ -72,7 +72,7 @@ class SeleniumWebDriver:
             response = Response("200", html, None)
         except Exception as Err:
             logger.error(Err)
-            response = Response("BAD", None, Err)
+            response = Response("BAD", None, str(Err))
 
         return response
 
