@@ -9,15 +9,17 @@ from time import sleep
 from loguru import logger
 from bs4 import BeautifulSoup
 import requests
+from ParserWithSession import ParserWithSession
 
 
-class ParserStockCentrWithSession(ParserSite): # rename to SeleniumParser
+
+class ParserStockCentrWithSession(ParserWithSession):
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
-        self.currentPage = 0
-        self.session = requests.Session()
-        self.TIME_TO_READ_PAGE = 2
+        # self.currentPage = 0
+        # self.session = requests.Session()
+        # self.TIME_TO_READ_PAGE = 2
 
 
     # return isNextPage = self.checkForNextPage(html)
@@ -36,34 +38,34 @@ class ParserStockCentrWithSession(ParserSite): # rename to SeleniumParser
             return False
 
 
-    def getHtmlPage(self, url):
-        html = ""
-        try:
-            res = self.session.get(url)
-            html = res.content
-            sleep(self.TIME_TO_READ_PAGE)   # TODO отрегулировать параметр времени
-            # response = Response("200", html, None)
-            response = Response( str(res.status_code), html, None)
-        except Exception as Err:
-            logger.error(Err)
-            response = Response( str(res.status_code), None, str(Err))
+    # def getHtmlPage(self, url):
+    #     html = ""
+    #     try:
+    #         res = self.session.get(url)
+    #         html = res.content
+    #         sleep(self.TIME_TO_READ_PAGE)   # TODO отрегулировать параметр времени
+    #         # response = Response("200", html, None)
+    #         response = Response( str(res.status_code), html, None)
+    #     except Exception as Err:
+    #         logger.error(Err)
+    #         response = Response( str(res.status_code), None, str(Err))
+    #
+    #     return response
 
-        return response
-
-    # return html page with main method
-    def getResponseFromSite(self):
-        logger.info('Пытаемся получить ответ от сайта')
-
-        url = self.siteUrl + str(self.currentPage)
-        response = self.getHtmlPage(url)
-
-        # инфо блок
-        if response.isResponseOK():
-            logger.info(f'Страница {self.currentPage} получена без ошибок')
-        else:
-            logger.info(f'Страница {self.currentPage} получена c ошибкой')
-
-        return response
+    # # return html page with main method
+    # def getResponseFromSite(self):
+    #     logger.info('Пытаемся получить ответ от сайта')
+    #
+    #     url = self.siteUrl + str(self.currentPage)
+    #     response = self.getHtmlPage(url)
+    #
+    #     # инфо блок
+    #     if response.isResponseOK():
+    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
+    #     else:
+    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
+    #
+    #     return response
 
 
     # # return html page with selenium method
@@ -107,8 +109,8 @@ class ParserStockCentrWithSession(ParserSite): # rename to SeleniumParser
         return products
 
 
-    def sleepWithTimeForNextResponse(self):
-        sleep(10)
+    # def sleepWithTimeForNextResponse(self):
+    #     sleep()
 
 
 
@@ -133,7 +135,7 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "stock_centr_with_session_save_file.txt")
+    products_utils.saveProductsToFile(products, "stock_centr_with_session_save_file2.txt")
 
 
 def main2():

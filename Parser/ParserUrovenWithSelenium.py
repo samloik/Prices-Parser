@@ -10,10 +10,11 @@ from bs4 import BeautifulSoup
 from ParserWithSelenium import ParserWithSelenium
 
 
-class ParserStockCentrWithSelenium(ParserWithSelenium): # rename to SeleniumParser
+class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
+        self.currentPage = 1
         # self.currentPage = 0
         # self.webDriver = SeleniumWebDriver()
 
@@ -26,9 +27,12 @@ class ParserStockCentrWithSelenium(ParserWithSelenium): # rename to SeleniumPars
 
         soup = BeautifulSoup(response.html, 'lxml')
 
-        pageNext = soup.find_all(class_='page-next')
+        # pageNext = soup.find_all(class_='page-next')
+        page_next = soup.find_all(attrs={'id': 'navigation_1_next_page'})
+        # print(f' {len(page_next)} {page_next=}')
+        # exit(0)
 
-        if len(pageNext) > 0:
+        if len(page_next) > 0:
             logger.info(f'[{self.currentPage}] вызываем следующую страницу')
             self.currentPage += 1
             return True
@@ -70,8 +74,11 @@ class ParserStockCentrWithSelenium(ParserWithSelenium): # rename to SeleniumPars
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
-        all_products = soup.find_all(class_='shop2-product-item shop-product-item')
+        all_products = soup.find_all(class_='item-title')
         for next in all_products:
+
+            # TODO остановился здесь
+
             try:
                 item_name = next.find(class_="product-name").text
             except Exception as Err:
@@ -104,7 +111,8 @@ def main():
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
 
-    parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
+    # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
+    parser = ParserUrovenWithSelenium("http://urovenkna.ru/catalog/prochie_smesi/?PAGEN_1=")
     products = parser.getProductsFromSite()
 
     render = DataRenderer()
