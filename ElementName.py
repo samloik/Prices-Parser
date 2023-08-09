@@ -9,7 +9,8 @@ class ElementName:
 
     @staticmethod
     def _getNumberFromNameWithSimbols(oldname):
-        # return name
+        # Метод извлечения числа из строки с числом и символами
+
         name = oldname.strip().replace(',', '.')
         new_name = ""
         isPointInText = False
@@ -20,7 +21,7 @@ class ElementName:
                 length = i - 1
                 # print(f'{name} {name_len=} {i=} {name[length]}')
 
-                # если символ не число и точка уже была
+                # если символ не число
                 if not name[i-1].isdigit():
                     # точка и точка еще не было
                     if name[i-1] in '.' and not isPointInText:
@@ -42,13 +43,13 @@ class ElementName:
 
 
         # TODO описание логики поиска
+        #   -
         #   для каждого "искомого слова"
         #   -
         #   Если "искомое слово" с единицей измерения содержится в имени, то
         #   делим имя по "искомое слово" на список
         #       если длина списка равна 1, то искомого слова нет
         #       если длина списка равна 2, то искомое число в 0м блоке
-        #           (- такой вариант не возможен если есть искмое слово)
         #       если длина списка больше двух то ("искомых слов" больше одного)
         #           ищем числа во всех блоках,
         #               ( - если находим больше одного числа, то числа нет )
@@ -59,12 +60,28 @@ class ElementName:
         #   - менаем ',' на '.' - т.к. float принимает только точки
         #   смотрим последний символ
         #       Если это не цифра или '.', то число не в этом блоке
-        #       Иначе двигаемся дальше от конца, пока не прекратиться условие: это не цифра или '.'
+        #       Иначе двигаемся дальше от конца, пока не прекратиться условие: это цифра или '.'
         #           вырезаем полученный текст с числом
         #           пробуем преобразовать в тип float
         #               если '.' появляется второй раз, то на этом число окончено
-        #
-        #
+
+        # TODO
+        #   переделать логику на 'л'
+        #   -
+        #   возвращает такое  значение на UnitsTypes.LITR - оно не верно!
+        #   -
+        #   Продумать - переделать - проверить
+        #   -
+        #   [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
+        #   ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
+        #   -
+        #   Попытка сформулировать алгоритм №1
+        #   после некоторых единиц, напрмер, "л", "мл", "кг" измерения не должно быть символов,
+        #       кроме <конец строки>, <пробел>, '.', ',','-','/' возможны варианты
+        #   Если в конце указателя на такую "строгую" единицу измерения в конце стоит знак "!"
+        #       то такой контент является строгим и обрабатывается этой логикой, иначе
+        #       попускается продолжение текста (контента) любыми символами
+
 
     def getValueOfUnitsInName(self):
         result = ''
@@ -72,7 +89,7 @@ class ElementName:
         if not self.units_types or len(self.units_types) == 0 or UnitsTypes.KG in self.units_types:
             logger.info(f'f[ ] "кг" пробуем извлечь [{self.units_types=}] [{self.name}]')
             # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
-            unitsList = ["килограмм", "кг"]
+            unitsList = ["килограмм", "кг!"]
             for units in unitsList:
                 result = self._getValueOfUnitsInNameByContent(units)
                 if len(result) > 0:
@@ -81,7 +98,7 @@ class ElementName:
             # добавляем проверку на граммы
             if len(result) == 0:
                 logger.info(f'f[ ] "грамм" пробуем извлечь [{self.units_types=}] [{self.name}]')
-                unitsList = ["грамм", "г"]
+                unitsList = ["грамм", "г!"]
                 for units in unitsList:
                     result = self._getValueOfUnitsInNameByContent(units)
                     if len(result) > 0:
@@ -92,7 +109,9 @@ class ElementName:
             # если unit_types не None и есть UnitsTypes.LITR в списке, то:
             # добавляем проверку на литр
             logger.info(f'f[ ] "литр" пробуем извлечь [{self.units_types=}] [{self.name}]')
-            unitsList = ["литр", "л"]
+            # [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
+            # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
+            unitsList = ["литр", "л!"]
             for units in unitsList:
                 result = self._getValueOfUnitsInNameByContent(units)
                 if len(result) > 0:
@@ -101,7 +120,7 @@ class ElementName:
             # добавляем проверку на милилитры
             if len(result) == 0:
                 logger.info(f'f[ ] "миллилитр" пробуем извлечь [{self.units_types=}] [{self.name}]')
-                unitsList = ["миллилитр", "мл"]
+                unitsList = ["миллилитр", "мл!"]
                 for units in unitsList:
                     result = self._getValueOfUnitsInNameByContent(units)
                     if len(result) > 0:
@@ -118,12 +137,29 @@ class ElementName:
                 result = ''
         return result
 
-
     def _getValueOfUnitsInNameByContent(self, content):
-        # content = "кг"
+
+        #  TODO
+        #   Попытка сформулировать алгоритм №1
+        #   после некоторых единиц, напрмер, "л", "мл", "кг" измерения не должно быть символов,
+        #       кроме <конец строки>, <пробел>, '.', ',','-','/' возможны варианты
+        #   Если в конце указателя на такую "строгую" единицу измерения в конце стоит знак "!"
+        #       то такой контент является строгим и обрабатывается этой логикой, иначе
+        #       попускается продолжение текста (контента) любыми символами
+
+        if len(content) > 1 and content[-1] == "!":
+            # допускается текст после content
+            return self._getValueOfUnitsInNameByContentStrong(content[:-1])
+        else:
+            # допускается ничего или только специальные символы после content
+            return self._getValueOfUnitsInNameByContentSoft(content)
+
+
+    def _getValueOfUnitsInNameByContentSoft(self, content):
+
         name = self.name.lower()
 
-        # делим имя по "искомое слово" на список
+        # делим имя по имя через "искомое слово" на список
         strings = name.split(content.lower())
 
         string_len = len(strings)
@@ -139,28 +175,146 @@ class ElementName:
         #   ищем числа во всех блоках,
         count_of_numbers = 0
         # получаем список чисел в виде текста
-        numbersInText = [self._getNumberFromNameWithSimbols(text) for text in strings]
+        numbers_in_text = [self._getNumberFromNameWithSimbols(text) for text in strings]
         # если длина элемента больше 0 то выставляем 1 иначе 0
-        numbersInInt = [1 if len(numberInText)>0 else 0 for numberInText in numbersInText]
+        numbers_in_int = [1 if len(number_in_text)>0 else 0 for number_in_text in numbers_in_text]
         # если число встречается только один раз, то число найдено
-        if sum(numbersInInt) != 1:
+        if sum(numbers_in_int) != 1:
             return ''
         else:
-            return numbersInText[numbersInInt.index(1)]
+            return numbers_in_text[numbers_in_int.index(1)]
+
+    @staticmethod
+    def _checkBeginOfStringForPosibleSimbols(str):
+        if len(str) == 0:
+            return True
+        if str[0] in ' .,-()[]/\\':
+            return True
+        else:
+            return False
 
 
-    def _getNumberFromStringByContent(self, name, content):
-        new_string = ""
-        # name = oldname
-        # i = 133
-        if content.lower() in name.lower():
-            new_string = name[:name.lower().index(content.lower())].strip()
-        # i = 133
-        # print(f'{new_string=}')
-        # print(f'{self._getNumberFromNameWithSimbols(new_string)=}')
-        # i = 133
-        return self._getNumberFromNameWithSimbols(new_string)
+    def _getValueOfUnitsInNameByContentStrong(self, content):
+        #  TODO
+        #   Попытка сформулировать алгоритм №1
+        #   после некоторых единиц, напрмер, "л", "мл", "кг" измерения не должно быть символов,
+        #       кроме <конец строки>, <пробел>, '.', ',','-','/' возможны варианты
+        #   Если в конце указателя на такую "строгую" единицу измерения в конце стоит знак "!"
+        #       то такой контент является строгим и обрабатывается этой логикой, иначе
+        #       попускается продолжение текста (контента) любыми символами
 
+        # TODO
+        #  не решена логика таких повторяющихся сивмолов как 'лл', 'гг'
+        #  вариант решение отслеживанием двух подряд пустых элемента в strings
+        #  -
+        #  продумать логику - реализовать
+        #  проверить
+
+        name = self.name.lower()
+
+        # делим имя по имя через "искомое слово" на список
+        strings = name.split(content.lower())
+
+        string_len = len(strings)
+
+        # если длина списка равна 1, то искомого слова нет
+        if string_len == 1:
+            return ''
+        # если длина списка равна 2, то искомое число в 0м блоке
+        if string_len == 2:
+            # проверяем на разрешенные символы после content
+            if self._checkBeginOfStringForPosibleSimbols(strings[1]):
+                return self._getNumberFromNameWithSimbols(strings[0])
+            return ''
+
+        # если длина списка больше двух то ("искомых слов" больше одного)
+        #   ищем числа во всех блоках,
+        count_of_numbers = 0
+        # получаем список чисел в виде текста
+        numbers_in_text = [self._getNumberFromNameWithSimbols(text) for text in strings]
+        # если длина элемента больше 0 то выставляем 1 иначе 0
+        # numbers_in_int = [1 if len(number_in_text) > 0 else 0 for number_in_text in numbers_in_text]
+
+        new_numbers_in_text = numbers_in_text.copy()
+        # new_numbers_in_int = numbers_in_int.copy()
+        new_numbers_in_int = []
+
+        for x, number_in_text in enumerate(new_numbers_in_text):
+            if len(number_in_text) == 0:
+                new_numbers_in_int.append(0)
+            elif x == len(new_numbers_in_text)-1:
+                new_numbers_in_int.append(1)
+            elif self._checkBeginOfStringForPosibleSimbols(strings[x+1]) == True:
+                new_numbers_in_int.append(1)
+            else:
+                new_numbers_in_int.append(0)
+
+
+        # если число встречается только один раз, то число найдено
+        if sum(new_numbers_in_int) != 1:
+            return ''
+        else:
+            return new_numbers_in_text[new_numbers_in_int.index(1)]
+
+
+    def translitName(self):
+        """
+        переводит текст с кириллицы на транслит убирает символы нечитаемые zabbix'ом
+        формат zabbix key: 0-9a-zA-Z_-.
+
+        :param text: исходный текст
+        :return: обработанный текст
+        """
+
+        text = self.name
+
+        symbols = str.maketrans(u"абвгдезийклмнопрстуфхъыьАБВГДЕЗИЙКЛМНОПРСТУФХЪЫЬ",
+                                u"abvgdezijklmnoprstufh'y'ABVGDEZIJKLMNOPRSTUFH'Y'")
+        sequence = {
+            u'ж': 'zh',
+            u'ц': 'ts',
+            u'ч': 'ch',
+            u'ш': 'sh',
+            u'щ': 'sch',
+            u'ю': 'ju',
+            u'я': 'ya',
+
+            u'Ж': 'Zh',
+            u'Ц': 'Ts',
+            u'Ч': 'Ch',
+            u'Ш': 'Sh',  # дописано
+            u'Щ': 'Sch',  # дописано
+            u'Ю': 'Ju',  # дописано
+            u'Я': 'Ya',  # дописано
+
+            u'э': 'eh',  # дополнено
+            u'Э': 'Eh',  # дополнено
+            u'Ё': 'Yo',  # дополнено
+            u'ё': 'yo',  # дополнено
+        }
+
+        for char in sequence.keys():
+            text = text.replace(char, sequence[char])
+
+        txt = text.translate(symbols)
+
+        # убрать символы нечитаемые zabbix'ом
+        # https://www.zabbix.com/documentation/current/en/manual/config/items/item/key
+        # 0-9a-zA-Z_-.
+
+        ntext0 = ''.join([str(i) for i in range(10)])
+        ntext1 = ''.join([chr(i) for i in range(ord('a'), ord('z') + 1)])
+        ntext2 = ''.join([chr(i) for i in range(ord('A'), ord('Z') + 1)])
+        ntext3 = '_.'
+        ntext = ntext0 + ntext1 + ntext2 + ntext3
+
+        # print(txt)
+        for ch in txt:
+            if ch not in ntext:
+                txt = txt.replace(ch, '_')
+        # print(txt)
+
+        return txt
 
 
 
@@ -232,7 +386,7 @@ def main2(name):
     from ElementName import ElementName
     # from UnitsTypes import UnitsT
 
-    # logger.remove()
+    logger.remove()
 
     # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
     elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
@@ -247,17 +401,50 @@ def main2(name):
 
 def main6():
     # main()
-    main2(name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/2-40,56л Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/20,54граМм Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/0,540г Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/540мл Пол быстротв.самовырав.универс.')
+    # main2(name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.')
+    # main2(name = 'Ceresit СN-173/2-40,56л Пол быстротв.самовырав.универс.')
+    main2(name = 'Ceresit СN-173/2-40,57лт Пол быстротв.самовырав.универс.40,56л')
+    # main2(name = 'Ceresit СN-173/2- Пол быстротв.самовырав.универс.40,56л')
+    # main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
+    # main2(name = 'Ceresit СN-173/20,54граМм Пол быстротв.самовырав.универс.')
+    # main2(name = 'Ceresit СN-173/0,540г Пол быстротв.самовырав.универс.')
+    # main2(name = 'Ceresit СN-173/540млл Пол быстротв.самовырав.универс.')
 
     # main2(name='Шпатлевка Шпакрил ЭКСТРА 2кг пакет Супербелый КВАРТ')
     # main2(name='Противоморозная добавка "Штайнберг FROST 25" 20.5 г')
 
+def main7():
+    string = "кг!"
+    print(string)
+    print(string[-1])
+    print(string[:-1])
+
+    string2 = 'Привет как у тебя дела?'
+    print(string2)
+    new_numbers_in_text = string2.split("к")
+    print(new_numbers_in_text)
+    new_numbers_in_int = []
+    for x, number_in_text in enumerate(new_numbers_in_text):
+        print(f'{x=} {number_in_text=} {len(new_numbers_in_text)=}')
+        if len(number_in_text) == 0:
+            new_numbers_in_int.append(0)
+        elif x == len(new_numbers_in_text)-1:
+            new_numbers_in_int.append(1)
+        else:
+            new_numbers_in_int.append(0)
+    print(new_numbers_in_int)
+
+def translit_test():
+    en = ElementName(u"Желёзная дорога эхо", [UnitsTypes.KG, UnitsTypes.LITR])
+    en2 = ElementName(u"Privet", [UnitsTypes.KG, UnitsTypes.LITR])
+    en3 = ElementName(u"Ceresit СN-173/20кг Пол быстротв.самовырав.универс.", [UnitsTypes.KG, UnitsTypes.LITR])
+
+    print(en.translitName())
+    print(en2.translitName())
+    print(en3.translitName())
+
 if __name__ == '__main__':
     # main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
-    main6()
+    translit_test()
+    # main6()
     # main5()

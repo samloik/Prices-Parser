@@ -9,9 +9,9 @@ from time import sleep
 
 class SeleniumWebDriver:
 
-    def __init__(self):
+    def __init__(self, time_to_read=5):
         self.driver, self.options = self.anonymizeWebDriver()
-        self.TIME_TO_READ_PAGE = 5          # задержка (секунд) после запроса страницы
+        self.TIME_TO_READ_PAGE = time_to_read      # задержка (секунд) после запроса страницы
 
 
     def anonymizeWebDriver(self):
@@ -54,8 +54,8 @@ class SeleniumWebDriver:
 
 
     def getDriverLocation(self):
-        currentOS = platform.system()
-        if currentOS == "Windows":
+        current_os = platform.system()
+        if current_os == "Windows":
             DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
             BINARY_LOCATION = None
         else: # Linux

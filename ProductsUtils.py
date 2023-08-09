@@ -2,6 +2,7 @@ from Products import Products
 from UnitsTypes import UnitsTypes
 from ProductsElement import ProductsElement
 from loguru import logger
+from ElementName import ElementName
 
 class ProductsUtils:
 
@@ -32,61 +33,54 @@ class ProductsUtils:
 
     @staticmethod
     def getCleanedProductsByStopList(products: Products, stopList: list):
-        cleanedProducts = products.getProductsCopy()
+        cleaned_products = products.getProductsCopy()
 
         # TODO проверен алгоритм удаления
         # выяснить причину появления повторного удаления
         # причина ошибки повторного удаления в том, что элемент уже был удален ранее, по дугому стоп слову
-
         for stop_text in stopList:
             for name in products.products.keys():
                 if stop_text.lower() in name.lower():
                     logger.info(f'удаление {name} по stop_text: [{stop_text}]')
                     try:
-                        cleanedProducts.removeByName(name)
+                        cleaned_products.removeByName(name)
                     except:
                         logger.info(f'[*] Попытка повторного удаления! {name} по stop_text: [{stop_text}]')
 
-        return cleanedProducts
+        return cleaned_products
 
-        # TODO остановился здесь
 
-        def getCleanedProductsByUnitsTypes(self, products: Products, units_types: list):
-            pass
-            # cleaned_products = products.getProductsCopy()
-            #
-            # for name in products.products.keys():
-            #
-            #     # units_type в нижнем регистре !!!
-            #
-            #     result = ''
-            #
-            #     if not units_types or len(units_types) == 0 or UnitsTypes.KG in units_types:
-            #         logger.info(f'f[ОТЛАДКА] "кг" извлекаем [{units_types=}] [{name}]')
-            #         # если unit_types=None, или список пуст, или есть "кг" в списке, то:
-            #         result = get_kg_from_name_no_valid(name)
-            #
-            #         # добавляем проверку на г
-            #         if len(result) == 0:
-            #             logger.info(f'f[ОТЛАДКА] "граммы" извлекаем [{units_types=}] [{name}]')
-            #             result = get_gramm_from_name_no_valid(name)
-            #
-            #     if units_types and UnitsTypes.LITR in units_types:
-            #         # если unit_types не None и есть "литр" в списке, то:
-            #         # добавляем проверку на литр
-            #         logger.info(f'f[ОТЛАДКА] "литр" извлекаем [{units_types=}] [{name}]')
-            #         if len(result) == 0:
-            #             result = get_litr_from_name_no_valid(name)
-            #
-            #     if len(result) > 0:
-            #
-            #         result = validate_result_value(result)
-            #         result = result.replace(',', '.', 1)
-            #         try:
-            #             number = float(result)
-            #             result = str(number)
-            #         except Exception as Error:
-            #             logger.error(f'[-] Не удалось извлечь число из [{name=}] {Error=}')
-            #             result = ''
-            #     return result
+    @staticmethod
+    def getCleanedProductsByUnitsTypes(products: Products, units_types: list):
+        cleaned_products = products.getProductsCopy()
+
+        for name in products.products.keys():
+            element_name = ElementName(name, units_types)
+            value_from_name = element_name.getValueOfUnitsInName()
+
+            if  value_from_name == "":
+                # print(f'[{name:>100}] удалено {valueFromName=} {units_types=}')
+                cleaned_products.removeByName(name)
+            # else:
+                # print(f'[{name:>100}] сохранено {valueFromName=} {units_types=}')
+
+        return cleaned_products
+
+
+    def converPriceToPriceForUnit(self, products: Products, units_types: list):
+        # допущение: пользователь будет только один раз конвертировать, иначе неверная информация
+
+        converted_produtcs = products.getProductsCopy()
+
+        for name in products.products.keys():
+            element_name = ElementName(name, units_types)
+            value_from_name = element_name.getValueOfUnitsInName()
+
+            price = products.getProductsElementByName(name).price / float(value_from_name)
+            converted_produtcs.getProductsElementByName(name).price = price
+
+        return converted_produtcs
+
+
+
 

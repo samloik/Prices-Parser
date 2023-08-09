@@ -1,6 +1,6 @@
 
 from Products import Products
-from SiteParser import SiteParser
+from ParserSite import ParserSite
 from Response import Response
 
 from ProductsElement import ProductsElement
@@ -10,14 +10,12 @@ from loguru import logger
 from bs4 import BeautifulSoup
 
 
-class StockCentrParser(SiteParser): # rename in SeleniumParser
+class ParserStockCentrWithSelenium(ParserSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
         self.currentPage = 0
         self.webDriver = SeleniumWebDriver()
-
-
 
     # return ProductFromSite main method
     # def getProductsFromSite(self):
@@ -106,7 +104,7 @@ def main():
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
 
-    parser = StockCentrParser("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
+    parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     products = parser.getProductsFromSite()
 
     render = DataRenderer()
@@ -131,6 +129,9 @@ def main2():
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
+    from UnitsTypes import UnitsTypes
+
+    logger.remove()
 
     products_utils = ProductsUtils()
     products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
@@ -146,14 +147,30 @@ def main2():
         # "клей"
     ]
 
-    cleaned_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
 
     print('Очистка по стоп словам')
 
-    render.render(cleaned_products, DataStrFormat.WIDE)
-    print(len(cleaned_products))
+    render.render(cleaned_by_stop_list_products, DataStrFormat.WIDE)
+    print(len(cleaned_by_stop_list_products))
+
+    print('Очистка по отсутвию единицы измерения (кг!, литр):')
+
+    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
+                                                                          [UnitsTypes.KG, UnitsTypes.LITR])
+
+    render.render(cleaned_by_units_type, DataStrFormat.WIDE)
+    print(len(cleaned_by_units_type))
 
     print()
+
+    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+
+    print('Цена за единицу:')
+
+    render.render(el, DataStrFormat.WIDE)
+    print(len(el))
+
 
 def main3():
     from DataRenderer import DataRenderer
@@ -165,54 +182,27 @@ def main3():
 
     products_utils = ProductsUtils()
     products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
+    # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+
+    logger.remove()
 
     render = DataRenderer()
     # render.render(products, DataStrFormat.WIDE)
     print(len(products))
 
-    print('elementName.getUnitsFromName():')
-
     for name in products.products.keys():
-        elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
+        element_name = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-        valuesFromName = elementName.getValueOfUnitsInName()
-        if  valuesFromName != "":
+        values_from_name = element_name.getValueOfUnitsInName()
+        if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {valuesFromName}')
+            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
         else:
-            print(f'[-] Null')
-
-
-
-
-
-
-    print()
-
-
-
+            print(f'[-] {name:>100} | Null  {elementName.units_types}')
 
 
 
 if __name__ == '__main__':
-    main3()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    main2()
 
 

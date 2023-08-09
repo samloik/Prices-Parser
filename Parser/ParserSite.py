@@ -6,7 +6,7 @@ from loguru import logger
 
 from ProductsElement import ProductsElement # TODO: после тестов удалить
 
-class SiteParser: # ProductsFactory
+class ParserSite: # ProductsFactory
     products: Products
     siteUrl: str
 
