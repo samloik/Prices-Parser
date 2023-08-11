@@ -7,20 +7,70 @@ from ProductsElement import ProductsElement
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumPaginationSite import ParserWithSeleniumPaginationSite
+from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
+# from ParserWithSession import ParserWithSession
 
-from selenium.webdriver.common.by import By
+
 from time import sleep
 
-
-class ParserStockCentrWithSelenium(ParserWithSeleniumPaginationSite): # rename to SeleniumParser
+class ParserMirInstrumentaSelenium(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
 
-        self.next_x_path_button = '/html/body/div[1]/div/div[2]/main/div/div[5]/ul/li[last()]/a'
-        self.currentPage = 0
-        self.NEXT_PAGE_PAUSE_TIME = 2
+        # self.next_x_path_button = '/html/body/div[1]/div/div/div[2]/main/article/section/div[2]/div/[last()]'
+        self.next_x_path_button = "//div[contains(@class, 'arrow next')]"
+        self.NEXT_PAGE_PAUSE_TIME = 10
+
+    # return ProductFromSite main method
+    # def getProductsFromSite(self):
+
+
+    # # return isNextPage = self.checkForNextPage(html)
+    # def isNextPage(self, response: Response):
+    #
+    #     soup = BeautifulSoup(response.html, 'lxml')
+    #
+    #     page_next = soup.find_all('div', attrs={'class': 'pagination__list'})
+    #     print(f' {len(page_next)} {page_next=}')
+    #     sleep(100)
+    #     exit(0)
+    #
+    #     if len(page_next) > 0:
+    #         logger.info(f'[{self.currentPage}] вызываем следующую страницу')
+    #         self.currentPage += 1
+    #         return True
+    #     else:
+    #         logger.info(f'[{self.currentPage}] это была последняя страница')
+    #         return False
+
+
+    # # return html page with main method
+    # def getResponseFromSite(self):
+    #     logger.info('Пытаемся получить ответ от сайта')
+    #
+    #     url = self.siteUrl + str(self.currentPage)
+    #     response = self.webDriver.getHtmlPage(url)
+    #
+    #     # инфо блок
+    #     if response.isResponseOK():
+    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
+    #     else:
+    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
+    #
+    #     return response
+
+
+    # # return html page with selenium method
+    # def getHtmlPageWithSelenium(self):
+    #     response = self.webDriver.getHtmlPage(url)
+    #
+    #     return response
+
+
+    # return html page with sessions method
+    # def getHtmlPageWithSession(self):
+    #     pass
 
 
     # return Products
@@ -28,21 +78,29 @@ class ParserStockCentrWithSelenium(ParserWithSeleniumPaginationSite): # rename t
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
-        all_products = soup.find_all(class_='shop2-product-item shop-product-item')
+        all_products = soup.find_all(class_='horizontal-item noauth catalog__list-item horizontal')
+        logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
         for next in all_products:
+
+            # TODO остановился здесь
+
             try:
-                item_name = next.find(class_="product-name").text
+                # item_name = next.find(class_="product-name").text
+                item_name = next.find('a', {'itemprop' : 'name'}).text
+                # logger.error(f'{len(item_name)=} {item_name}=')
+                # sleep(10)
+                # exit(0)
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
                 exit(1)
             try:
-                item_price = ''.join(next.find(class_="price-current").text.split()[:-1]).replace(',', '.',
-                                                                                                 1)  # split()
+                item_price = 0
             except Exception as Err:
                 logger.error(f'Не удалось найти цену продукта [{item_name}] [{Err}]')
                 exit(1)
             try:
-                product_url = 'https://stok-centr.com' + next.find(class_="product-name").find('a').get('href')
+                # product_url = 'http://urovenkna.ru' + next.get('href')
+                product_url = 'Hello'
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 exit(1)
@@ -62,7 +120,10 @@ def main():
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
 
-    parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
+    # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
+    # parser = ParserMirInstrumentaSelenium("https://instrument.ru/web/catalog/filter/clear/apply/?sort=&page_size=%7B%7D&page=1&action=0&section_id=935&token=")
+    # parser = ParserMirInstrumentaSelenium("https://instrument.ru/web/catalog/filter/clear/apply/?sort=&page_size=%7B%7D&action=0&section_id=935&token=&page=")
+    parser = ParserMirInstrumentaSelenium("https://instrument.ru/catalog/slesarnyy-instrument/nabory-instrumenta/")
     products = parser.getProductsFromSite()
 
     render = DataRenderer()
@@ -78,7 +139,7 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserStockCentrWithSelenium_save_file2.txt")
+    products_utils.saveProductsToFile(products, "ParserMirInstrumentaSelenium_save_file.txt")
 
 
 def main2():

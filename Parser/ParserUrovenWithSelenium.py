@@ -7,7 +7,8 @@ from ProductsElement import ProductsElement
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSelenium import ParserWithSelenium
+from ParserWithSeleniumDinamicSite import ParserWithSelenium
+# from ParserWithSession import ParserWithSession
 
 
 class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
@@ -27,7 +28,6 @@ class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
 
         soup = BeautifulSoup(response.html, 'lxml')
 
-        # pageNext = soup.find_all(class_='page-next')
         page_next = soup.find_all(attrs={'id': 'navigation_1_next_page'})
         # print(f' {len(page_next)} {page_next=}')
         # exit(0)
@@ -80,18 +80,18 @@ class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
             # TODO остановился здесь
 
             try:
-                item_name = next.find(class_="product-name").text
+                # item_name = next.find(class_="product-name").text
+                item_name = next.find('span', {'itemprop' : 'name'}).text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
                 exit(1)
             try:
-                item_price = ''.join(next.find(class_="price-current").text.split()[:-1]).replace(',', '.',
-                                                                                                 1)  # split()
+                item_price = 0
             except Exception as Err:
                 logger.error(f'Не удалось найти цену продукта [{item_name}] [{Err}]')
                 exit(1)
             try:
-                product_url = 'https://stok-centr.com' + next.find(class_="product-name").find('a').get('href')
+                product_url = 'http://urovenkna.ru' + next.get('href')
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 exit(1)
@@ -128,7 +128,7 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserStockCentrWithSelenium_save_file2.txt")
+    products_utils.saveProductsToFile(products, "ParserUrovenWithSelenium_save_file.txt")
 
 
 def main2():

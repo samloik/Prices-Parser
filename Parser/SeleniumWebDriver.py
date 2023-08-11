@@ -63,6 +63,7 @@ class SeleniumWebDriver:
             BINARY_LOCATION = '/usr/bin/google-chrome-stable'
         return DRIVER_LOCATION, BINARY_LOCATION
 
+
     def getHtmlPage(self, url):
         html = ""
         try:

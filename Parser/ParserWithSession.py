@@ -17,7 +17,11 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         super().__init__(siteUrl)
         self.currentPage = 0
         self.session = requests.Session()
-        self.TIME_TO_READ_PAGE = 2
+        self.NEXT_PAGE_PAUSE_TIME = 0
+
+        self.maxResponseNumber = 5
+        self.currentResponseNumber = 0
+        self.NEXT_RESPONSE_PAUSE_TIME = 1
 
 
     # # return isNextPage = self.checkForNextPage(html)
@@ -36,12 +40,16 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
     #         return False
 
 
+    def setNextPage(self):
+        self.currentPage += 1
+
+
     def getHtmlPage(self, url):
         html = ""
         try:
             res = self.session.get(url)
             html = res.content
-            sleep(self.TIME_TO_READ_PAGE)   # TODO отрегулировать параметр времени
+            sleep(self.NEXT_PAGE_PAUSE_TIME)   # TODO отрегулировать параметр времени
             # response = Response("200", html, None)
             response = Response( str(res.status_code), html, None)
         except Exception as Err:
@@ -50,8 +58,31 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
 
         return response
 
+
     # return html page with main method
     def getResponseFromSite(self):
+        self.dropResponseNumber()
+        while True:
+            response = self.getResponseFromSiteWithSession()
+            if response.isResponseOK():
+                break
+            self.sleepWithTimeForNextResponse()
+            if self.isMaxResponseNumber():
+                # TODO: продумать дальнейшую логику
+                # записать html
+                logger.error(
+                    f'[Error:] Максимальное количество попыток [{self.maxResponseNumber}] получить ответ от сайта достигнуто')
+                logger.info(f'[Error:] [{response}]')
+                exit(1)
+            else:
+                logger.info(f'[!] Неверный ответ от сервера: попытка номер [{self.currentResponseNumber}]')
+                logger.info(f'[!] [{response}]')
+        return response
+
+
+
+    # return html page with main method
+    def getResponseFromSiteWithSession(self):
         logger.info('Пытаемся получить ответ от сайта')
 
         url = self.siteUrl + str(self.currentPage)
@@ -64,6 +95,20 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
             logger.info(f'Страница {self.currentPage} получена c ошибкой')
 
         return response
+
+    def dropResponseNumber(self):
+        self.curentResponseNumber = 0
+
+
+    def isMaxResponseNumber(self):
+        if self.maxResponseNumber > self.currentResponseNumber:
+            self.currentResponseNumber += 1
+            return True
+        else:
+            return False
+
+    def sleepWithTimeForNextResponse(self):
+        sleep(2)
 
 
     # # return html page with selenium method
@@ -108,6 +153,6 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
 
 
     def sleepWithTimeForNextResponse(self):
-        sleep(1)
+        sleep(self.NEXT_RESPONSE_PAUSE_TIME)
 
 

@@ -17,9 +17,10 @@ class ParserStockCentrWithSession(ParserWithSession):
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
-        # self.currentPage = 0
+        self.currentPage = 0
+        self.NEXT_PAGE_PAUSE_TIME = 0
+
         # self.session = requests.Session()
-        # self.TIME_TO_READ_PAGE = 2
 
 
     # return isNextPage = self.checkForNextPage(html)
@@ -31,7 +32,6 @@ class ParserStockCentrWithSession(ParserWithSession):
 
         if len(pageNext) > 0:
             logger.info(f'[{self.currentPage}] вызываем следующую страницу')
-            self.currentPage += 1
             return True
         else:
             logger.info(f'[{self.currentPage}] это была последняя страница')
