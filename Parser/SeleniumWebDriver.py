@@ -9,9 +9,11 @@ from time import sleep
 
 class SeleniumWebDriver:
 
-    def __init__(self, time_to_read=5):
+    def __init__(self, time_to_read_first_page=10, time_to_read_next_page=5):
         self.driver, self.options = self.anonymizeWebDriver()
-        self.TIME_TO_READ_PAGE = time_to_read      # задержка (секунд) после запроса страницы
+        self.TIME_TO_READ_NEXT_PAGE = time_to_read_next_page      # задержка (секунд) после запроса страницы
+        self.TIME_TO_READ_FIRST_PAGE = time_to_read_first_page    # задержка (секунд) для прогрузки первой стариницы
+        self.is_first_page_to_load = True
 
 
     def anonymizeWebDriver(self):
@@ -68,7 +70,11 @@ class SeleniumWebDriver:
         html = ""
         try:
             self.driver.get(url)
-            sleep(self.TIME_TO_READ_PAGE)   # TODO отрегулировать параметр времени
+            if self.is_first_page_to_load:
+                self.is_first_page_to_load = False
+                sleep(self.TIME_TO_READ_FIRST_PAGE)
+            else:
+                sleep(self.TIME_TO_READ_NEXT_PAGE)   # TODO отрегулировать параметр времени
             html = self.driver.page_source
             response = Response("200", html, None)
         except Exception as Err:

@@ -17,7 +17,8 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         super().__init__(siteUrl)
         self.currentPage = 0
         self.session = requests.Session()
-        self.NEXT_PAGE_PAUSE_TIME = 0
+        # self.NEXT_PAGE_PAUSE_TIME = 0
+        self.setNextPagePauseTime(0)
 
         self.maxResponseNumber = 5
         self.currentResponseNumber = 0
@@ -38,6 +39,9 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
     #     else:
     #         logger.info(f'[{self.currentPage}] это была последняя страница')
     #         return False
+
+    def setNextPagePauseTime(self, time):
+        self.NEXT_PAGE_PAUSE_TIME = time
 
 
     def setNextPage(self):
@@ -108,7 +112,7 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
             return False
 
     def sleepWithTimeForNextResponse(self):
-        sleep(2)
+        sleep(self.NEXT_PAGE_PAUSE_TIME)
 
 
     # # return html page with selenium method

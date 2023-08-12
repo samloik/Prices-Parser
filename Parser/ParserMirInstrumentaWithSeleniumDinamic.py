@@ -13,15 +13,18 @@ from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
 
 from time import sleep
 
-class ParserMirInstrumentaSelenium(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
+from SeleniumNextPageTypes import SeleniumNextPageTypes
+
+class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
 
         # self.next_x_path_button = '/html/body/div[1]/div/div/div[2]/main/article/section/div[2]/div/[last()]'
         self.next_x_path_button = "//div[contains(@class, 'arrow next')]"
-        self.NEXT_PAGE_PAUSE_TIME = 10
-
+        self.next_x_path_stop_content = "//div[contains(@class, 'arrow next disabled')]"
+        self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_TO_STOP_ELEMENT
+        self.setNextPagePauseTime(5)
     # return ProductFromSite main method
     # def getProductsFromSite(self):
 
@@ -81,9 +84,6 @@ class ParserMirInstrumentaSelenium(ParserWithSeleniumDinamicSite): # rename to S
         all_products = soup.find_all(class_='horizontal-item noauth catalog__list-item horizontal')
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
         for next in all_products:
-
-            # TODO остановился здесь
-
             try:
                 # item_name = next.find(class_="product-name").text
                 item_name = next.find('a', {'itemprop' : 'name'}).text
@@ -99,8 +99,7 @@ class ParserMirInstrumentaSelenium(ParserWithSeleniumDinamicSite): # rename to S
                 logger.error(f'Не удалось найти цену продукта [{item_name}] [{Err}]')
                 exit(1)
             try:
-                # product_url = 'http://urovenkna.ru' + next.get('href')
-                product_url = 'Hello'
+                product_url = 'https://instrument.ru' + next.find('div', {'class' : 'name'}).find('a').get('href')
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 exit(1)
@@ -123,7 +122,7 @@ def main():
     # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     # parser = ParserMirInstrumentaSelenium("https://instrument.ru/web/catalog/filter/clear/apply/?sort=&page_size=%7B%7D&page=1&action=0&section_id=935&token=")
     # parser = ParserMirInstrumentaSelenium("https://instrument.ru/web/catalog/filter/clear/apply/?sort=&page_size=%7B%7D&action=0&section_id=935&token=&page=")
-    parser = ParserMirInstrumentaSelenium("https://instrument.ru/catalog/slesarnyy-instrument/nabory-instrumenta/")
+    parser = ParserMirInstrumentaSeleniumDinamic("https://instrument.ru/catalog/slesarnyy-instrument/nabory-instrumenta/")
     products = parser.getProductsFromSite()
 
     render = DataRenderer()

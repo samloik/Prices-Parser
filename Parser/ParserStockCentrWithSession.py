@@ -18,7 +18,7 @@ class ParserStockCentrWithSession(ParserWithSession):
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
         self.currentPage = 0
-        self.NEXT_PAGE_PAUSE_TIME = 0
+        self.setNextPagePauseTime(0)
 
         # self.session = requests.Session()
 

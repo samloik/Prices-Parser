@@ -7,20 +7,17 @@ from ProductsElement import ProductsElement
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumDinamicSite import ParserWithSelenium
+from ParserWithSeleniumPaginationSite import ParserWithSeleniumPaginationSite
 # from ParserWithSession import ParserWithSession
 
 
-class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
+class ParserUrovenWithSeleniumPagination(ParserWithSeleniumPaginationSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
         self.currentPage = 1
         # self.currentPage = 0
         # self.webDriver = SeleniumWebDriver()
-
-    # return ProductFromSite main method
-    # def getProductsFromSite(self):
 
 
     # return isNextPage = self.checkForNextPage(html)
@@ -34,39 +31,10 @@ class ParserUrovenWithSelenium(ParserWithSelenium): # rename to SeleniumParser
 
         if len(page_next) > 0:
             logger.info(f'[{self.currentPage}] вызываем следующую страницу')
-            self.currentPage += 1
             return True
         else:
             logger.info(f'[{self.currentPage}] это была последняя страница')
             return False
-
-
-    # # return html page with main method
-    # def getResponseFromSite(self):
-    #     logger.info('Пытаемся получить ответ от сайта')
-    #
-    #     url = self.siteUrl + str(self.currentPage)
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     # инфо блок
-    #     if response.isResponseOK():
-    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
-    #     else:
-    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
-    #
-    #     return response
-
-
-    # # return html page with selenium method
-    # def getHtmlPageWithSelenium(self):
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     return response
-
-
-    # return html page with sessions method
-    # def getHtmlPageWithSession(self):
-    #     pass
 
 
     # return Products
@@ -112,7 +80,7 @@ def main():
     from ProductsUtils import ProductsUtils
 
     # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
-    parser = ParserUrovenWithSelenium("http://urovenkna.ru/catalog/prochie_smesi/?PAGEN_1=")
+    parser = ParserUrovenWithSeleniumPagination("http://urovenkna.ru/catalog/prochie_smesi/?PAGEN_1=")
     products = parser.getProductsFromSite()
 
     render = DataRenderer()
@@ -128,7 +96,7 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserUrovenWithSelenium_save_file.txt")
+    products_utils.saveProductsToFile(products, "ParserUrovenWithSeleniumPagination_save_file.txt")
 
 
 def main2():

@@ -27,7 +27,8 @@ class ParserSite:
             self.products += products
             logger.warning(f'[LEN] {len(self.products.products)=}')
             isNextPage = self.isNextPage(response)
-            self.setNextPage()
+            if isNextPage:
+                self.setNextPage()
         return self.products
 
     # # return ProductFromSite main method

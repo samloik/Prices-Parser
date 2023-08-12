@@ -87,7 +87,7 @@ class ElementName:
         result = ''
 
         if not self.units_types or len(self.units_types) == 0 or UnitsTypes.KG in self.units_types:
-            logger.info(f'f[ ] "кг" пробуем извлечь [{self.units_types=}] [{self.name}]')
+            # logger.info(f'f[ ] "кг" пробуем извлечь [{self.units_types=}] [{self.name}]')
             # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
             unitsList = ["килограмм", "кг!"]
             for units in unitsList:
@@ -97,7 +97,7 @@ class ElementName:
 
             # добавляем проверку на граммы
             if len(result) == 0:
-                logger.info(f'f[ ] "грамм" пробуем извлечь [{self.units_types=}] [{self.name}]')
+                # logger.info(f'f[ ] "грамм" пробуем извлечь [{self.units_types=}] [{self.name}]')
                 unitsList = ["грамм", "г!"]
                 for units in unitsList:
                     result = self._getValueOfUnitsInNameByContent(units)
@@ -108,7 +108,7 @@ class ElementName:
         if self.units_types and UnitsTypes.LITR in self.units_types and len(result) == 0:
             # если unit_types не None и есть UnitsTypes.LITR в списке, то:
             # добавляем проверку на литр
-            logger.info(f'f[ ] "литр" пробуем извлечь [{self.units_types=}] [{self.name}]')
+            # logger.info(f'f[ ] "литр" пробуем извлечь [{self.units_types=}] [{self.name}]')
             # [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
             # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
             unitsList = ["литр", "л!"]
@@ -119,13 +119,22 @@ class ElementName:
 
             # добавляем проверку на милилитры
             if len(result) == 0:
-                logger.info(f'f[ ] "миллилитр" пробуем извлечь [{self.units_types=}] [{self.name}]')
+                # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{self.units_types=}] [{self.name}]')
                 unitsList = ["миллилитр", "мл!"]
                 for units in unitsList:
                     result = self._getValueOfUnitsInNameByContent(units)
                     if len(result) > 0:
                         result = str(float(result)/1000)
                         break
+
+        if self.units_types and UnitsTypes.SHTUK in self.units_types and len(result) == 0:
+            # logger.info(f'f[ ] "штук" пробуем извлечь [{self.units_types=}] [{self.name}]')
+            unitsList = ["штук!", "шт!"]
+            for units in unitsList:
+                result = self._getValueOfUnitsInNameByContent(units)
+                if len(result) > 0:
+                    break
+
 
         if len(result) > 0:
             try:
@@ -386,10 +395,10 @@ def main2(name):
     from ElementName import ElementName
     # from UnitsTypes import UnitsT
 
-    logger.remove()
+    # logger.remove()
 
     # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
-    elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
+    elementName = ElementName(name, [UnitsTypes.SHTUK, UnitsTypes.LITR])
 
     valuesFromName = elementName.getValueOfUnitsInName()
     if valuesFromName != "":
@@ -437,14 +446,15 @@ def main7():
 def translit_test():
     en = ElementName(u"Желёзная дорога эхо", [UnitsTypes.KG, UnitsTypes.LITR])
     en2 = ElementName(u"Privet", [UnitsTypes.KG, UnitsTypes.LITR])
-    en3 = ElementName(u"Ceresit СN-173/20кг Пол быстротв.самовырав.универс.", [UnitsTypes.KG, UnitsTypes.LITR])
+    en3 = ElementName(u"Пакет ПВД 2,5кг 250х350 (200шт) 25мк Impacto Pro Оптима", [UnitsTypes.KG, UnitsTypes.LITR, UnitsTypes.SHTUK])
 
     print(en.translitName())
     print(en2.translitName())
     print(en3.translitName())
 
 if __name__ == '__main__':
-    # main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
-    translit_test()
+    main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
+    main2(name = 'Пакет ПВД 2,5кг 250х350 (200шт) 25мк Impacto Pro Оптима')
+    # translit_test()
     # main6()
     # main5()
