@@ -1,4 +1,4 @@
-from Parser.ParserSite import SiteParser
+from ParserAbstract.ParserSite import SiteParser
 
 def main():
 

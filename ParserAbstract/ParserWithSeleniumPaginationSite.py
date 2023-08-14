@@ -1,9 +1,9 @@
-from ParserSite import ParserSite
-from SeleniumWebDriver import SeleniumWebDriver
+from ParserAbstract.ParserSite import ParserSite
+from ParserAbstract.SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from ProductsElement import ProductsElement
 from time import sleep
-from Response import Response
+from ParserAbstract.Response import Response
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -42,6 +42,8 @@ class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
 
     def setNextPage(self):
         self.currentPage += 1
+        logger.info(f"Спим [{self.NEXT_PAGE_PAUSE_TIME}] секунд")
+        sleep(self.NEXT_PAGE_PAUSE_TIME)
 
 
 
@@ -122,6 +124,10 @@ class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
     #     return products
 
 
-    def sleepWithTimeForNextResponse(self):
-        logger.info(f"Спим [{self.NEXT_PAGE_PAUSE_TIME}] секунд")
-        sleep(self.NEXT_PAGE_PAUSE_TIME)
+    # def sleepWithTimeForNextResponse(self):
+    #     logger.info(f"Спим [{self.NEXT_PAGE_PAUSE_TIME}] секунд")
+    #     sleep(self.NEXT_PAGE_PAUSE_TIME)
+
+
+    def setNextPagePauseTime(self, pause_time):
+        self.NEXT_PAGE_PAUSE_TIME = pause_time

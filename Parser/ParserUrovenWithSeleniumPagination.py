@@ -1,13 +1,13 @@
 
 from Products import Products
 # from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.Response import Response
 from ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumPaginationSite import ParserWithSeleniumPaginationSite
+from ParserAbstract.ParserWithSeleniumPaginationSite import ParserWithSeleniumPaginationSite
 # from ParserWithSession import ParserWithSession
 
 
@@ -18,6 +18,7 @@ class ParserUrovenWithSeleniumPagination(ParserWithSeleniumPaginationSite): # re
         self.currentPage = 1
         # self.currentPage = 0
         # self.webDriver = SeleniumWebDriver()
+        self.setNextPagePauseTime(2)
 
 
     # return isNextPage = self.checkForNextPage(html)
@@ -77,7 +78,6 @@ class ParserUrovenWithSeleniumPagination(ParserWithSeleniumPaginationSite): # re
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
     # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     parser = ParserUrovenWithSeleniumPagination("http://urovenkna.ru/catalog/prochie_smesi/?PAGEN_1=")
@@ -104,7 +104,6 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -151,7 +150,6 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
     from UnitsTypes import UnitsTypes

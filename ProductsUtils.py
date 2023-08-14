@@ -5,13 +5,14 @@ from loguru import logger
 from ElementName import ElementName
 
 class ProductsUtils:
+    pwd = 'C:\PycharmProjects\Prices-Parser\Save\\'
 
-    @staticmethod
-    def saveProductsToFile(products: Products, filename:str):
+
+    def saveProductsToFile(self, products: Products, filename:str):
         text = ""
         for key in products.products.keys():
-            text += products.products[key].getProductElementStrFormatForWriteToFile() + '\n'
-        with open(filename, 'w', encoding='utf-8') as file:
+            text += products.products[key].getStrFormatForWriteToFile() + '\n'
+        with open(self.pwd + filename, 'w', encoding='utf-8') as file:
             file.write(text)
         logger.info(f'[SAVE] Сохраняем результат в файл [{len(products)} шт]: {filename}')
 
@@ -19,15 +20,15 @@ class ProductsUtils:
     # предполагается запускать метод класс наследника ProductElement
     # вопрос как, его сюда передать пока не решен
     # решение отложено до момента реализации такого класса, для лучшего понимания взаимодействия
-    @staticmethod
-    def loadProductsFromFile(filename:str): # (product_type:ProductsElement, filename:str):
-        with open(filename, 'r', encoding='utf-8') as file:
+
+    def loadProductsFromFile(self, filename:str): # (product_type:ProductsElement, filename:str):
+        with open(self.pwd + filename, 'r', encoding='utf-8') as file:
             text = file.read()
         str_format_from_file = text.split('\n')[:-1]
         products = Products()
-        for product_element in str_format_from_file:
+        for product_element_in_str_format in str_format_from_file:
             # products.append(product_type.getProductElementCopyFromStrFormat(product_element))
-            products.append(ProductsElement.getProductElementCopyFromStrFormat(product_element))
+            products.append(ProductsElement.getCopyFromStrFormat(product_element_in_str_format))
         logger.info(f'[LOAD] Загружаем элементы [{len(products)} шт] из файла: {filename}')
         return products
 

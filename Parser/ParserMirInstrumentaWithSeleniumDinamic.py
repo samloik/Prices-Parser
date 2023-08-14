@@ -1,19 +1,17 @@
 
 from Products import Products
 # from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.Response import Response
 from ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
+from ParserAbstract.ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
 # from ParserWithSession import ParserWithSession
 
 
-from time import sleep
-
-from SeleniumNextPageTypes import SeleniumNextPageTypes
+from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
@@ -25,55 +23,6 @@ class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite): # rena
         self.next_x_path_stop_content = "//div[contains(@class, 'arrow next disabled')]"
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_TO_STOP_ELEMENT
         self.setNextPagePauseTime(5)
-    # return ProductFromSite main method
-    # def getProductsFromSite(self):
-
-
-    # # return isNextPage = self.checkForNextPage(html)
-    # def isNextPage(self, response: Response):
-    #
-    #     soup = BeautifulSoup(response.html, 'lxml')
-    #
-    #     page_next = soup.find_all('div', attrs={'class': 'pagination__list'})
-    #     print(f' {len(page_next)} {page_next=}')
-    #     sleep(100)
-    #     exit(0)
-    #
-    #     if len(page_next) > 0:
-    #         logger.info(f'[{self.currentPage}] вызываем следующую страницу')
-    #         self.currentPage += 1
-    #         return True
-    #     else:
-    #         logger.info(f'[{self.currentPage}] это была последняя страница')
-    #         return False
-
-
-    # # return html page with main method
-    # def getResponseFromSite(self):
-    #     logger.info('Пытаемся получить ответ от сайта')
-    #
-    #     url = self.siteUrl + str(self.currentPage)
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     # инфо блок
-    #     if response.isResponseOK():
-    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
-    #     else:
-    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
-    #
-    #     return response
-
-
-    # # return html page with selenium method
-    # def getHtmlPageWithSelenium(self):
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     return response
-
-
-    # return html page with sessions method
-    # def getHtmlPageWithSession(self):
-    #     pass
 
 
     # return Products
@@ -117,7 +66,6 @@ class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite): # rena
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
     # parser = ParserStockCentrWithSelenium("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     # parser = ParserMirInstrumentaSelenium("https://instrument.ru/web/catalog/filter/clear/apply/?sort=&page_size=%7B%7D&page=1&action=0&section_id=935&token=")
@@ -146,7 +94,6 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -193,7 +140,6 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
     from UnitsTypes import UnitsTypes

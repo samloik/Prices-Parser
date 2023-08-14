@@ -1,19 +1,17 @@
 
 from Products import Products
 # from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.Response import Response
 from ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
+from ParserAbstract.ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
 # from ParserWithSession import ParserWithSession
 
 
-from time import sleep
-
-from SeleniumNextPageTypes import SeleniumNextPageTypes
+from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
 
@@ -25,56 +23,6 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
         self.setNextPagePauseTime(10)
-    # return ProductFromSite main method
-    # def getProductsFromSite(self):
-
-
-    # # return isNextPage = self.checkForNextPage(html)
-    # def isNextPage(self, response: Response):
-    #
-    #     soup = BeautifulSoup(response.html, 'lxml')
-    #
-    #     page_next = soup.find_all('div', attrs={'class': 'pagination__list'})
-    #     print(f' {len(page_next)} {page_next=}')
-    #     sleep(100)
-    #     exit(0)
-    #
-    #     if len(page_next) > 0:
-    #         logger.info(f'[{self.currentPage}] вызываем следующую страницу')
-    #         self.currentPage += 1
-    #         return True
-    #     else:
-    #         logger.info(f'[{self.currentPage}] это была последняя страница')
-    #         return False
-
-
-    # # return html page with main method
-    # def getResponseFromSite(self):
-    #     logger.info('Пытаемся получить ответ от сайта')
-    #
-    #     url = self.siteUrl + str(self.currentPage)
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     # инфо блок
-    #     if response.isResponseOK():
-    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
-    #     else:
-    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
-    #
-    #     return response
-
-
-    # # return html page with selenium method
-    # def getHtmlPageWithSelenium(self):
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     return response
-
-
-    # return html page with sessions method
-    # def getHtmlPageWithSession(self):
-    #     pass
-
 
     # return Products
     def getProductsFromResponse(self, response: Response):
@@ -136,8 +84,8 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
                 url = url2.find('a').get('href')
                 product_url = 'https://hyperauto.ru' + url
             except Exception as Err:
+                url = ''
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
-                exit(1)
 
             # поиск значения Код
             try:
@@ -148,8 +96,9 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
                 # sleep(10)
                 # exit(0)
             except Exception as Err:
+                kod = ''
                 logger.error(f'Не удалось найти Код [{Err}]')
-                exit(1)
+
             # поиск значения Артикул
             try:
                 item_name2 = next.find('div', {'title': "Артикул"})
@@ -159,8 +108,9 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
                 # sleep(10)
                 # exit(0)
             except Exception as Err:
-                logger.error(f'Не удалось найти Код [{Err}]')
-                exit(1)
+                articul =''
+                logger.error(f'[{item_name}]Не удалось найти Артикул [{Err}]')
+
 
             # поиск значения Бренд
             try:
@@ -171,8 +121,9 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
                 # sleep(10)
                 # exit(0)
             except Exception as Err:
-                logger.error(f'Не удалось найти Код [{Err}]')
-                exit(1)
+                brend = ''
+                logger.error(f'[item_name] Не удалось найти Бренд [{Err}]')
+
 
 
             new_item_name = f"{kod}|{articul}|{brend}|{item_name}"
@@ -191,7 +142,6 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
     # parser = ParserHyperavtoWithSeleniumDinamic(
     #     "https://hyperauto.ru/komsomolsk/search/%D0%B0%D0%BA%D0%BA%D1%83%D0%BC%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80/"
@@ -204,7 +154,7 @@ def main():
     # )
     # https://hyperauto.ru/komsomolsk/search/%D0%B0%D0%BC%D0%BE%D1%80%D1%82%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80/
     parser = ParserHyperavtoWithSeleniumDinamic(
-        "https://hyperauto.ru/komsomolsk/search/%D0%B0%D0%BC%D0%BE%D1%80%D1%82%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80/"
+        "https://hyperauto.ru/komsomolsk/search/%D0%B0%D0%BA%D0%BA%D1%83%D0%BC%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80/"
     )
 
 
@@ -231,7 +181,6 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -280,30 +229,32 @@ def main3():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
-    from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
+    products = products_utils.loadProductsFromFile("ParserHyperavtoWithSeleniumDinamic_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
-    # logger.remove()
+    logger.remove()
 
     render = DataRenderer()
-    # render.render(products, DataStrFormat.WIDE)
+    render.render(products, DataStrFormat.WIDE)
     print(len(products))
 
-    for name in products.products.keys():
-        element_name = ElementName(name, [UnitsTypes.SHTUK])
-
-        values_from_name = element_name.getValueOfUnitsInName()
-        if  values_from_name != "":
-            # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
-        else:
-            print(f'[-] {name:>100} | Null  {element_name.units_types}')
-
-
+    # i=1
+    # for name in products.products.keys():
+    #     element_name = ElementName(name, [UnitsTypes.SHTUK])
+    #
+    #     values_from_name = element_name.getValueOfUnitsInName()
+    #     if  values_from_name != "":
+    #         # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
+    #         print(f'[{i:2}][+] {name:>100} | {values_from_name} {element_name.units_types}')
+    #     else:
+    #         print(f'[{i:2}][-] {name:>100} | Null  {element_name.units_types}')
+    #     i += 1
+    #
+    # print('products:')
+    # render.render(products, DataStrFormat.WIDE)
+    # print(len(products))
 
 if __name__ == '__main__':
     main()

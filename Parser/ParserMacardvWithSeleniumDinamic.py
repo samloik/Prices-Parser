@@ -1,49 +1,73 @@
 
 from Products import Products
 # from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.Response import Response
 from ProductsElement import ProductsElement
-# from time import sleep
+from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
+from ParserAbstract.ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
 # from ParserWithSession import ParserWithSession
 
-from time import sleep
-from SeleniumNextPageTypes import SeleniumNextPageTypes
+from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
 
-        self.next_x_path_button = "//*[@id='show-more-catalog-items']/div[2]"
+        self.next_x_path_button = "//*[@id='show-more-catalog-items']/div[2]" # все на одной странице
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
-        self.setNextPagePauseTime(3)
+        self.setNextPagePauseTime(0)
 
     # return Products
     def getProductsFromResponse(self, response: Response):
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
-        all_products = soup.find_all('div', {'class': "product-item-container"})
+
+        #
+        # btns = [a for a in soup.find_all('button')]
+        # logger.error(f'{len(btns)=}{btns=}')
+        # # btns = btns.find('a').get('href')
+        # logger.error(f'[{btns[49]=}]')
+        # logger.error(f'[{btns[0].__dir__()=}]')
+        # for x, btn in enumerate(btns):
+        #     logger.info(f'[{x:02}] {repr(btn.text)}')
+        #
+        # exit(0)
+
+
+
+        all_products = soup.find_all('tr')[2:] #, {'class': "product-card__main"})
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
+        # exit(0)
         for next in all_products:
+            # поиск значения значение наименование
             try:
-                # item_name = next.find(class_="product-name").text
-                item_name = next.find('div', {'class': "product-item-title"}).find('a').get('title')
-                # logger.error(f'{len(item_name)=} {item_name}=')
+                item_name2 = next.find('td', {'class': "resultDescription"})
+                item_name = item_name2.text.replace('\n','').replace('\t','')  #.strip()
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                # logger.error(f'{len(item_name)=} {item_name=}')
+                item_name3 = next.find('td', {'data-label':"Доп. информация"})
+                item_name4 = item_name3.text.replace('\n','').replace('\t','')  #.strip()
+                # logger.error(f'{len(item_name3)=} {item_name3=}')
+                # logger.error(f'{len(item_name4)=} {item_name4=} {repr(item_name4)=}')
+                item_name = item_name + '|' + item_name4
+                logger.info(f'{len(item_name)=} {item_name=}')
                 # sleep(10)
                 # exit(0)
+
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
                 exit(1)
+            # поиск значения значение цена
             try:
-                # pr = next.find('span', {'class': "product-item-price-current"})
-                item_price = next.find('span', {'class': "product-item-price-current"}).text
-                item_price = item_price.replace('р.', '').replace('\n', '').replace('\t', '').replace(' ', '')
+                item_price2 = next.find('td', { 'class': "resultPrice"}).text
+                item_price = item_price2.replace('\n','').replace('\t','').replace('руб.', '').replace(' ','')
+                # logger.error(f'{len(item_price2)=} {item_price2=} {repr(item_price2)=} ')
                 # logger.error(f'{len(item_price)=} {item_price=} ')
                 # sleep(10)
                 # exit(0)
@@ -53,16 +77,56 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
                 logger.info(f'Не удалось найти цену продукта [{item_name}] [{Err}]')
                 logger.error(f'Элемент [{item_name}] не попадает в список')
                 continue
+            # поиск значения url
             try:
-                product_url = 'https://khv.mirupak.ru' + next.find('div', {'class': "product-item-title"}).find('a').get('href')
+                # url2 = next.find('div', {'class': "product-card__title"})
+                # url = ''
+                product_url = ''
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 exit(1)
 
-            logger.info(f"[добавление] {item_name=}:{item_price=}:{product_url=}")
-            products.append(ProductsElement(item_name, float(item_price), product_url))
-        # sleep(10)
-        # exit(0)
+            # поиск значения Код
+            try:
+                item_name2 = next.find('div', {'class': "brand"})
+                kod = item_name2.text.strip()
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                # logger.error(f'{len(kod)=} {kod=}')
+                # sleep(10)
+                # exit(0)
+            except Exception as Err:
+                logger.error(f'Не удалось найти Код [{Err}]')
+                exit(1)
+            # поиск значения Артикул
+            try:
+                # item_name2 = next.find('div', {'title': "Артикул"})
+                articul = ''
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                # logger.error(f'{len(articul)=} {articul=}')
+                # sleep(10)
+                # exit(0)
+            except Exception as Err:
+                logger.error(f'Не удалось найти Код [{Err}]')
+                exit(1)
+
+            # поиск значения Бренд
+            try:
+                item_name2 = next.find('a', {'class': "open-abcp-modal-info"})
+                brend = item_name2.text.strip()
+                logger.error(f'{len(item_name2)=} {item_name2=}')
+                logger.error(f'{len(brend)=} {brend=}')
+                # sleep(10)
+                # exit(0)
+            except Exception as Err:
+                logger.error(f'Не удалось найти Код [{Err}]')
+                exit(1)
+
+
+            new_item_name = f"{kod}|{articul}|{brend}|{item_name}"
+            logger.info(f"[добавление] {kod}|{articul}|{brend}|{item_name}|{item_price=}|{product_url=}")
+            products.append(ProductsElement(new_item_name, float(item_price), product_url))
+            # sleep(10)
+            # exit(0)
         return products
 
 
@@ -74,11 +138,10 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
-    # parser = ParserMirUpakovkiWithSeleniumDinamic("https://khv.mirupak.ru/catalog/khv/posuda_odnorazovaya_2/")
+
     parser = ParserMacardvWithSeleniumDinamic(
-        "https://macardv.ru/search?pcode=%D0%BC%D0%B0%D1%81%D0%BB%D0%BE"
+        "https://macardv.ru/search?pcode=%D0%B0%D0%BA%D0%BA%D1%83%D0%BC%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80"
     )
     products = parser.getProductsFromSite()
 
@@ -103,18 +166,17 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+    products = products_utils.loadProductsFromFile("ParserMacardvWithSeleniumDinamic_save_file_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
     print(len(products))
-    products_utils.saveProductsToFile(products, "cleaned_stock_centr_save_file.txt")
+    products_utils.saveProductsToFile(products, "cleaned_ParserMacardvWithSeleniumDinamic_stock_centr_save_file.txt")
 
     stop_list = [
         "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
@@ -150,13 +212,12 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
+    products = products_utils.loadProductsFromFile("ParserMacardvWithSeleniumDinamic_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     # logger.remove()

@@ -1,19 +1,17 @@
 
 from Products import Products
 # from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.Response import Response
 from ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
-from ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
+from ParserAbstract.ParserWithSeleniumDinamicSite import ParserWithSeleniumDinamicSite
 # from ParserWithSession import ParserWithSession
 
 
-from time import sleep
-
-from SeleniumNextPageTypes import SeleniumNextPageTypes
+from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserMirUpakovkiWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
@@ -80,7 +78,6 @@ class ParserMirUpakovkiWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # ren
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
     # parser = ParserMirUpakovkiWithSeleniumDinamic("https://khv.mirupak.ru/catalog/khv/posuda_odnorazovaya_2/")
     parser = ParserMirUpakovkiWithSeleniumDinamic(
@@ -97,8 +94,8 @@ def main():
     # from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
 
-    render = DataRenderer()
-    render.render(products, DataStrFormat.WIDE)
+    # render = DataRenderer()
+    # render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
     products_utils.saveProductsToFile(products, "ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
@@ -109,7 +106,6 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -156,7 +152,6 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
     from UnitsTypes import UnitsTypes

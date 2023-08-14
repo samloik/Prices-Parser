@@ -3,8 +3,8 @@
 # после удачных тестов - его можно удалить
 
 from Products import Products
-from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.ParserSite import ParserSite
+from ParserAbstract.Response import Response
 
 from ProductsElement import ProductsElement
 from time import sleep
@@ -118,7 +118,6 @@ class ParserStockCentrWithSession3(ParserSite): # rename to SeleniumParser
 def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
 
     parser = ParserStockCentrWithSession3("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
     products = parser.getProductsFromSite()
@@ -144,7 +143,6 @@ def main2():
     # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -191,7 +189,6 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ElementName import ElementName
     from UnitsTypes import UnitsTypes

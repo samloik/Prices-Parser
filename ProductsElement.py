@@ -12,21 +12,30 @@ class ProductsElement:
         self.price = price
         self.url = url
 
-    def getProductsElementCopy(self):
+    def getCopy(self):
         return ProductsElement(self.name, self.price, self.url)
 
+    # def getProductsElementCopy(self):
+    #     return ProductsElement(self.name, self.price, self.url)
 
-    def getProductElementName(self):
+
+    def getName(self):
         return self.name
 
+
+    # def getProductElementName(self):
+    #     return self.name
+
     # TODO сомнительная реализация
-    def getProductElementStrFormatForWriteToFile(self):
+    def getStrFormatForWriteToFile(self):
+    # def getProductElementStrFormatForWriteToFile(self):
         global SEPARATOR
         return f"{self.name}{SEPARATOR}{str(self.price)}{SEPARATOR}{self.url}"
 
     # TODO сомнительная реализация
     @staticmethod
-    def getProductElementCopyFromStrFormat(string:str):
+    def getCopyFromStrFormat(string:str):
+    # def getProductElementCopyFromStrFormat(string:str):
         global SEPARATOR
         from_string = string.split(SEPARATOR)
         name = from_string[0]
@@ -47,6 +56,9 @@ def main():
     products.append(ProductsElement("Груша", 32.805, "https://grusha.ru"))
     products.append(ProductsElement("Корнишон", 32.805, "https://kornishon.en"))
     products.append(ProductsElement("2Корнишон", 33.805, "https://kornishon.en"))
+
+    from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
+    products.append(ProductsElementAvto("Бруклин", 33.805, "https://kornishon.en","HITACHI", "302782", "AA700-34"))
 
 
 
@@ -73,4 +85,4 @@ def main2():
 
 
 if __name__ == '__main__':
-    main2()
+    main()

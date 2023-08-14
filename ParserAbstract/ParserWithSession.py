@@ -1,7 +1,7 @@
 
 from Products import Products
-from ParserSite import ParserSite
-from Response import Response
+from ParserAbstract.ParserSite import ParserSite
+from ParserAbstract.Response import Response
 
 from ProductsElement import ProductsElement
 from time import sleep
@@ -76,11 +76,11 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
                 # записать html
                 logger.error(
                     f'[Error:] Максимальное количество попыток [{self.maxResponseNumber}] получить ответ от сайта достигнуто')
-                logger.info(f'[Error:] [{response}]')
+                logger.info(f'[Error:] [{response=}]')
                 exit(1)
             else:
-                logger.info(f'[!] Неверный ответ от сервера: попытка номер [{self.currentResponseNumber}]')
-                logger.info(f'[!] [{response}]')
+                logger.warning(f'[!] Неверный ответ от сервера: попытка номер [{self.currentResponseNumber}]')
+                logger.info(f'[!] [{response=}]')
         return response
 
 
@@ -96,7 +96,7 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         if response.isResponseOK():
             logger.info(f'Страница {self.currentPage} получена без ошибок')
         else:
-            logger.info(f'Страница {self.currentPage} получена c ошибкой')
+            logger.warning(f'Страница {self.currentPage} получена c ошибкой')
 
         return response
 
@@ -112,7 +112,8 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
             return False
 
     def sleepWithTimeForNextResponse(self):
-        sleep(self.NEXT_PAGE_PAUSE_TIME)
+        logger.warning(f'Спим [{self.NEXT_RESPONSE_PAUSE_TIME}] секунд')
+        sleep(self.NEXT_RESPONSE_PAUSE_TIME)
 
 
     # # return html page with selenium method

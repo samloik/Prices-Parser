@@ -1,6 +1,6 @@
 
 from Products import Products
-from Response import Response
+from ParserAbstract.Response import Response
 from time import sleep
 from loguru import logger
 

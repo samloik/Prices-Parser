@@ -46,7 +46,7 @@ class Products:
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
                 for productKey in other.products.keys():
-                    new_products.append(other.products[productKey].getProductsElementCopy())
+                    new_products.append(other.products[productKey].getCopy())
             else:
                 new_products.append(other.getProductsElementCopy())
             return new_products
@@ -65,9 +65,9 @@ class Products:
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
                 for productKey in other.products.keys():
-                    new_products.remove(other.products[productKey].getProductsElementCopy())
+                    new_products.remove(other.products[productKey].getCopy())
             else:
-                new_products.remove(other.getProductsElementCopy())
+                new_products.remove(other.getCopy())
             return new_products
 
     def __sub__(self, other):
