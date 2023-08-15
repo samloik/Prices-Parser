@@ -12,10 +12,10 @@ from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
 
-    def __init__(self, siteUrl:str):
+    def __init__(self, siteUrl:str, time_to_read_first_page=10, time_to_read_next_page=0):
         super().__init__(siteUrl)
         # self.currentPage = 0
-        self.webDriver = SeleniumWebDriver(time_to_read_first_page=10, time_to_read_next_page=0)
+        self.webDriver = SeleniumWebDriver(time_to_read_first_page, time_to_read_next_page)
         self.setNextPagePauseTime(5)
 
         self.isFirstReadingPage = True

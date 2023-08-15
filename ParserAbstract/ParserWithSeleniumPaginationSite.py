@@ -11,12 +11,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
 
-    def __init__(self, siteUrl:str):
+    def __init__(self, siteUrl:str, time_to_read_first_page=10, time_to_read_next_page=5):
         super().__init__(siteUrl)
-        self.webDriver = SeleniumWebDriver()
+        self.webDriver = SeleniumWebDriver(time_to_read_first_page, time_to_read_next_page)
 
         self.currentPage = 0
-        self.NEXT_PAGE_PAUSE_TIME = 5
+        self.NEXT_PAGE_PAUSE_TIME = 0
         # self.isFirstReadingPage = True
         # self.next_x_path_button = None
         # self.WAIT_PAUSE_TIME = 10
@@ -42,7 +42,7 @@ class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
 
     def setNextPage(self):
         self.currentPage += 1
-        logger.info(f"Спим [{self.NEXT_PAGE_PAUSE_TIME}] секунд")
+        logger.info(f"[setNextPage:] Спим [{self.NEXT_PAGE_PAUSE_TIME}] секунд")
         sleep(self.NEXT_PAGE_PAUSE_TIME)
 
 

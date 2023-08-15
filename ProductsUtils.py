@@ -77,8 +77,8 @@ class ProductsUtils:
             element_name = ElementName(name, units_types)
             value_from_name = element_name.getValueOfUnitsInName()
 
-            price = products.getProductsElementByName(name).price / float(value_from_name)
-            converted_produtcs.getProductsElementByName(name).price = price
+            price = products.getElementByName(name).price / float(value_from_name)
+            converted_produtcs.getElementByName(name).price = price
 
         return converted_produtcs
 

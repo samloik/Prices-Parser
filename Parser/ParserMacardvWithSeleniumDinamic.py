@@ -15,12 +15,12 @@ from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
 
     def __init__(self, siteUrl:str):
-        super().__init__(siteUrl)
+        super().__init__(siteUrl, 10, 3)
 
         self.next_x_path_button = "//*[@id='show-more-catalog-items']/div[2]" # все на одной странице
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
-        self.setNextPagePauseTime(0)
+        self.setNextPagePauseTime(5)
 
     # return Products
     def getProductsFromResponse(self, response: Response):
@@ -56,7 +56,7 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
                 # logger.error(f'{len(item_name3)=} {item_name3=}')
                 # logger.error(f'{len(item_name4)=} {item_name4=} {repr(item_name4)=}')
                 item_name = item_name + '|' + item_name4
-                logger.info(f'{len(item_name)=} {item_name=}')
+                # logger.info(f'{len(item_name)=} {item_name=}')
                 # sleep(10)
                 # exit(0)
 
@@ -113,8 +113,8 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
             try:
                 item_name2 = next.find('a', {'class': "open-abcp-modal-info"})
                 brend = item_name2.text.strip()
-                logger.error(f'{len(item_name2)=} {item_name2=}')
-                logger.error(f'{len(brend)=} {brend=}')
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                # logger.error(f'{len(brend)=} {brend=}')
                 # sleep(10)
                 # exit(0)
             except Exception as Err:

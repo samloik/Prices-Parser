@@ -17,14 +17,15 @@ class Products:
     def remove(self, object: ProductsElement):
         del self.products[object.name]
 
-    def removeByName(self, name: str):
+    def removeElementByName(self, name: str):
+        # print(name)
         del self.products[name]
 
     def clearProducts(self):
         for productKey in self.products.keys():
-            self.remove(self.getProductsElementByName(productKey))
+            self.removeElementByName(productKey)
 
-    def getProductsElementByName(self, name:str):
+    def getElementByName(self, name:str):
         return self.products[name]
 
     def isProductsElementContainedInProducts(self, other: ProductsElement):
@@ -37,7 +38,7 @@ class Products:
     def getProductsCopy(self):
         new_products = Products()
         for productKey in self.products.keys():
-            new_products.append(self.products[productKey].getProductsElementCopy())
+            new_products.append(self.products[productKey].getCopy())
         return new_products
 
     # одинаковый код функций __add__ и __iadd__
@@ -48,7 +49,7 @@ class Products:
                 for productKey in other.products.keys():
                     new_products.append(other.products[productKey].getCopy())
             else:
-                new_products.append(other.getProductsElementCopy())
+                new_products.append(other.getCopy())
             return new_products
 
     def __add__(self, other):
@@ -65,9 +66,9 @@ class Products:
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
                 for productKey in other.products.keys():
-                    new_products.remove(other.products[productKey].getCopy())
+                    new_products.removeElementByName(productKey)
             else:
-                new_products.remove(other.getCopy())
+                new_products.removeElementByName(other.getName())
             return new_products
 
     def __sub__(self, other):
@@ -99,4 +100,47 @@ class Products:
     #     pass
 
 
+def main():
+    from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
+    from ProductsElement import ProductsElement
+    from DataRenderer import DataRenderer
+    from DataStrFormat import DataStrFormat
+
+    products = Products()
+    products.append(ProductsElement("Редиска", 250, "https://rediska.com"))
+    products.append(ProductsElementAvto("Бруклин", 33.805, "https://kornishon.en", "HITACHI", "302782", "AA700-34", "Павловского"))
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    print()
+
+    pre = ProductsElement("Груша", 32.805, "https://grusha.ru")
+    prea = ProductsElementAvto("Хрюша", 33.805, "https://kornishon.en","TOTAL", "650432", "NN701-85", "Чапаего")
+    # print(prea)
+    print()
+
+    products += pre
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    print()
+
+    products += prea
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+
+    print()
+
+    products -= prea
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+
+if __name__ == '__main__':
+    main()
 

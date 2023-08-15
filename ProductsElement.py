@@ -43,6 +43,16 @@ class ProductsElement:
         url = from_string[2]
         return ProductsElement(name, price, url)
 
+    def __eq__(self, other):
+        # Допущение объект не должен быть равен самому себе
+        if not other is None and isinstance(other, ProductsElement) and not id(self) == id(other):
+            if self.name == other.name:
+                return True
+        return False
+
+    # def __ne__(self, other):
+    #     pass
+
 
 
 
@@ -84,5 +94,23 @@ def main2():
     render.render(products, DataStrFormat.WIDE)
 
 
+def test3():
+    from DataRenderer import DataRenderer
+    from Products import Products
+    from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
+    products = Products()
+    pe1 = ProductsElement("Редиска", 250, "https://rediska.com")
+    pe2 = ProductsElement("Груша", 32.805, "https://grusha.ru")
+    pe3 = ProductsElement("Корнишон", 32.805, "https://kornishon.en")
+    pe4 = ProductsElement("2Корнишон", 33.805, "https://kornishon.en")
+    pe5 = ProductsElement("Редиска", 250, "https://rediska.com")
+
+    print(pe1==pe2)
+    print(pe1==pe3)
+    print(pe1==pe5)
+    print(pe1==pe1)
+
+
 if __name__ == '__main__':
-    main()
+    test3()

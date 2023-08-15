@@ -1,9 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+# from selenium import webdriver
+# from selenium.webdriver.chrome.service import Service
 import platform
 from loguru import logger
 from ParserAbstract.Response import Response
 
+import undetected_chromedriver as uc  # pip install undetected-chromedriver
 
 from time import sleep
 
@@ -16,43 +17,60 @@ class SeleniumWebDriver:
         self.is_first_page_to_load = True
 
 
-    def anonymizeWebDriver(self):
+    @staticmethod
+    def anonymizeWebDriver():
 
-        DRIVER_LOCATION, BINARY_LOCATION = self.getDriverLocation()
-
-        service = Service(DRIVER_LOCATION)
-        # service = Service(Service(ChromeDriverManager().install())) - не работает
-
-        options = webdriver.ChromeOptions()
-
-        if BINARY_LOCATION:
-            options.binary_location = BINARY_LOCATION
-
-            # options.add_argument('--disable-gpu')  # Only included in Linux version
-            # options.add_argument('--no-sandbox')  # Only included in Linux version
-
-        # options.add_argument('--headless')    # - C headless не работает
-        options.add_argument('--disable-blink-features=AutomationControlled')  # первое !!!
-
-        #
-        # options.add_experimental_option('excludeSwitches', ['enable-automation'])   # дополнительно
-        # options.add_experimental_option('useAutomationExtension', False)            # дополнительно
-        #
-
-        driver = webdriver.Chrome(service=service, options=options)
-        # driver = webdriver.Chrome(options=options)
-
-        driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {  # второе !!!
-            'source': '''
-                delete window.cdc_adoQpoasnfa76pfcZLmcfl_Array;
-                delete window.cdc_adoQpoasnfa76pfcZLmcfl_Promise;
-                delete window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol;
-            '''
-        })
-
+        driver = uc.Chrome()
+        # driver.get("https://proxy6.net/privacy")
+        # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")
+        # sleep(100)
+        # exit(0)
         driver.maximize_window()
 
-        return driver, options
+        # https://piprogramming.org/articles/How-to-make-Selenium-undetectable-and-stealth--7-Ways-to-hide-your-Bot-Automation-from-Detection-0000000017.html
+
+        return driver, None
+
+    #
+    # def anonymizeWebDriver2(self):
+    #
+    # https://piprogramming.org/articles/How-to-make-Selenium-undetectable-and-stealth--7-Ways-to-hide-your-Bot-Automation-from-Detection-0000000017.html
+    #
+    #     DRIVER_LOCATION, BINARY_LOCATION = self.getDriverLocation()
+    #
+    #     service = Service(DRIVER_LOCATION)
+    #     # service = Service(Service(ChromeDriverManager().install())) - не работает
+    #
+    #     options = webdriver.ChromeOptions()
+    #
+    #     if BINARY_LOCATION:
+    #         options.binary_location = BINARY_LOCATION
+    #
+    #         # options.add_argument('--disable-gpu')  # Only included in Linux version
+    #         # options.add_argument('--no-sandbox')  # Only included in Linux version
+    #
+    #     # options.add_argument('--headless')    # - C headless не работает
+    #     options.add_argument('--disable-blink-features=AutomationControlled')  # первое !!!
+    #
+    #     #
+    #     # options.add_experimental_option('excludeSwitches', ['enable-automation'])   # дополнительно
+    #     # options.add_experimental_option('useAutomationExtension', False)            # дополнительно
+    #     #
+    #
+    #     driver = webdriver.Chrome(service=service, options=options)
+    #     # driver = webdriver.Chrome(options=options)
+    #
+    #     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {  # второе !!!
+    #         'source': '''
+    #             delete window.cdc_adoQpoasnfa76pfcZLmcfl_Array;
+    #             delete window.cdc_adoQpoasnfa76pfcZLmcfl_Promise;
+    #             delete window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol;
+    #         '''
+    #     })
+    #
+    #     driver.maximize_window()
+    #
+    #     return driver, options
 
 
     def getDriverLocation(self):
@@ -72,10 +90,10 @@ class SeleniumWebDriver:
             self.driver.get(url)
             if self.is_first_page_to_load:
                 self.is_first_page_to_load = False
-                logger.info(f'Ждем прогрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд')
-                # sleep(self.TIME_TO_READ_FIRST_PAGE)
+                logger.info(f'[getHtmlPage:] Ждем прогрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд')
+                sleep(self.TIME_TO_READ_FIRST_PAGE)
             else:
-                logger.info(f'Ждем прогрузки следубщей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд')
+                logger.info(f'[getHtmlPage:] Ждем прогрузки следубщей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд')
                 sleep(self.TIME_TO_READ_NEXT_PAGE)   # TODO отрегулировать параметр времени
             html = self.driver.page_source
             response = Response("200", html, None)
@@ -85,9 +103,19 @@ class SeleniumWebDriver:
 
         return response
 
+    def __del__(self):
+        # убираем сообщение об ошибке так:
+        #     time.sleep(0.1)
+        # OSError: [WinError 6] Неверный дескриптор
+        try:
+            self.driver.quit()
+        except Exception as _:
+            pass
+
+
 
 def main():
-    logger.add("loger.log", backtrace=True, diagnose=True, level='INFO')
+    # logger.add("loger.log", backtrace=True, diagnose=True, level='INFO')
 
     web = SeleniumWebDriver()
 

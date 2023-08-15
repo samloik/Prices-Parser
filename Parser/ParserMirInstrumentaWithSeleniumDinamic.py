@@ -13,19 +13,17 @@ from ParserAbstract.ParserWithSeleniumDinamicSite import ParserWithSeleniumDinam
 
 from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
-class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename to SeleniumParser
+class ParserMirInstrumentaSeleniumDinamic(ParserWithSeleniumDinamicSite):
 
     def __init__(self, siteUrl:str):
-        super().__init__(siteUrl)
+        super().__init__(siteUrl, 10, 3)
 
-        # self.next_x_path_button = '/html/body/div[1]/div/div/div[2]/main/article/section/div[2]/div/[last()]'
         self.next_x_path_button = "//div[contains(@class, 'arrow next')]"
         self.next_x_path_stop_content = "//div[contains(@class, 'arrow next disabled')]"
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_TO_STOP_ELEMENT
         self.setNextPagePauseTime(5)
 
 
-    # return Products
     def getProductsFromResponse(self, response: Response):
         products = Products()
 
