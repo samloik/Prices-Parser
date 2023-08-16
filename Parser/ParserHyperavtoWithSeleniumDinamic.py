@@ -15,19 +15,20 @@ from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
 
-    def __init__(self, siteUrl:str):
-        super().__init__(siteUrl)
+    def __init__(self, site_url:str):
+        super().__init__(site_url)
 
         btn_text = '\n                                Показать еще 30\n                                '
         self.next_x_path_button = f"//*[contains(text(), '{btn_text}')]"
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
-        self.setNextPagePauseTime(10)
+        self.set_next_page_pause_time(10)
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         products = Products()
 
+        logger.info(f"{str(response)=}")
         soup = BeautifulSoup(response.html, 'lxml')
 
         #
@@ -158,7 +159,7 @@ def test():
     )
 
 
-    products = parser.getProductsFromSite()
+    products = parser.get_products_from_site()
 
     render = DataRenderer()
     print('\n\nproducts')
@@ -173,7 +174,7 @@ def test():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserHyperavtoWithSeleniumDinamic_save_file.txt")
+    products_utils.save_products_to_file(products, "ParserHyperavtoWithSeleniumDinamic_save_file.txt")
 
 
 def test2():
@@ -186,20 +187,22 @@ def test2():
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("ParserHyperavtoWithSeleniumDinamic_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
     print(len(products))
-    products_utils.saveProductsToFile(products, "cleaned_stock_centr_save_file.txt")
+
 
     stop_list = [
-        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
-        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино"
+        "Зажим", "Клемма-перемычка", "Клемма АКБ", "Электролит для",
+        "Крокодильчик", "Состав", "Лак", "Очиститель", "Розетка",
+        "Компрессор", "Тормозная", "Зарядное", "Фонарь", "Разветвитель",
+        "Батарейка", "устройство", "Инвертор"
         # "клей"
     ]
 
-    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
 
     print('Очистка по стоп словам')
 
@@ -208,21 +211,22 @@ def test2():
 
     print('Очистка по отсутвию единицы измерения (кг!, литр):')
 
-    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
-                                                                          [UnitsTypes.KG, UnitsTypes.LITR])
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
+                                                                          [UnitsTypes.SHTUK])
 
     render.render(cleaned_by_units_type, DataStrFormat.WIDE)
     print(len(cleaned_by_units_type))
 
     print()
 
-    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.SHTUK])
 
-    print('Цена за единицу:')
+    print('перерасчет цены в цену за кг')
 
     render.render(el, DataStrFormat.WIDE)
     print(len(el))
 
+    products_utils.save_products_to_file(products, "cleaned_ParserHyperavtoWithSeleniumDinamic_save_file.txt")
 
 def test3():
     from DataRenderer import DataRenderer
@@ -231,10 +235,10 @@ def test3():
     from ProductsUtils import ProductsUtils
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserHyperavtoWithSeleniumDinamic_save_file.txt")
+    products = products_utils.load_products_from_file("cleaned_ParserHyperavtoWithSeleniumDinamic_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
-    logger.remove()
+    # logger.remove()
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -257,6 +261,6 @@ def test3():
     # print(len(products))
 
 if __name__ == '__main__':
-    test()
+    test2()
 
 

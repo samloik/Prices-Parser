@@ -14,14 +14,13 @@ class Response:
 
 
     def __str__(self):
-        HTML_LEN = 50
-
+        html_len = 50
 
         if not self.html or len(self.html) == 0:
             html = ""
         else:
-            if len(self.html) > HTML_LEN:
-                html = self.html[:HTML_LEN]
+            if len(self.html) > html_len:
+                html = self.html[:html_len]
             else:
                 html = self.html
         return f"Response: [{self.status_code=}][{html=}] [{self.error=}]"

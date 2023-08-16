@@ -11,14 +11,14 @@ from time import sleep
 class SeleniumWebDriver:
 
     def __init__(self, time_to_read_first_page=10, time_to_read_next_page=5):
-        self.driver, self.options = self.anonymizeWebDriver()
+        self.driver, self.options = self.anonymize_web_driver()
         self.TIME_TO_READ_FIRST_PAGE = time_to_read_first_page    # задержка (секунд) для прогрузки первой стариницы
         self.TIME_TO_READ_NEXT_PAGE = time_to_read_next_page      # задержка (секунд) после запроса страницы
         self.is_first_page_to_load = True
 
 
     @staticmethod
-    def anonymizeWebDriver():
+    def anonymize_web_driver():
 
         driver = uc.Chrome()
         # driver.get("https://proxy6.net/privacy")
@@ -73,18 +73,18 @@ class SeleniumWebDriver:
     #     return driver, options
 
 
-    def getDriverLocation(self):
-        current_os = platform.system()
-        if current_os == "Windows":
-            DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
-            BINARY_LOCATION = None
-        else: # Linux
-            DRIVER_LOCATION = '/usr/bin/chromedriver'
-            BINARY_LOCATION = '/usr/bin/google-chrome-stable'
-        return DRIVER_LOCATION, BINARY_LOCATION
+    # def get_driver_location(self):
+    #     current_os = platform.system()
+    #     if current_os == "Windows":
+    #         DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
+    #         BINARY_LOCATION = None
+    #     else: # Linux
+    #         DRIVER_LOCATION = '/usr/bin/chromedriver'
+    #         BINARY_LOCATION = '/usr/bin/google-chrome-stable'
+    #     return DRIVER_LOCATION, BINARY_LOCATION
 
 
-    def getHtmlPage(self, url):
+    def get_html_page(self, url):
         html = ""
         try:
             self.driver.get(url)
@@ -114,15 +114,15 @@ class SeleniumWebDriver:
 
 
 
-def main():
+def test():
     # logger.add("loger.log", backtrace=True, diagnose=True, level='INFO')
 
-    web = SeleniumWebDriver()
+    web = SeleniumWebDriver(0,0)
 
-    res = web.getHtmlPage('https://google.com')
-    print(res.html)
+    res = web.get_html_page('https://google.com')
+    print(res.html[:1000])
 
     sleep(5)
 
 if __name__ == '__main__':
-    main()
+    test()

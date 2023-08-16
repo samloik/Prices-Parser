@@ -10,11 +10,23 @@ class ParserSite:
     _products: Products
     _site_url: str
 
+    _next_response_pause_time: float
+
+
     def __init__(self, site_url:str):
         self.set_products(Products())
         self.set_site_url(site_url)
+        self.set_next_page_pause_time(0)        # время паузы перед переходом на след. страницу
+
         # self.maxResponseNumber = 5
         # self.currentResponseNumber = 0
+
+    def set_next_page_pause_time(self, time=0):
+        # устанавливаем время паузы перед переключением страницы
+        self._next_page_pause_time = time
+
+    def get_next_page_pause_time(self):
+        return self._next_page_pause_time
 
 
     def set_site_url(self, site_url):
@@ -51,33 +63,7 @@ class ParserSite:
                 self.set_next_page()
         return all_products
 
-    # # return ProductFromSite main method
-    # def getProductsFromSite2(self):
-    #     self.products.clearProducts()
-    #     isNextPage = True
-    #     while isNextPage:
-    #         self.dropResponseNumber()
-    #         while True:
-    #             response = self.getResponseFromSite()
-    #             if response.isResponseOK():
-    #                 break
-    #             self.sleepWithTimeForNextResponse()
-    #             if self.isMaxResponseNumber():
-    #                 # TODO: продумать дальнейшую логику
-    #                 # записать html
-    #                 logger.error(f'[Error:] Максимальное количество попыток [{self.maxResponseNumber}] получить ответ от сайта достигнуто')
-    #                 logger.info( f'[Error:] [{response}]')
-    #                 exit(1)
-    #             else:
-    #                 logger.info(f'[!] Неверный ответ от сервера: попытка номер [{self.currentResponseNumber}]')
-    #                 logger.info(f'[!] [{response}]')
-    #         products = self.getProductsFromResponse(response)
-    #         self.products += products
-    #         logger.warning(f'[LEN] {len(self.products.products)=}')
-    #         isNextPage = self.isNextPage(response)
-    #     return self.products
 
-    # return isNextPage = self.isNextPage(html) and page++
     def is_next_page(self, response):
         pass
 
@@ -91,34 +77,10 @@ class ParserSite:
         # return self.getHtmlPageWithSelenium()
 
 
-    # # return html page with selenium method
-    # def getHtmlPageWithSelenium(self):
-    #     pass
-    #     # return Response("200", "") # TODO: после тестов удалить
-    #
-    #
-    # # return html page with sessions method
-    # def getHtmlPageWithSession(self):
-    #     pass
-
 
     # return Products
     def get_products_from_response(self, response: Response):
         pass
 
 
-    # def sleepWithTimeForNextResponse(self):
-    #     sleep(2)
-
-
-    # def dropResponseNumber(self):
-    #     self.curentResponseNumber = 0
-    #
-    #
-    # def isMaxResponseNumber(self):
-    #     if self.maxResponseNumber > self.currentResponseNumber:
-    #         self.currentResponseNumber += 1
-    #         return True
-    #     else:
-    #         return False
 

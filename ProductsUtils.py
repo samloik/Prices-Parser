@@ -37,6 +37,7 @@ class ProductsUtils:
 
     @staticmethod
     def get_cleaned_products_by_stop_list(products: Products, stopList: list):
+        logger.info(f"Очищаем список элементов по стоп листу...")
         cleaned_products = products.get_products_copy()
 
         # TODO проверен алгоритм удаления
@@ -56,6 +57,7 @@ class ProductsUtils:
 
     @staticmethod
     def get_cleaned_products_by_units_types(products: Products, units_types: list):
+        logger.info(f"Очищаем список элементов по единицам измерения в имени {units_types}...")
         cleaned_products = products.get_products_copy()
 
         for name in products.keys():
@@ -76,12 +78,12 @@ class ProductsUtils:
 
         converted_produtcs = products.get_products_copy()
 
-        for name in products.products.keys():
+        for name in products.keys():
             element_name = ElementName(name, units_types)
             value_from_name = element_name.get_value_of_units_in_name()
 
-            price = products.get_element_by_name(name).price / float(value_from_name)
-            converted_produtcs.get_element_by_name(name).price = price
+            price = products.get_element_by_name(name).get_price() / float(value_from_name)
+            converted_produtcs.get_element_by_name(name).set_price(price)
 
         return converted_produtcs
 

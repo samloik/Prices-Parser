@@ -12,11 +12,11 @@ from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
 
-    def __init__(self, siteUrl:str, time_to_read_first_page=10, time_to_read_next_page=0):
-        super().__init__(siteUrl)
+    def __init__(self, site_url:str, time_to_read_first_page=10, time_to_read_next_page=0):
+        super().__init__(site_url)
         # self.currentPage = 0
         self.webDriver = SeleniumWebDriver(time_to_read_first_page, time_to_read_next_page)
-        self.setNextPagePauseTime(5)
+        self.set_next_page_pause_time(5)
 
         self.isFirstReadingPage = True
         self.next_x_path_button = None
@@ -26,7 +26,7 @@ class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
 
 
 
-    def isNextPage(self, response: Response):
+    def is_next_page(self, response: Response):
         webElements = self.webDriver.driver.find_elements(By.XPATH, self.next_x_path_button)
 
 
@@ -51,7 +51,7 @@ class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
 
 
 
-    def setNextPage(self):
+    def set_next_page(self):
 
         #  SCROLL_PAUSE_TIME = 0.5
         # Get scroll height
@@ -86,31 +86,31 @@ class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
                 logger.info(f'{len(webElements)=} {webElements[0].get_property("disabled")=}')
                 logger.info(f'{webElements[0].is_enabled()=}')
                 exit(1)
-            logger.info(f'нажимаем кнопку далее и спим [{self.NEXT_PAGE_PAUSE_TIME_TO_CLICK}] секунд')
-            sleep(self.NEXT_PAGE_PAUSE_TIME_TO_CLICK)
+            logger.info(f'нажимаем кнопку далее и спим [{self.get_next_page_pause_time()}] секунд')
+            sleep(self.get_next_page_pause_time())
         else:
             logger.error(f'нет кнопки далее на странице')
         # # # # TODO и тут полазил
         # sleep(15)
         # exit(0)
 
-    def setNextPagePauseTime(self, time):
-        self.NEXT_PAGE_PAUSE_TIME_TO_CLICK = time
+    # def set_next_page_pause_time(self, time):
+    #     self.NEXT_PAGE_PAUSE_TIME_TO_CLICK = time
 
 
     # return html page with main method
-    def getResponseFromSite(self):
+    def get_response_from_site(self):
 
         if self.isFirstReadingPage:
             logger.info('Пытаемся получить ответ от сайта')
 
             # url = self.siteUrl + str(self.currentPage)
-            url = self.siteUrl
-            response = self.webDriver.getHtmlPage(url)
+            url = self.get_site_url()
+            response = self.webDriver.get_html_page(url)
             self.isFirstReadingPage = False
 
             # инфо блок
-            if response.isResponseOK():
+            if response.is_response_ok():
                 logger.info(f'Страница получена без ошибок')
             else:
                 logger.info(f'Страница получена c ошибкой')
@@ -124,7 +124,7 @@ class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
         return response
 
 
-    def sleepWithTimeForNextResponse(self):
-        sec = 10
-        logger.info(f"[sleepWithTimeForNextResponse] Спим [{sec}] секунд")
-        sleep(sec)
+    # def sleep_with_time_for_next_response(self):
+    #     sec = 10
+    #     logger.info(f"[sleepWithTimeForNextResponse] Спим [{sec}] секунд")
+    #     sleep(sec)

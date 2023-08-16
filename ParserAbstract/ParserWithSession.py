@@ -15,14 +15,15 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
 
     _current_response_number: int
     _max_response_number: int
-    _next_response_pause_time: int
+    _next_response_pause_time: float
     _current_page:int
+    # _next_page_pause_time: float
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl)
         self.session = requests.Session()
         self.set_current_page(0)                # установка номера начальной страницы
-        self.set_next_page_pause_time(0)        # время паузы перед переходом на след. страницу
+        # self.set_next_page_pause_time(0)        # время паузы перед переходом на след. страницу
         self.set_curent_response_number(0)      # установка начального номера повторного запроса
         self.set_next_response_pause_time(2)    # время пайзы перед повторным запросом
         self.set_max_response_number(5)         # максимальное количество повторных запросов
@@ -58,12 +59,12 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
     def get_next_pesponse_pause_time(self):
         return self._next_response_pause_time
 
-    def set_next_page_pause_time(self, time):
-        # устанавливаем время паузы перед переключением страницы
-        self.NEXT_PAGE_PAUSE_TIME = time
-
-    def get_next_page_pause_time(self):
-        return self.NEXT_PAGE_PAUSE_TIME
+    # def set_next_page_pause_time(self, time):
+    #     # устанавливаем время паузы перед переключением страницы
+    #     self._next_page_pause_time = time
+    #
+    # def get_next_page_pause_time(self):
+    #     return self._next_page_pause_time
 
 
     def set_next_page(self):
@@ -75,6 +76,7 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         try:
             res = self.session.get(url)
             html = res.content
+            logger(f'Спим [{self.get_next_page_pause_time()}] секунд перед запросом следующей страницы')
             sleep(self.get_next_page_pause_time())   # TODO отрегулировать параметр времени
             # response = Response("200", html, None)
             response = Response( str(res.status_code), html, None)

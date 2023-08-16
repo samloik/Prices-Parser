@@ -34,48 +34,6 @@ class ParserStockCentrWithSession(ParserWithSession):
             return False
 
 
-    # def getHtmlPage(self, url):
-    #     html = ""
-    #     try:
-    #         res = self.session.get(url)
-    #         html = res.content
-    #         sleep(self.TIME_TO_READ_PAGE)   # TODO отрегулировать параметр времени
-    #         # response = Response("200", html, None)
-    #         response = Response( str(res.status_code), html, None)
-    #     except Exception as Err:
-    #         logger.error(Err)
-    #         response = Response( str(res.status_code), None, str(Err))
-    #
-    #     return response
-
-    # # return html page with main method
-    # def getResponseFromSite(self):
-    #     logger.info('Пытаемся получить ответ от сайта')
-    #
-    #     url = self.siteUrl + str(self.currentPage)
-    #     response = self.getHtmlPage(url)
-    #
-    #     # инфо блок
-    #     if response.isResponseOK():
-    #         logger.info(f'Страница {self.currentPage} получена без ошибок')
-    #     else:
-    #         logger.info(f'Страница {self.currentPage} получена c ошибкой')
-    #
-    #     return response
-
-
-    # # return html page with selenium method
-    # def getHtmlPageWithSelenium(self):
-    #     response = self.webDriver.getHtmlPage(url)
-    #
-    #     return response
-
-
-    # return html page with sessions method
-    # def getHtmlPageWithSession(self):
-    #     pass
-
-
     # return Products
     def get_products_from_response(self, response: Response):
         products = Products()
@@ -140,7 +98,7 @@ def test2():
     from ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
-    logger.remove()
+    # logger.remove()
 
     products_utils = ProductsUtils()
     products = products_utils.load_products_from_file("stock_centr_save_file.txt")
@@ -175,10 +133,12 @@ def test2():
 
     el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
 
-    print('Цена за единицу:')
+    print('перерасчет цены в цену за кг')
 
     render.render(el, DataStrFormat.WIDE)
     print(len(el))
+
+    products = products_utils.save_products_to_file(el, "cleaned_stock_centr_save_file.txt")
 
 
 def test3():
@@ -192,13 +152,13 @@ def test3():
     products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
-    logger.remove()
+    # logger.remove()
 
     render = DataRenderer()
     # render.render(products, DataStrFormat.WIDE)
     print(len(products))
 
-    for name in products.products.keys():
+    for name in products.keys():
         element_name = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
         values_from_name = element_name.get_value_of_units_in_name()
@@ -206,10 +166,41 @@ def test3():
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
             print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
         else:
-            print(f'[-] {name:>100} | Null  {elementName.units_types}')
+            print(f'[-] {name:>100} | Null  {element_name.units_types}')
 
+
+def test4():
+    from DataRenderer import DataRenderer
+    # from Products import Products
+    from ProductsUtils import ProductsUtils
+    from ElementName import ElementName
+    from UnitsTypes import UnitsTypes
+
+    products_utils = ProductsUtils()
+    products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")
+    # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+
+    # logger.remove()
+
+    render = DataRenderer()
+    # render.render(products, DataStrFormat.WIDE)
+    print(len(products))
+
+    for name in products.keys():
+        element_name = ElementName(name, [])
+
+        values_from_name = element_name.get_value_of_units_in_name()
+        if  values_from_name != "":
+            # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
+            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+        else:
+            print(f'[-] {name:>100} | Null  {element_name.units_types}')
 
 
 if __name__ == '__main__':
     test()
+    test2()
+    test3()
+    test4()
+
 

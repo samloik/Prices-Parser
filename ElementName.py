@@ -3,8 +3,8 @@ from UnitsTypes import UnitsTypes
 from loguru import logger
 
 class ElementName:
-    name: str
-    units_types: UnitsTypes
+    _name: str
+    _units_types: UnitsTypes
 
     def __init__(self, name:str, units_types=None):
         self.set_name(name)
@@ -12,16 +12,16 @@ class ElementName:
 
 
     def set_name(self, name):
-        self.name = name
+        self._name = name
 
     def get_name(self):
-        return self.name
+        return self._name
 
     def set_units_types(self, unit_types: UnitsTypes):
-        self.units_types = unit_types
+        self._units_types = unit_types
 
     def get_units_types(self):
-        return self.units_types
+        return self._units_types
 
     @staticmethod
     def _get_number_from_name_with_simbols(oldname):
@@ -101,9 +101,10 @@ class ElementName:
 
     def get_value_of_units_in_name(self):
         result = ''
+        units_types = self.get_units_types()
 
-        if not self.units_types or len(self.units_types) == 0 or UnitsTypes.KG in self.units_types:
-            # logger.info(f'f[ ] "кг" пробуем извлечь [{self.units_types=}] [{self.name}]')
+        if not units_types or len(units_types) == 0 or UnitsTypes.KG in units_types:
+            # logger.info(f'f[ ] "кг" пробуем извлечь [{units_types=}] [{self.name}]')
             # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
             unitsList = ["килограмм", "кг!"]
             for units in unitsList:
@@ -113,7 +114,7 @@ class ElementName:
 
             # добавляем проверку на граммы
             if len(result) == 0:
-                # logger.info(f'f[ ] "грамм" пробуем извлечь [{self.units_types=}] [{self.name}]')
+                # logger.info(f'f[ ] "грамм" пробуем извлечь [{units_types=}] [{self.name}]')
                 unitsList = ["грамм", "г!"]
                 for units in unitsList:
                     result = self._get_value_of_units_in_name_by_content(units)
@@ -121,10 +122,10 @@ class ElementName:
                         result = str(float(result)/1000)
                         break
 
-        if self.units_types and UnitsTypes.LITR in self.units_types and len(result) == 0:
+        if units_types and UnitsTypes.LITR in units_types and len(result) == 0:
             # если unit_types не None и есть UnitsTypes.LITR в списке, то:
             # добавляем проверку на литр
-            # logger.info(f'f[ ] "литр" пробуем извлечь [{self.units_types=}] [{self.name}]')
+            # logger.info(f'f[ ] "литр" пробуем извлечь [{units_types=}] [{self.name}]')
             # [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
             # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
             unitsList = ["литр", "л!"]
@@ -135,7 +136,7 @@ class ElementName:
 
             # добавляем проверку на милилитры
             if len(result) == 0:
-                # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{self.units_types=}] [{self.name}]')
+                # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{units_types=}] [{self.name}]')
                 unitsList = ["миллилитр", "мл!"]
                 for units in unitsList:
                     result = self._get_value_of_units_in_name_by_content(units)
@@ -143,8 +144,8 @@ class ElementName:
                         result = str(float(result)/1000)
                         break
 
-        if self.units_types and UnitsTypes.SHTUK in self.units_types and len(result) == 0:
-            # logger.info(f'f[ ] "штук" пробуем извлечь [{self.units_types=}] [{self.name}]')
+        if units_types and UnitsTypes.SHTUK in units_types and len(result) == 0:
+            # logger.info(f'f[ ] "штук" пробуем извлечь [{units_types=}] [{self.name}]')
             unitsList = ["штук!", "шт!"]
             for units in unitsList:
                 result = self._get_value_of_units_in_name_by_content(units)
@@ -156,9 +157,9 @@ class ElementName:
             try:
                 number = float(result)
                 result = str(number)
-                logger.info(f'[+] Удалось извлечь число из [{result}] [{self.name=}]')
+                logger.info(f'[+] Удалось извлечь число из [{result}] [{self.get_name()=}]')
             except Exception as Error:
-                logger.warning(f'[-] Не удалось извлечь число из [{self.name=}] {Error=}')
+                logger.warning(f'[-] Не удалось извлечь число из [{self.get_name()=}] {Error=}')
                 result = ''
         return result
 
@@ -182,7 +183,7 @@ class ElementName:
 
     def _get_Value_of_units_in_name_by_content_soft(self, content):
 
-        name = self.name.lower()
+        name = self.get_name().lower()
 
         # делим имя по имя через "искомое слово" на список
         strings = name.split(content.lower())
@@ -235,7 +236,7 @@ class ElementName:
         #  продумать логику - реализовать
         #  проверить
 
-        name = self.name.lower()
+        name = self.get_name().lower()
 
         # делим имя по имя через "искомое слово" на список
         strings = name.split(content.lower())
@@ -291,7 +292,7 @@ class ElementName:
         :return: обработанный текст
         """
 
-        text = self.name
+        text = self.get_name()
 
         symbols = str.maketrans(u"абвгдезийклмнопрстуфхъыьАБВГДЕЗИЙКЛМНОПРСТУФХЪЫЬ",
                                 u"abvgdezijklmnoprstufh'y'ABVGDEZIJKLMNOPRSTUFH'Y'")
@@ -343,7 +344,7 @@ class ElementName:
 
 
 
-def main():
+def test():
 
     from DataRenderer import DataRenderer
     # from Products import Products
@@ -365,7 +366,7 @@ def main():
 
     # print('elementName.getUnitsFromName():')
 
-    for name in products.products.keys():
+    for name in products.keys():
         elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
         values_from_name = elementName.get_value_of_units_in_name()
@@ -376,8 +377,7 @@ def main():
             print(f'[ ] {name:>100} | Null')
 
 
-def main10(name):
-
+def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -385,92 +385,43 @@ def main10(name):
     from ElementName import ElementName
     # from UnitsTypes import UnitsT
 
-    logger.remove()
+    products_utils = ProductsUtils()
+    # products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
 
-    # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
-    elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
+    # render = DataRenderer()
+    # render.render(products, DataStrFormat.WIDE)
+    print(f'\n{len(products)=}\n')
 
-    values_from_name = elementName.get_value_of_units_in_name()
-    if values_from_name != "":
-        # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-        print(f'[+] {name:>100} | {values_from_name}')
-    else:
-        print(f'[ ] {name:>100} | Null')
+    # print('elementName.getUnitsFromName():')
 
+    for name in products.keys():
+        elementName = ElementName(name, [UnitsTypes.SHTUK, UnitsTypes.LITR])
 
-def main5():
-    string = 'Ceresit СN-173/20  грамм Пол быстротв.самовырав.универс.'
-    print(string.split('г1'))
-    print(float(".0565"))
-
-def main2(name):
-    from DataRenderer import DataRenderer
-    # from Products import Products
-    from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
-    # from UnitsTypes import UnitsT
-
-    # logger.remove()
-
-    # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
-    elementName = ElementName(name, [UnitsTypes.SHTUK, UnitsTypes.LITR])
-
-    values_from_name = elementName.get_value_of_units_in_name()
-    if values_from_name != "":
-        # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-        print(f'[+] {name:>100} | {values_from_name}')
-    else:
-        print(f'[ ] {name:>100} | Null')
-
-
-def main6():
-    # main()
-    # main2(name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.')
-    # main2(name = 'Ceresit СN-173/2-40,56л Пол быстротв.самовырав.универс.')
-    main2(name = 'Ceresit СN-173/2-40,57лт Пол быстротв.самовырав.универс.40,56л')
-    # main2(name = 'Ceresit СN-173/2- Пол быстротв.самовырав.универс.40,56л')
-    # main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
-    # main2(name = 'Ceresit СN-173/20,54граМм Пол быстротв.самовырав.универс.')
-    # main2(name = 'Ceresit СN-173/0,540г Пол быстротв.самовырав.универс.')
-    # main2(name = 'Ceresit СN-173/540млл Пол быстротв.самовырав.универс.')
-
-    # main2(name='Шпатлевка Шпакрил ЭКСТРА 2кг пакет Супербелый КВАРТ')
-    # main2(name='Противоморозная добавка "Штайнберг FROST 25" 20.5 г')
-
-def main7():
-    string = "кг!"
-    print(string)
-    print(string[-1])
-    print(string[:-1])
-
-    string2 = 'Привет как у тебя дела?'
-    print(string2)
-    new_numbers_in_text = string2.split("к")
-    print(new_numbers_in_text)
-    new_numbers_in_int = []
-    for x, number_in_text in enumerate(new_numbers_in_text):
-        print(f'{x=} {number_in_text=} {len(new_numbers_in_text)=}')
-        if len(number_in_text) == 0:
-            new_numbers_in_int.append(0)
-        elif x == len(new_numbers_in_text)-1:
-            new_numbers_in_int.append(1)
+        values_from_name = elementName.get_value_of_units_in_name()
+        if  values_from_name != "":
+            # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
+            print(f'[+] {name:>100} | {values_from_name}')
         else:
-            new_numbers_in_int.append(0)
-    print(new_numbers_in_int)
+            print(f'[ ] {name:>100} | Null')
+
+
+
+
+
 
 def translit_test():
     en = ElementName(u"Желёзная дорога эхо", [UnitsTypes.KG, UnitsTypes.LITR])
     en2 = ElementName(u"Privet", [UnitsTypes.KG, UnitsTypes.LITR])
     en3 = ElementName(u"Пакет ПВД 2,5кг 250х350 (200шт) 25мк Impacto Pro Оптима", [UnitsTypes.KG, UnitsTypes.LITR, UnitsTypes.SHTUK])
 
-    print(en.translitName())
-    print(en2.translitName())
-    print(en3.translitName())
+    print(en.translit_name())
+    print(en2.translit_name())
+    print(en3.translit_name())
 
 if __name__ == '__main__':
-    main2(name = 'Ceresit СN-173/20литров Пол быстротв.самовырав.универс.')
-    main2(name = 'Пакет ПВД 2,5кг 250х350 (200шт) 25мк Impacto Pro Оптима')
-    # translit_test()
-    # main6()
-    # main5()
+    test()
+    test2()
+    translit_test()
+
+    # дописать тесты по всем методам
