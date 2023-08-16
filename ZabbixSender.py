@@ -212,7 +212,7 @@ class ZabbixUtils:
 
             for key in products.products.keys():
                 name = ElementName(key)
-                translit_name = name.translitName()
+                translit_name = name.translit_name()
                 packet.append(
                     ZabbixMetric(
                         host=host_name,
@@ -258,7 +258,7 @@ class ZabbixUtils:
         # создаем items в zabbix соотвествующие translit именам
         for key in names_of_items_to_add:
             name = ElementName(key)
-            translit_name = name.translitName()
+            translit_name = name.translit_name()
             self.createItem(
                 name=self.getNormalizedKey(key, value),
                 key=self.getNormalizedKey(translit_name, value)

@@ -3,12 +3,28 @@ from UnitsTypes import UnitsTypes
 from loguru import logger
 
 class ElementName:
+    name: str
+    units_types: UnitsTypes
+
     def __init__(self, name:str, units_types=None):
+        self.set_name(name)
+        self.set_units_types(units_types)
+
+
+    def set_name(self, name):
         self.name = name
-        self.units_types = units_types
+
+    def get_name(self):
+        return self.name
+
+    def set_units_types(self, unit_types: UnitsTypes):
+        self.units_types = unit_types
+
+    def get_units_types(self):
+        return self.units_types
 
     @staticmethod
-    def _getNumberFromNameWithSimbols(oldname):
+    def _get_number_from_name_with_simbols(oldname):
         # Метод извлечения числа из строки с числом и символами
 
         name = oldname.strip().replace(',', '.')
@@ -83,7 +99,7 @@ class ElementName:
         #       попускается продолжение текста (контента) любыми символами
 
 
-    def getValueOfUnitsInName(self):
+    def get_value_of_units_in_name(self):
         result = ''
 
         if not self.units_types or len(self.units_types) == 0 or UnitsTypes.KG in self.units_types:
@@ -91,7 +107,7 @@ class ElementName:
             # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
             unitsList = ["килограмм", "кг!"]
             for units in unitsList:
-                result = self._getValueOfUnitsInNameByContent(units)
+                result = self._get_value_of_units_in_name_by_content(units)
                 if len(result) > 0:
                     break
 
@@ -100,7 +116,7 @@ class ElementName:
                 # logger.info(f'f[ ] "грамм" пробуем извлечь [{self.units_types=}] [{self.name}]')
                 unitsList = ["грамм", "г!"]
                 for units in unitsList:
-                    result = self._getValueOfUnitsInNameByContent(units)
+                    result = self._get_value_of_units_in_name_by_content(units)
                     if len(result) > 0:
                         result = str(float(result)/1000)
                         break
@@ -113,7 +129,7 @@ class ElementName:
             # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
             unitsList = ["литр", "л!"]
             for units in unitsList:
-                result = self._getValueOfUnitsInNameByContent(units)
+                result = self._get_value_of_units_in_name_by_content(units)
                 if len(result) > 0:
                     break
 
@@ -122,7 +138,7 @@ class ElementName:
                 # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{self.units_types=}] [{self.name}]')
                 unitsList = ["миллилитр", "мл!"]
                 for units in unitsList:
-                    result = self._getValueOfUnitsInNameByContent(units)
+                    result = self._get_value_of_units_in_name_by_content(units)
                     if len(result) > 0:
                         result = str(float(result)/1000)
                         break
@@ -131,7 +147,7 @@ class ElementName:
             # logger.info(f'f[ ] "штук" пробуем извлечь [{self.units_types=}] [{self.name}]')
             unitsList = ["штук!", "шт!"]
             for units in unitsList:
-                result = self._getValueOfUnitsInNameByContent(units)
+                result = self._get_value_of_units_in_name_by_content(units)
                 if len(result) > 0:
                     break
 
@@ -146,7 +162,7 @@ class ElementName:
                 result = ''
         return result
 
-    def _getValueOfUnitsInNameByContent(self, content):
+    def _get_value_of_units_in_name_by_content(self, content):
 
         #  TODO
         #   Попытка сформулировать алгоритм №1
@@ -158,13 +174,13 @@ class ElementName:
 
         if len(content) > 1 and content[-1] == "!":
             # допускается текст после content
-            return self._getValueOfUnitsInNameByContentStrong(content[:-1])
+            return self._get_Value_of_units_in_name_by_content_strong(content[:-1])
         else:
             # допускается ничего или только специальные символы после content
-            return self._getValueOfUnitsInNameByContentSoft(content)
+            return self._get_Value_of_units_in_name_by_content_soft(content)
 
 
-    def _getValueOfUnitsInNameByContentSoft(self, content):
+    def _get_Value_of_units_in_name_by_content_soft(self, content):
 
         name = self.name.lower()
 
@@ -178,13 +194,13 @@ class ElementName:
             return ''
         # если длина списка равна 2, то искомое число в 0м блоке
         if string_len == 2:
-            return self._getNumberFromNameWithSimbols(strings[0])
+            return self._get_number_from_name_with_simbols(strings[0])
 
         # если длина списка больше двух то ("искомых слов" больше одного)
         #   ищем числа во всех блоках,
         count_of_numbers = 0
         # получаем список чисел в виде текста
-        numbers_in_text = [self._getNumberFromNameWithSimbols(text) for text in strings]
+        numbers_in_text = [self._get_number_from_name_with_simbols(text) for text in strings]
         # если длина элемента больше 0 то выставляем 1 иначе 0
         numbers_in_int = [1 if len(number_in_text)>0 else 0 for number_in_text in numbers_in_text]
         # если число встречается только один раз, то число найдено
@@ -194,7 +210,7 @@ class ElementName:
             return numbers_in_text[numbers_in_int.index(1)]
 
     @staticmethod
-    def _checkBeginOfStringForPosibleSimbols(str):
+    def _check_begin_of_string_for_posible_simbols(str):
         if len(str) == 0:
             return True
         if str[0] in ' .,-()[]/\\':
@@ -203,7 +219,7 @@ class ElementName:
             return False
 
 
-    def _getValueOfUnitsInNameByContentStrong(self, content):
+    def _get_Value_of_units_in_name_by_content_strong(self, content):
         #  TODO
         #   Попытка сформулировать алгоритм №1
         #   после некоторых единиц, напрмер, "л", "мл", "кг" измерения не должно быть символов,
@@ -232,15 +248,15 @@ class ElementName:
         # если длина списка равна 2, то искомое число в 0м блоке
         if string_len == 2:
             # проверяем на разрешенные символы после content
-            if self._checkBeginOfStringForPosibleSimbols(strings[1]):
-                return self._getNumberFromNameWithSimbols(strings[0])
+            if self._check_begin_of_string_for_posible_simbols(strings[1]):
+                return self._get_number_from_name_with_simbols(strings[0])
             return ''
 
         # если длина списка больше двух то ("искомых слов" больше одного)
         #   ищем числа во всех блоках,
         count_of_numbers = 0
         # получаем список чисел в виде текста
-        numbers_in_text = [self._getNumberFromNameWithSimbols(text) for text in strings]
+        numbers_in_text = [self._get_number_from_name_with_simbols(text) for text in strings]
         # если длина элемента больше 0 то выставляем 1 иначе 0
         # numbers_in_int = [1 if len(number_in_text) > 0 else 0 for number_in_text in numbers_in_text]
 
@@ -253,7 +269,7 @@ class ElementName:
                 new_numbers_in_int.append(0)
             elif x == len(new_numbers_in_text)-1:
                 new_numbers_in_int.append(1)
-            elif self._checkBeginOfStringForPosibleSimbols(strings[x+1]) == True:
+            elif self._check_begin_of_string_for_posible_simbols(strings[x+1]) == True:
                 new_numbers_in_int.append(1)
             else:
                 new_numbers_in_int.append(0)
@@ -266,7 +282,7 @@ class ElementName:
             return new_numbers_in_text[new_numbers_in_int.index(1)]
 
 
-    def translitName(self):
+    def translit_name(self):
         """
         переводит текст с кириллицы на транслит убирает символы нечитаемые zabbix'ом
         формат zabbix key: 0-9a-zA-Z_-.
@@ -341,7 +357,7 @@ def main():
 
     products_utils = ProductsUtils()
     # products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
-    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("stock_centr_save_file.txt")
 
     # render = DataRenderer()
     # render.render(products, DataStrFormat.WIDE)
@@ -352,10 +368,10 @@ def main():
     for name in products.products.keys():
         elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-        valuesFromName = elementName.getValuesFromName()
-        if  valuesFromName != "":
+        values_from_name = elementName.get_value_of_units_in_name()
+        if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {valuesFromName}')
+            print(f'[+] {name:>100} | {values_from_name}')
         else:
             print(f'[ ] {name:>100} | Null')
 
@@ -374,10 +390,10 @@ def main10(name):
     # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
     elementName = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-    valuesFromName = elementName.getValuesFromName()
-    if valuesFromName != "":
+    values_from_name = elementName.get_value_of_units_in_name()
+    if values_from_name != "":
         # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-        print(f'[+] {name:>100} | {valuesFromName}')
+        print(f'[+] {name:>100} | {values_from_name}')
     else:
         print(f'[ ] {name:>100} | Null')
 
@@ -400,10 +416,10 @@ def main2(name):
     # name = 'Ceresit СN-173/20кг Пол быстротв.самовырав.универс.'
     elementName = ElementName(name, [UnitsTypes.SHTUK, UnitsTypes.LITR])
 
-    valuesFromName = elementName.getValueOfUnitsInName()
-    if valuesFromName != "":
+    values_from_name = elementName.get_value_of_units_in_name()
+    if values_from_name != "":
         # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-        print(f'[+] {name:>100} | {valuesFromName}')
+        print(f'[+] {name:>100} | {values_from_name}')
     else:
         print(f'[ ] {name:>100} | Null')
 

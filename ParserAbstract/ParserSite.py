@@ -7,29 +7,49 @@ from loguru import logger
 from ProductsElement import ProductsElement # TODO: после тестов удалить
 
 class ParserSite:
-    products: Products
-    siteUrl: str
+    _products: Products
+    _site_url: str
 
-    def __init__(self, siteUrl:str):
-        self.products = Products()
-        self.siteUrl = siteUrl
+    def __init__(self, site_url:str):
+        self.set_products(Products())
+        self.set_site_url(site_url)
         # self.maxResponseNumber = 5
         # self.currentResponseNumber = 0
 
 
+    def set_site_url(self, site_url):
+        self._site_url = site_url
+
+    def get_site_url(self):
+        return self._site_url
+
+    def get_products(self):
+        return self._products
+
+    def set_products(self, products: Products):
+        self._products = products
+
+    def __len__(self):
+        return len(self.get_products())
+
+
     # return ProductFromSite main method
-    def getProductsFromSite(self):
-        self.products.clearProducts()
-        isNextPage = True
-        while isNextPage:
-            response = self.getResponseFromSite()
-            products = self.getProductsFromResponse(response)
-            self.products += products
-            logger.warning(f'[LEN] {len(self.products.products)=}')
-            isNextPage = self.isNextPage(response)
-            if isNextPage:
-                self.setNextPage()
-        return self.products
+    def get_products_from_site(self):
+        # self.get_products().clear_products()
+        all_products = self.get_products()
+        all_products.clear_products()
+        is_next_page = True
+        while is_next_page:
+            response = self.get_response_from_site()
+            products = self.get_products_from_response(response)
+            # get_producs = self.get_products()
+            all_products += products
+            # logger.warning(f'[LEN] {len(self.products.products)=}')
+            logger.warning(f'[LEN] {len(products)=}')
+            is_next_page = self.is_next_page(response)
+            if is_next_page:
+                self.set_next_page()
+        return all_products
 
     # # return ProductFromSite main method
     # def getProductsFromSite2(self):
@@ -58,15 +78,15 @@ class ParserSite:
     #     return self.products
 
     # return isNextPage = self.isNextPage(html) and page++
-    def isNextPage(self, response):
+    def is_next_page(self, response):
         pass
 
 
-    def setNextPage(self):
+    def set_sext_page(self):
         pass
 
     # return Response page with main method
-    def getResponseFromSite(self):
+    def get_response_from_site(self):
         pass
         # return self.getHtmlPageWithSelenium()
 
@@ -83,7 +103,7 @@ class ParserSite:
 
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         pass
 
 

@@ -5,12 +5,12 @@ from Products import Products
 class DataRenderer:
 
     def render(self, products:Products, dataStrFormat=DataStrFormat.SHORT):
-        for productKey in products.products.keys():
-            product = products.products[productKey]
+        for product_key in products.keys():
+            product = products[product_key]
             line = {
-                DataStrFormat.WIDE: "<" + f"{product.name:>120}|{product.price:>9.2f}|{product.url}" + ">\n",
-                DataStrFormat.MIDDLE: "<" + f"{product.name:>40}|{product.price:>9.2f}|{product.url}" + "> ",
-                DataStrFormat.SHORT: "<" + f"{product.name}|{product.price:>0.2f}|{product.url}" + "> "
+                DataStrFormat.WIDE: "<" + f"{product.get_name():>120}|{product.get_price():>9.2f}|{product.get_url()}" + ">\n",
+                DataStrFormat.MIDDLE: "<" + f"{product.get_name():>40}|{product.get_price():>9.2f}|{product.get_url()}" + "> ",
+                DataStrFormat.SHORT: "<" + f"{product.get_name()}|{product.get_price():>0.2f}|{product.get_url()}" + "> "
             }[dataStrFormat]
             print(line, end='')
 

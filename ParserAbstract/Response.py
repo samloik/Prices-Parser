@@ -6,7 +6,7 @@ class Response:
         self.html = html
         self.error = error
 
-    def isResponseOK(self):
+    def is_response_ok(self):
         if not self.error:
             return True
         else:
@@ -27,10 +27,18 @@ class Response:
         return f"Response: [{self.status_code=}][{html=}] [{self.error=}]"
 
 
-def main():
-    res = Response('200', "Hello my friend, Hello my friend, Hello my friend, Hello my friend, Hello my friend, ", "Error")
+def test():
+    res = Response('403', "Hello my friend, Hello my friend, Hello my friend, Hello my friend, Hello my friend, ", "Error")
 
     print(res)
 
+    print(f'{res.is_response_ok()=}')
+
+    res = Response('200', "Hello my friend, Hello my friend, Hello my friend, Hello my friend, Hello my friend, ", None)
+
+    print(res)
+
+    print(f'{res.is_response_ok()=}')
+
 if __name__ == '__main__':
-    main()
+    test()

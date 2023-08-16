@@ -139,7 +139,7 @@ class ParserHyperavtoWithSeleniumDinamic(ParserWithSeleniumDinamicSite):
 
 
 
-def main():
+def test():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
@@ -176,7 +176,7 @@ def main():
     products_utils.saveProductsToFile(products, "ParserHyperavtoWithSeleniumDinamic_save_file.txt")
 
 
-def main2():
+def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -224,7 +224,7 @@ def main2():
     print(len(el))
 
 
-def main3():
+def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -257,6 +257,6 @@ def main3():
     # print(len(products))
 
 if __name__ == '__main__':
-    main()
+    test()
 
 

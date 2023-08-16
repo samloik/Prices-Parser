@@ -2,43 +2,83 @@ from ProductsElement import ProductsElement
 # from loguru import logger
 # from UnitsTypes import UnitsTypes
 
+#
+# class TeamIterator:
+#    ''' Iterator class '''
+#    def __init__(self, team):
+#        # Team object reference
+#        self._team = team
+#        # member variable to keep track of current index
+#        self._index = 0
+#    def __next__(self):
+#        ''''Returns the next value from team object's lists '''
+#        if self._index < (len(self._team)):
+#            return
+#            if self._index < len(self._team._juniorMembers): # Check if junior members are fully iterated or not
+#                result = (self._team._juniorMembers[self._index] , 'junior')
+#            else:
+#                result = (self._team._seniorMembers[self._index - len(self._team._juniorMembers)]   , 'senior')
+#            self._index +=1
+#            return result
+#        # End of Iteration
+#        raise StopIteration
+
 class Products:
+    _products:dict
 
     def __init__(self):
-        self.products = {}
+        self._products = {}
 
     def __len__(self):
-        return len(self.products)
+        return len(self._products)
+
+    def get_products(self):
+        return self._products
+
+
+    def keys(self):
+        keys = self._products.keys()
+        return keys
+
+    def __getitem__(self, item):
+        return self._products[item]
+
+    def __setitem__(self, key, value):
+        self._products[key] = value
+
+
+    # def __next__(self):
+    #     return self.products.__next__()
 
     def append(self, object: ProductsElement):
         # допущение имена не могут повторяться
-        self.products[object.name] = object
+        self._products[object.get_name()] = object
 
     def remove(self, object: ProductsElement):
-        del self.products[object.name]
+        del self._products[object.get_name()]
 
-    def removeElementByName(self, name: str):
+    def remove_by_name(self, name: str):
         # print(name)
-        del self.products[name]
+        del self._products[name]
 
-    def clearProducts(self):
-        for productKey in self.products.keys():
-            self.removeElementByName(productKey)
+    def clear_products(self):
+        for product_key in self._products.keys():
+            self.remove_element_by_name(product_key)
 
-    def getElementByName(self, name:str):
-        return self.products[name]
+    def get_element_by_name(self, name:str):
+        return self._products[name]
 
-    def isProductsElementContainedInProducts(self, other: ProductsElement):
+    def is_products_element_contained_in_products(self, other: ProductsElement):
         if not other is None and isinstance(other, ProductsElement):
-            if other.name in self.products.keys():
+            if other.get_name() in self._products.keys():
                 return True
             else:
                 return False
 
-    def getProductsCopy(self):
+    def get_products_copy(self):
         new_products = Products()
-        for productKey in self.products.keys():
-            new_products.append(self.products[productKey].getCopy())
+        for product_key in self._products.keys():
+            new_products.append(self._products[product_key].get_copy())
         return new_products
 
     # одинаковый код функций __add__ и __iadd__
@@ -46,15 +86,15 @@ class Products:
         if not other is None and isinstance(other, (Products, ProductsElement)):
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
-                for productKey in other.products.keys():
-                    new_products.append(other.products[productKey].getCopy())
+                for product_key in other._products.keys():
+                    new_products.append(other._products[product_key].get_copy())
             else:
-                new_products.append(other.getCopy())
+                new_products.append(other.get_copy())
             return new_products
 
     def __add__(self, other):
         # допущение имени добавляемого объекста еще нет в списке
-        return self.__my_add_element(other, new_products=self.getProductsCopy())
+        return self.__my_add_element(other, new_products=self.get_products_copy())
 
     def __iadd__(self, other):
         # допущение имени добавляемого объекста еще нет в списке
@@ -65,14 +105,14 @@ class Products:
         if not other is None and isinstance(other, (Products, ProductsElement)):
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
-                for productKey in other.products.keys():
-                    new_products.removeElementByName(productKey)
+                for product_key in other._products.keys():
+                    new_products.remove_element_by_name(product_key)
             else:
-                new_products.removeElementByName(other.getName())
+                new_products.remove_element_by_name(other.get_name())
             return new_products
 
     def __sub__(self, other):
-        return self.__my_sub_element(other, new_products=self.getProductsCopy())
+        return self.__my_sub_element(other, new_products=self.get_products_copy())
 
     def __isub__(self, other):
         return self.__my_sub_element(other, new_products=self)
@@ -100,7 +140,7 @@ class Products:
     #     pass
 
 
-def main():
+def test():
     from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
     from ProductsElement import ProductsElement
     from DataRenderer import DataRenderer
@@ -125,7 +165,7 @@ def main():
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
 
-    print()
+    print('test += __iadd__')
 
     products += prea
 
@@ -133,14 +173,54 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
 
-    print()
+    print('test -= __isub__')
 
     products -= prea
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
 
+    print('test + __add__')
+
+    products = products + prea
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    print('test - __add__')
+
+    products = products - prea
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+def test2():
+    from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
+    from ProductsElement import ProductsElement
+    from DataRenderer import DataRenderer
+    from DataStrFormat import DataStrFormat
+
+    products = Products()
+    products.append(ProductsElement("Редиска", 250, "https://rediska.com"))
+    products.append(ProductsElementAvto("Бруклин", 33.805, "https://kornishon.en", "HITACHI", "302782", "AA700-34", "Павловского"))
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    print()
+
+    pre = ProductsElement("Груша", 32.805, "https://grusha.ru")
+    prea = ProductsElementAvto("Хрюша", 33.805, "https://kornishon.en","TOTAL", "650432", "NN701-85", "Чапаего")
+    # print(prea)
+    print()
+
+    products += pre
+
+    for i in products.keys():
+        print(str(i))
+
+
 
 if __name__ == '__main__':
-    main()
+    test2()
 

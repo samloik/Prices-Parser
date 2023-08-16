@@ -3,38 +3,43 @@
 SEPARATOR = ";"
 
 class ProductsElement:
-    name: str
-    price: float
-    url: str
+    _name: str
+    _price: float
+    _url: str
 
     def __init__(self, name: str, price: float, url:str):
-        self.name = name
-        self.price = price
-        self.url = url
+        self._name = name
+        self._price = price
+        self._url = url
 
-    def getCopy(self):
-        return ProductsElement(self.name, self.price, self.url)
+    def get_copy(self):
+        return ProductsElement(self.get_name(), self.get_price(), self.get_url())
 
-    # def getProductsElementCopy(self):
-    #     return ProductsElement(self.name, self.price, self.url)
+    def get_name(self):
+        return self._name
 
+    def get_price(self):
+        return self._price
 
-    def getName(self):
-        return self.name
+    def set_price(self, price):
+        self._price = price
 
+    def get_url(self):
+        return self._url
 
-    # def getProductElementName(self):
-    #     return self.name
+    def set_url(self, url):
+        self._url = url
+
 
     # TODO сомнительная реализация
-    def getStrFormatForWriteToFile(self):
+    def get_str_format_for_write_to_file(self):
     # def getProductElementStrFormatForWriteToFile(self):
         global SEPARATOR
-        return f"{self.name}{SEPARATOR}{str(self.price)}{SEPARATOR}{self.url}"
+        return f"{self.get_name()}{SEPARATOR}{str(self.get_price())}{SEPARATOR}{self.get_url()}"
 
     # TODO сомнительная реализация
     @staticmethod
-    def getCopyFromStrFormat(string:str):
+    def get_copy_from_str_format(string:str):
     # def getProductElementCopyFromStrFormat(string:str):
         global SEPARATOR
         from_string = string.split(SEPARATOR)
@@ -46,17 +51,17 @@ class ProductsElement:
     def __eq__(self, other):
         # Допущение объект не должен быть равен самому себе
         if not other is None and isinstance(other, ProductsElement) and not id(self) == id(other):
-            if self.name == other.name:
+            if self.get_name() == other.get_name():
                 return True
         return False
 
-    # def __ne__(self, other):
-    #     pass
+
+    def __str__(self):
+        return self.get_str_format_for_write_to_file()
 
 
 
-
-def main():
+def test():
     from DataRenderer import DataRenderer
     from Products import Products
     from DataStrFormat import DataStrFormat
@@ -68,7 +73,7 @@ def main():
     products.append(ProductsElement("2Корнишон", 33.805, "https://kornishon.en"))
 
     from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
-    products.append(ProductsElementAvto("Бруклин", 33.805, "https://kornishon.en","HITACHI", "302782", "AA700-34"))
+    products.append(ProductsElementAvto("Бруклин", 33.805, "https://kornishon.en","HITACHI", "302782", "AA700-34", "Chicago"))
 
 
 
@@ -81,7 +86,7 @@ def main():
     products_utils.saveProductsToFile(products, "save_file.txt")
 
 
-def main2():
+def test2():
     from DataRenderer import DataRenderer
     from Products import Products
     from DataStrFormat import DataStrFormat
@@ -113,4 +118,6 @@ def test3():
 
 
 if __name__ == '__main__':
+    test()
+    test2()
     test3()
