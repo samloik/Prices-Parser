@@ -108,14 +108,15 @@ class SeleniumWebDriver:
         #     time.sleep(0.1)
         # OSError: [WinError 6] Неверный дескриптор
         try:
+            # self.driver.close()
             self.driver.quit()
-        except Exception as _:
+        except Exception as Err:
             pass
 
 
 
 def test():
-    # logger.add("loger.log", backtrace=True, diagnose=True, level='INFO')
+    # logger.add("loger.log", backtrace=True, diagnose=True, level='INFO', rotation="2 day" )
 
     web = SeleniumWebDriver(0,0)
 

@@ -8,27 +8,34 @@ class ProductsElement:
     _url: str
 
     def __init__(self, name: str, price: float, url:str):
-        self._name = name
-        self._price = price
-        self._url = url
+        self.set_name(name)
+        self.set_price(price)
+        self.set_url(url)
 
     def get_copy(self):
         return ProductsElement(self.get_name(), self.get_price(), self.get_url())
 
+
+    def set_name(self, name):
+        self._name = name
+
     def get_name(self):
         return self._name
 
-    def get_price(self):
-        return self._price
 
     def set_price(self, price):
         self._price = price
 
-    def get_url(self):
-        return self._url
+    def get_price(self):
+        return self._price
+
 
     def set_url(self, url):
         self._url = url
+
+    def get_url(self):
+        return self._url
+
 
 
     # TODO сомнительная реализация

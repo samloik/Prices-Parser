@@ -8,9 +8,9 @@ class DataRenderer:
         for product_key in products.keys():
             product = products[product_key]
             line = {
-                DataStrFormat.WIDE: "<" + f"{product.get_name():>120}|{product.get_price():>9.2f}|{product.get_url()}" + ">\n",
-                DataStrFormat.MIDDLE: "<" + f"{product.get_name():>40}|{product.get_price():>9.2f}|{product.get_url()}" + "> ",
-                DataStrFormat.SHORT: "<" + f"{product.get_name()}|{product.get_price():>0.2f}|{product.get_url()}" + "> "
+                DataStrFormat.WIDE: "<" + f"{product.get_name():>120}|{float(product.get_price()):>9.2f}|{product.get_url()}" + ">\n",
+                DataStrFormat.MIDDLE: "<" + f"{product.get_name():>40}|{float(product.get_price()):>9.2f}|{product.get_url()}" + "> ",
+                DataStrFormat.SHORT: "<" + f"{product.get_name()}|{float(product.get_price()):>0.2f}|{product.get_url()}" + "> "
             }[dataStrFormat]
             print(line, end='')
 

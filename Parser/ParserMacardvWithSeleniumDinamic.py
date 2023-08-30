@@ -2,7 +2,8 @@
 from Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
-from ProductsElement import ProductsElement
+# from ProductsElement import ProductsElement
+from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
 from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
@@ -20,26 +21,13 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
         self.next_x_path_button = "//*[@id='show-more-catalog-items']/div[2]" # все на одной странице
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
-        self.setNextPagePauseTime(5)
+        # self.set_next = self.set_next_page_pause_time(5)
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
-
-        #
-        # btns = [a for a in soup.find_all('button')]
-        # logger.error(f'{len(btns)=}{btns=}')
-        # # btns = btns.find('a').get('href')
-        # logger.error(f'[{btns[49]=}]')
-        # logger.error(f'[{btns[0].__dir__()=}]')
-        # for x, btn in enumerate(btns):
-        #     logger.info(f'[{x:02}] {repr(btn.text)}')
-        #
-        # exit(0)
-
-
 
         all_products = soup.find_all('tr')[2:] #, {'class': "product-card__main"})
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
@@ -51,11 +39,11 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
                 item_name = item_name2.text.replace('\n','').replace('\t','')  #.strip()
                 # logger.error(f'{len(item_name2)=} {item_name2=}')
                 # logger.error(f'{len(item_name)=} {item_name=}')
-                item_name3 = next.find('td', {'data-label':"Доп. информация"})
-                item_name4 = item_name3.text.replace('\n','').replace('\t','')  #.strip()
+                # item_name3 = next.find('td', {'data-label':"Доп. информация"})
+                # item_name4 = item_name3.text.replace('\n','').replace('\t','')  #.strip()
                 # logger.error(f'{len(item_name3)=} {item_name3=}')
                 # logger.error(f'{len(item_name4)=} {item_name4=} {repr(item_name4)=}')
-                item_name = item_name + '|' + item_name4
+                # item_name = item_name + '|' + item_name4
                 # logger.info(f'{len(item_name)=} {item_name=}')
                 # sleep(10)
                 # exit(0)
@@ -106,7 +94,7 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
                 # sleep(10)
                 # exit(0)
             except Exception as Err:
-                logger.error(f'Не удалось найти Код [{Err}]')
+                logger.error(f'Не удалось найти Артикул [{Err}]')
                 exit(1)
 
             # поиск значения Бренд
@@ -118,13 +106,51 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
                 # sleep(10)
                 # exit(0)
             except Exception as Err:
-                logger.error(f'Не удалось найти Код [{Err}]')
+                logger.error(f'Не удалось найти Бренд [{Err}]')
+                exit(1)
+
+            # поиск значения Адрес
+            try:
+                item_name2 = next.find('td', {'data-label': "Доп. информация"})
+                adress = item_name2.text.strip()
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                # logger.error(f'{len(adress)=} {adress=}')
+
+                # sleep(10)
+                # exit(0)
+                if not len(adress):
+                    continue
+            except Exception as Err:
+                logger.error(f'Не удалось найти Адрес [{Err}]')
+                exit(1)
+
+            # поиск значения Количество
+            try:
+                item_name2 = next.find('input', {'name': "quantity"})
+                # logger.error(f'{len(item_name2)=} {item_name2=}')
+                quantity = item_name2['data-wrong-multiplicityvalue-all']
+                quantity = quantity.replace('Возможно заказать только всю партию (','').replace(' шт.)','')
+                # logger.error(f'{len(quantity)=} {quantity=}')
+                # sleep(10)
+                # exit(0)
+            except Exception as Err:
+                logger.error(f'Не удалось найти Количество [{Err}]')
                 exit(1)
 
 
             new_item_name = f"{kod}|{articul}|{brend}|{item_name}"
             logger.info(f"[добавление] {kod}|{articul}|{brend}|{item_name}|{item_price=}|{product_url=}")
-            products.append(ProductsElement(new_item_name, float(item_price), product_url))
+            # products.append(ProductsElement(new_item_name, float(item_price), product_url))
+            products.append(ProductsElementAvto(
+                name = item_name,
+                price = item_price,
+                url = product_url,
+                kod = kod,
+                article = articul,
+                brend = brend,
+                adress = adress,
+                quantity = quantity
+            ))
             # sleep(10)
             # exit(0)
         return products
@@ -135,7 +161,7 @@ class ParserMacardvWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # rename 
 
 
 
-def main():
+def test():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
@@ -143,7 +169,7 @@ def main():
     parser = ParserMacardvWithSeleniumDinamic(
         "https://macardv.ru/search?pcode=%D0%B0%D0%BA%D0%BA%D1%83%D0%BC%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80"
     )
-    products = parser.getProductsFromSite()
+    products = parser.get_products_from_site()
 
     render = DataRenderer()
     print('\n\nproducts')
@@ -158,10 +184,10 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserMacardvWithSeleniumDinamic_save_file.txt")
+    products_utils.save_products_to_file(products, "ParserMacardvWithSeleniumDinamic_save_file.txt")
 
 
-def main2():
+def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -171,20 +197,18 @@ def main2():
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserMacardvWithSeleniumDinamic_save_file_save_file.txt")
+    products = products_utils.load_products_from_file("ParserMacardvWithSeleniumDinamic_save_file_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
     print(len(products))
-    products_utils.saveProductsToFile(products, "cleaned_ParserMacardvWithSeleniumDinamic_stock_centr_save_file.txt")
+    products_utils.save_products_to_file(products, "cleaned_ParserMacardvWithSeleniumDinamic_stock_centr_save_file.txt")
 
     stop_list = [
-        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
-        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино"
-        # "клей"
+        "клеммы", "Крепление"
     ]
 
-    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
 
     print('Очистка по стоп словам')
 
@@ -193,7 +217,7 @@ def main2():
 
     print('Очистка по отсутвию единицы измерения (кг!, литр):')
 
-    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
                                                                           [UnitsTypes.KG, UnitsTypes.LITR])
 
     render.render(cleaned_by_units_type, DataStrFormat.WIDE)
@@ -201,7 +225,7 @@ def main2():
 
     print()
 
-    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
 
     print('Цена за единицу:')
 
@@ -209,7 +233,7 @@ def main2():
     print(len(el))
 
 
-def main3():
+def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
@@ -217,7 +241,7 @@ def main3():
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserMacardvWithSeleniumDinamic_save_file.txt")
+    products = products_utils.load_products_from_file("ParserMacardvWithSeleniumDinamic_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     # logger.remove()
@@ -229,7 +253,7 @@ def main3():
     for name in products.products.keys():
         element_name = ElementName(name, [UnitsTypes.SHTUK])
 
-        values_from_name = element_name.getValueOfUnitsInName()
+        values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
             print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
@@ -239,6 +263,6 @@ def main3():
 
 
 if __name__ == '__main__':
-    main()
+    test()
 
 

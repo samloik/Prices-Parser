@@ -11,30 +11,29 @@ from ParserAbstract.ParserWithSeleniumPaginationSite import ParserWithSeleniumPa
 from time import sleep
 
 
-class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite): # rename to SeleniumParser
+class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
     def __init__(self, siteUrl:str):
         super().__init__(siteUrl, 10, 5)
 
-        self.next_x_path_button = '/html/body/div[1]/div/div[2]/main/div/div[5]/ul/li[last()]/a'
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
+        # self.next_x_path_button = '/html/body/div[1]/div/div[2]/main/div/div[5]/ul/li[last()]/a'
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]'
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
+        # # contains[aria-label="Следующая страница: 8"]
+        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div'
         self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]'
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
-        # contains[aria-label="Следующая страница: 8"]
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div'
-        self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]'
 
 
-        self.currentPage = 1
-        self.setNextPagePauseTime(0)
+        self.set_current_page(1)
+        self.set_next_page_pause_time(0)
 
 
-    def isNextPage(self, response: Response):
+    def is_next_page(self, response: Response):
         try:
             soup = BeautifulSoup(response.html, 'lxml')
-
             pages = soup.find(attrs={'aria-label': 'Pagination'}).findAll('a')
 
             # print(f'{len(pages)=} {pages=}')
@@ -68,7 +67,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
     #     return False
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         products = Products()
 
         # logger.info(f'{str(response)=}')
@@ -117,17 +116,14 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         return products
 
 
-    # def sleepWithTimeForNextResponse(self):
-    #     sleep(10)
 
 
-
-def main():
+def test():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
     parser = ParserLeroyMerlinWithSeleniumPagination("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=")
-    products = parser.getProductsFromSite()
+    products = parser.get_response_from_site()
 
     render = DataRenderer()
     print('\n\nproducts')
@@ -142,10 +138,10 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserLeroyMerlinWithSeleniumPagination_save_file2.txt")
+    products_utils.save_products_to_file(products, "ParserLeroyMerlinWithSeleniumPagination_save_file2.txt")
 
 
-def main2():
+def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -155,7 +151,7 @@ def main2():
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
+    products = products_utils.load_products_from_file("ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -168,7 +164,7 @@ def main2():
         "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
     ]
 
-    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
 
     print('Очистка по стоп словам')
 
@@ -177,7 +173,7 @@ def main2():
 
     print('Очистка по отсутвию единицы измерения (кг!, литр):')
 
-    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
                                                                           [UnitsTypes.KG, UnitsTypes.LITR])
 
     render.render(cleaned_by_units_type, DataStrFormat.WIDE)
@@ -185,18 +181,18 @@ def main2():
 
     print()
 
-    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
 
     print('Цена за единицу:')
 
     render.render(el, DataStrFormat.WIDE)
     print(len(el))
 
-    products_utils.saveProductsToFile(el, "cleaned_ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
+    products_utils.save_products_to_file(el, "cleaned_ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
 
 
 
-def main3():
+def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
@@ -204,7 +200,7 @@ def main3():
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("cleaned_ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
+    products = products_utils.load_products_from_file("cleaned_ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     # logger.remove()
@@ -216,7 +212,7 @@ def main3():
     for name in products.products.keys():
         element_name = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-        values_from_name = element_name.getValueOfUnitsInName()
+        values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
             print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
@@ -226,6 +222,6 @@ def main3():
 
 
 if __name__ == '__main__':
-    main()
+    test()
 
 

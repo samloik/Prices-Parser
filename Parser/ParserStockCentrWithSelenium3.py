@@ -26,7 +26,7 @@ class ParserStockCentrWithSelenium3(ParserSite): # rename to SeleniumParser
 
 
     # return isNextPage = self.checkForNextPage(html)
-    def isNextPage(self, response: Response):
+    def is_next_page(self, response: Response):
 
         soup = BeautifulSoup(response.html, 'lxml')
 
@@ -42,7 +42,7 @@ class ParserStockCentrWithSelenium3(ParserSite): # rename to SeleniumParser
 
 
     # return html page with main method
-    def getResponseFromSite(self):
+    def get_response_from_site(self):
         logger.info('Пытаемся получить ответ от сайта')
 
         url = self.siteUrl + str(self.currentPage)
@@ -70,7 +70,7 @@ class ParserStockCentrWithSelenium3(ParserSite): # rename to SeleniumParser
 
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
@@ -98,7 +98,7 @@ class ParserStockCentrWithSelenium3(ParserSite): # rename to SeleniumParser
         return products
 
 
-    def sleepWithTimeForNextResponse(self):
+    def sleep_with_time_for_next_response(self):
         sleep(10)
 
 
@@ -108,7 +108,7 @@ def main():
     from DataStrFormat import DataStrFormat
 
     parser = ParserStockCentrWithSelenium3("https://stok-centr.com/magazin/folder/sukhiye-smesi/p/")
-    products = parser.getProductsFromSite()
+    products = parser.get_products_from_site()
 
     render = DataRenderer()
     print('\n\nproducts')
@@ -123,7 +123,7 @@ def main():
     render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "stock_centr_save_file.txt")
+    products_utils.save_products_to_file(products, "stock_centr_save_file.txt")
 
 
 def main2():
@@ -136,12 +136,12 @@ def main2():
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("stock_centr_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
     print(len(products))
-    products_utils.saveProductsToFile(products, "cleaned_stock_centr_save_file.txt")
+    products_utils.save_products_to_file(products, "cleaned_stock_centr_save_file.txt")
 
     stop_list = [
         "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
@@ -149,7 +149,7 @@ def main2():
         # "клей"
     ]
 
-    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
 
     print('Очистка по стоп словам')
 
@@ -158,7 +158,7 @@ def main2():
 
     print('Очистка по отсутвию единицы измерения (кг!, литр):')
 
-    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
                                                                           [UnitsTypes.KG, UnitsTypes.LITR])
 
     render.render(cleaned_by_units_type, DataStrFormat.WIDE)
@@ -166,7 +166,7 @@ def main2():
 
     print()
 
-    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
 
     print('Цена за единицу:')
 
@@ -182,7 +182,7 @@ def main3():
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     logger.remove()
@@ -194,7 +194,7 @@ def main3():
     for name in products.products.keys():
         element_name = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-        values_from_name = element_name.getValueOfUnitsInName()
+        values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
             print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
