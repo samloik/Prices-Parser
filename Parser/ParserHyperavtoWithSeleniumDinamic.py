@@ -2,7 +2,7 @@
 from Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger

@@ -2,7 +2,7 @@
 from Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 # from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
@@ -24,11 +24,11 @@ class ParserMirUpakovkiWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # ren
         self.next_x_path_button = "//*[@id='show-more-catalog-items']/div[2]"
         self.next_x_path_stop_content = None
         self.selenium_next_page_types = SeleniumNextPageTypes.NEXT_BUTTON_ABSENT
-        self.setNextPagePauseTime(3)
+        self.set_next_page_pause_time(3)
 
 
     # return Products
-    def getProductsFromResponse(self, response: Response):
+    def get_products_from_response(self, response: Response):
         products = Products()
 
         soup = BeautifulSoup(response.html, 'lxml')
@@ -75,7 +75,7 @@ class ParserMirUpakovkiWithSeleniumDinamic(ParserWithSeleniumDinamicSite): # ren
 
 
 
-def main():
+def test():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
@@ -83,7 +83,7 @@ def main():
     parser = ParserMirUpakovkiWithSeleniumDinamic(
         "https://khv.mirupak.ru/catalog/khv/pakety_bez_risunka_i_meshki/pakety_fasovochnye/pakety_fasovochnye_pvd_1/"
     )
-    products = parser.getProductsFromSite()
+    products = parser.get_products_from_site()
 
     render = DataRenderer()
     print('\n\nproducts')
@@ -98,10 +98,37 @@ def main():
     # render.render(products, DataStrFormat.WIDE)
 
     products_utils = ProductsUtils()
-    products_utils.saveProductsToFile(products, "ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
+    products_utils.save_products_to_file(products, "ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
 
 
-def main2():
+def test_1_5():
+    from DataRenderer import DataRenderer
+    from DataStrFormat import DataStrFormat
+
+    # parser = ParserMirUpakovkiWithSeleniumDinamic("https://khv.mirupak.ru/catalog/khv/posuda_odnorazovaya_2/")
+    parser = ParserMirUpakovkiWithSeleniumDinamic(
+        "https://khv.mirupak.ru/catalog/khv/pakety_bez_risunka_i_meshki/meshki_/"
+    )
+    products = parser.get_products_from_site()
+
+    render = DataRenderer()
+    print('\n\nproducts')
+    render.render(products, DataStrFormat.WIDE)
+
+    # from DataRenderer import DataRenderer
+    # from Products import Products
+    # from DataStrFormat import DataStrFormat
+    from ProductsUtils import ProductsUtils
+
+    render = DataRenderer()
+    render.render(products, DataStrFormat.WIDE)
+
+    products_utils = ProductsUtils()
+    products_utils.save_products_to_file(products, "ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
+
+
+
+def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -111,12 +138,12 @@ def main2():
     logger.remove()
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("stock_centr_save_file.txt")
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
     print(len(products))
-    products_utils.saveProductsToFile(products, "cleaned_stock_centr_save_file.txt")
+    products_utils.save_products_to_file(products, "cleaned_stock_centr_save_file.txt")
 
     stop_list = [
         "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
@@ -124,7 +151,7 @@ def main2():
         # "клей"
     ]
 
-    cleaned_by_stop_list_products = products_utils.getCleanedProductsByStopList(products, stop_list)
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
 
     print('Очистка по стоп словам')
 
@@ -133,7 +160,7 @@ def main2():
 
     print('Очистка по отсутвию единицы измерения (кг!, литр):')
 
-    cleaned_by_units_type = products_utils.getCleanedProductsByUnitsTypes(cleaned_by_stop_list_products,
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
                                                                           [UnitsTypes.KG, UnitsTypes.LITR])
 
     render.render(cleaned_by_units_type, DataStrFormat.WIDE)
@@ -141,7 +168,7 @@ def main2():
 
     print()
 
-    el = products_utils.converPriceToPriceForUnit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
 
     print('Цена за единицу:')
 
@@ -149,15 +176,15 @@ def main2():
     print(len(el))
 
 
-def main3():
+def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
+    from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
+    products = products_utils.load_products_from_file("ParserMirUpakovkiWithSeleniumDinamic_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     # logger.remove()
@@ -169,16 +196,16 @@ def main3():
     for name in products.products.keys():
         element_name = ElementName(name, [UnitsTypes.SHTUK])
 
-        values_from_name = element_name.getValueOfUnitsInName()
+        values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+            print(f'[+] {name:>100} | {values_from_name} {element_name.get_units_types()}')
         else:
-            print(f'[-] {name:>100} | Null  {element_name.units_types}')
+            print(f'[-] {name:>100} | Null  {element_name.get_units_types()}')
 
 
 
 if __name__ == '__main__':
-    main()
+    test_1_5()
 
 

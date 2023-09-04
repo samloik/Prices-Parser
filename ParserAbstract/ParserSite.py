@@ -1,10 +1,8 @@
 
 from Products import Products
 from ParserAbstract.Response import Response
-from time import sleep
 from loguru import logger
 
-from ProductsElement import ProductsElement # TODO: после тестов удалить
 
 class ParserSite:
     _products: Products
@@ -61,6 +59,7 @@ class ParserSite:
             is_next_page = self.is_next_page(response)
             if is_next_page:
                 self.set_next_page()
+        self.set_products(all_products)
         return all_products
 
 

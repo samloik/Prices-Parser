@@ -7,7 +7,7 @@ from Products import Products
 from ParserAbstract.ParserSite import ParserSite
 from ParserAbstract.Response import Response
 
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 from time import sleep
 from ParserAbstract.SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
@@ -178,7 +178,7 @@ def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
+    from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()

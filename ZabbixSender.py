@@ -1,7 +1,7 @@
 from Products import Products
 from pyzabbix import ZabbixAPI, ZabbixMetric, ZabbixSender, ZabbixAPIException
 # from config import *
-from ElementName import ElementName
+from ProductsElements.ElementName import ElementName
 from loguru import logger
 from time import sleep
 
@@ -42,7 +42,7 @@ class ZabbixUtils:
             exit(1)
         return zapi
 
-    def createHost(self):
+    def create_host(self):
         # Host create
         logger.info(f"Пытаемся создать хост [{self.host_name}]")
         host_name = self.host_name
@@ -81,7 +81,7 @@ class ZabbixUtils:
             logger.info(f'Создан хост [{host_name}]')
         return result_host
 
-    def findHost(self):
+    def find_host(self):
         host_name = self.host_name
         result_host = None
         try:
@@ -96,15 +96,15 @@ class ZabbixUtils:
         return result_host
 
 
-    def findOrCreateHost(self):
+    def find_or_create_host(self):
         # проверяем наличие хоста, если нет, то создаем такой хост
-        result_host = self.findHost()
+        result_host = self.find_host()
         if not result_host or not result_host['result']:
-            result_host = self.createHost()
+            result_host = self.create_host()
         return result_host
 
 
-    def findHosts(self, groupids=19):
+    def find_hosts(self, groupids=19):
         zapi, host_name = self.zapi, self.host_name
         # Получаем список хостов в группе с id 19 - Applications")
         logger.info(f"Получаем список хостов в группе с id 19 - Applications")
@@ -115,8 +115,8 @@ class ZabbixUtils:
         return hosts
 
 
-    def findHostId(self, groupids=19):
-        hosts = self.findHosts(groupids)
+    def find_host_id(self, groupids=19):
+        hosts = self.find_hosts(groupids)
         if hosts:
             # TODO переделать hosts[0]["hostid"]: реализовать поиск по имени
             host_id = hosts[0]["hostid"]  # первый хост из списка - если он один с таким именем
@@ -127,7 +127,7 @@ class ZabbixUtils:
             return None, hosts
 
 
-    def getItems(self):
+    def get_items_names(self):
         zapi, host_id = self.zapi, self.host_id
         # Получаем список item с хоста c host_name
 
@@ -159,10 +159,10 @@ class ZabbixUtils:
 
 
     @staticmethod
-    def  getNormalizedKey(key, value):
+    def  get_normalized_key(key, value):
         return key + '.' + value
 
-    def createItem(self, name, key):
+    def create_item(self, name, key):
         zapi, hosts, host_id = self.zapi, self.hosts, self.host_id
 
         # пример создания zabbix item на созданном zapi->ZABBIX_SERVER, HOST_NAME
@@ -194,7 +194,7 @@ class ZabbixUtils:
 
         return host_id
 
-    def setItems(self, products:Products, value):
+    def set_items(self, products:Products, value):
         zabbix_sender_server, host_name = self.sender_server, self.host_name
         # устанавливаем значения items списком
 
@@ -216,10 +216,10 @@ class ZabbixUtils:
                 packet.append(
                     ZabbixMetric(
                         host=host_name,
-                        key=self.getNormalizedKey(translit_name, value),
+                        key=self.get_normalized_key(translit_name, value),
                         # считаем значение - цена за килограмм
                         # getattr(zs, 'host_name')
-                        value=float(f'{float(getattr(products.getProductsElementByName(key), value)):.2f}'))
+                        value=float(f'{float(getattr(products.get_products_element_by_name(key), value)):.2f}'))
                 )
 
             sender = ZabbixSender(zabbix_server=zabbix_sender_server)
@@ -233,24 +233,24 @@ class ZabbixUtils:
             return None
 
 
-    def sendItems(self, products:Products, value="price"):
+    def send_items_values(self, products:Products, value="price"):
         zabbix_sender_server, host_name, zapi = self.sender_server, self.host_name, self.zapi
 
         # проверяем наличие хоста, если нет, то создаем такой хост
-        self.findOrCreateHost()
+        self.find_or_create_host()
 
-        self.host_id, self.hosts = self.findHostId(groupids=19)
+        self.host_id, self.hosts = self.find_host_id(groupids=19)
 
         # -----
         # Получаем список item с хоста c hostids
-        items_names = self.getItems()
+        items_names = self.get_items_names()
 
         # список имен items к созданию
         names_of_items_to_add = []
 
         # если список с сайта содержит новые items, то добавить такой item в names_of_items_to_add
         for name in products.products.keys():
-            if self.getNormalizedKey(name, value) not in items_names:
+            if self.get_normalized_key(name, value) not in items_names:
                 names_of_items_to_add.append(name)
 
         logger.info(f'Список новых items в количестве [{len(names_of_items_to_add)} шт] готовы к созданию в zabbix')
@@ -260,8 +260,8 @@ class ZabbixUtils:
             name = ElementName(key)
             translit_name = name.translit_name()
             self.createItem(
-                name=self.getNormalizedKey(key, value),
-                key=self.getNormalizedKey(translit_name, value)
+                name=self.get_normalized_key(key, value),
+                key=self.get_normalized_key(translit_name, value)
             )
             logger.info(f'Item [{key}] успешно создан ')
 
@@ -272,7 +272,7 @@ class ZabbixUtils:
             sleep(sec)
 
         # устанавливаем значения items списком
-        self.setItems(products, value)
+        self.set_items(products, value)
 
         # zapi.user.logout() - перемещено в __del__()
 
@@ -282,41 +282,45 @@ class ZabbixUtils:
     #     self.sendItems(products, value)
 
 
-def main():
+def test():
     zs = ZabbixSender("Hi", "Hello")
 
     print(zs.host_name)
     setattr(zs, 'host_name', 'Right')
     print(getattr(zs, 'host_name'))
 
-def main2():
+def test2():
+    # проверяем как загружаются из файла
+    # проверяем как извлекаются единицы измерения меры из имени (кг, литры, шт)
+    # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
+
     from DataRenderer import DataRenderer
-    # from Products import Products
     from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
+    from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     # logger.remove()
+
     logger.add("ZabbixSender.log", level="INFO", rotation="100 MB")
 
     products_utils = ProductsUtils()
-    products = products_utils.loadProductsFromFile("cleaned_stock_centr_save_file.txt")
+    products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")
     # products = products_utils.loadProductsFromFile("stock_centr_save_file.txt")
 
     render = DataRenderer()
     # render.render(products, DataStrFormat.WIDE)
     print(len(products))
 
-    for name in products.products.keys():
+    for name in products.keys():
         element_name = ElementName(name, [UnitsTypes.KG, UnitsTypes.LITR])
 
-        values_from_name = element_name.getValueOfUnitsInName()
+        values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {values_from_name:<10} {element_name.units_types}')
+            print(f'[+] {name:>100} | {values_from_name:<10} {element_name.get_units_types()}')
         else:
-            print(f'[-] {name:>100} | Null       {elementName.units_types}')
+            print(f'[-] {name:>100} | Null       {elementName.get_units_types()}')
 
     zabbix_config = {
         'ZABBIX_SERVER': "http://192.168.1.60",  # http://192.168.1.60   - не работает на ZabbixSender()
@@ -328,8 +332,8 @@ def main2():
 
     sender = ZabbixUtils(zabbix_config)
 
-    sender.sendItems(products)
+    sender.send_items_values(products)
 
 
 if __name__ == '__main__':
-    main2()
+    test2()

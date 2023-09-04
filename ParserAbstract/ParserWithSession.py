@@ -1,13 +1,9 @@
-
-from Products import Products
 from ParserAbstract.ParserSite import ParserSite
 from ParserAbstract.Response import Response
 
-from ProductsElement import ProductsElement
 from time import sleep
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
-from bs4 import BeautifulSoup
 import requests
 
 

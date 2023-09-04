@@ -1,12 +1,9 @@
 from ParserAbstract.ParserSite import ParserSite
 from ParserAbstract.SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
-from ProductsElement import ProductsElement
 from time import sleep
 from ParserAbstract.Response import Response
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
@@ -50,13 +47,10 @@ class ParserWithSeleniumPaginationSite(ParserSite): # rename to SeleniumParser
 
     # return html page with main method
     def get_response_from_site(self):
-
         logger.info('Пытаемся получить ответ от сайта')
 
         url = self.get_site_url() + str(self.get_current_page())
-
         response = self.webDriver.get_html_page(url)
-
         # инфо блок
         if response.is_response_ok():
             logger.info(f'Страница получена без ошибок')

@@ -1,12 +1,9 @@
 from ParserAbstract.ParserSite import ParserSite
 from ParserAbstract.SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
-from ProductsElement import ProductsElement
 from time import sleep
 from ParserAbstract.Response import Response
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 

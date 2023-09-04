@@ -2,7 +2,7 @@
 from Products import Products
 from ParserAbstract.Response import Response
 
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
@@ -145,7 +145,7 @@ def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
+    from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()
@@ -173,8 +173,7 @@ def test4():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
-    from UnitsTypes import UnitsTypes
+    from ProductsElements.ElementName import ElementName
 
     products_utils = ProductsUtils()
     products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")

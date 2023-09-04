@@ -3,8 +3,7 @@ from Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
 # from ProductsElement import ProductsElement
-from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
-from time import sleep
+from ProductsElements.ProductsElementAvto import ProductsElementAvto
 # from SeleniumWebDriver import SeleniumWebDriver
 from loguru import logger
 from bs4 import BeautifulSoup
@@ -237,7 +236,7 @@ def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from ProductsUtils import ProductsUtils
-    from ElementName import ElementName
+    from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     products_utils = ProductsUtils()

@@ -1,8 +1,7 @@
 from Products import Products
-from UnitsTypes import UnitsTypes
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 from loguru import logger
-from ElementName import ElementName
+from ProductsElements.ElementName import ElementName
 
 class ProductsUtils:
     pwd = 'C:\PycharmProjects\Prices-Parser\Save\\'
@@ -24,14 +23,14 @@ class ProductsUtils:
     # вопрос как, его сюда передать пока не решен
     # решение отложено до момента реализации такого класса, для лучшего понимания взаимодействия
 
-    def load_products_from_file(self, filename:str): # (product_type:ProductsElement, filename:str):
+    def load_products_from_file(self, filename:str, productsElement=ProductsElement):
         with open(self.pwd + filename, 'r', encoding='utf-8') as file:
             text = file.read()
         str_format_from_file = text.split('\n')[:-1]
         products = Products()
         for product_element_in_str_format in str_format_from_file:
             # products.append(product_type.getProductElementCopyFromStrFormat(product_element))
-            products.append(ProductsElement.get_copy_from_str_format(product_element_in_str_format))
+            products.append(productsElement.get_copy_from_str_format(product_element_in_str_format))
         logger.info(f'[LOAD] Загружаем элементы [{len(products)} шт] из файла: {filename}')
         return products
 
@@ -82,17 +81,19 @@ class ProductsUtils:
             element_name = ElementName(name, units_types)
             value_from_name = element_name.get_value_of_units_in_name()
 
-            price = products.get_element_by_name(name).get_price() / float(value_from_name)
-            converted_produtcs.get_element_by_name(name).set_price(price)
+            price_for_unit = products.get_element_by_name(name).get_price() / float(value_from_name)
+            converted_produtcs.get_element_by_name(name).set_price(price_for_unit)
 
         return converted_produtcs
 
 
 def test():
+    # проверяем как парсятся товарные позиции с сайта
+    # проверяем как очищается список по стоп словам
+    # проверяем как очищается по отсуствию единиц измерения меры в имени (кг, литры, шт)
+
+
     from DataRenderer import DataRenderer
-    # from Products import Products
-    from DataStrFormat import DataStrFormat
-    # from ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
     from Parser.ParserStockCentrWithSession import ParserStockCentrWithSession
 

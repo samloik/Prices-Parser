@@ -1,4 +1,4 @@
-from ProductsElement import ProductsElement
+from ProductsElements.ProductsElement import ProductsElement
 # from loguru import logger
 # from UnitsTypes import UnitsTypes
 
@@ -37,8 +37,7 @@ class Products:
 
 
     def keys(self):
-        keys = self._products.keys()
-        return keys
+        return self._products.keys()
 
     def __getitem__(self, item):
         return self._products[item]
@@ -62,8 +61,13 @@ class Products:
         del self._products[name]
 
     def clear_products(self):
-        for product_key in self._products.keys():
-            self.remove_element_by_name(product_key)
+        del self._products
+        self._products = {}
+
+
+    # def clear_products(self):
+    #     for product_key in self._products.keys():
+    #         self.remove_element_by_name(product_key)
 
     def get_element_by_name(self, name:str):
         return self._products[name]
@@ -106,9 +110,9 @@ class Products:
             # new_products = self.getProductsCopy()
             if isinstance(other, Products):
                 for product_key in other._products.keys():
-                    new_products.remove_element_by_name(product_key)
+                    new_products.remove_by_name(product_key)
             else:
-                new_products.remove_element_by_name(other.get_name())
+                new_products.remove_by_name(other.get_name())
             return new_products
 
     def __sub__(self, other):
@@ -141,8 +145,8 @@ class Products:
 
 
 def test():
-    from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
-    from ProductsElement import ProductsElement
+    from ProductsElements.ProductsElementAvto import ProductsElementAvto
+    from ProductsElements.ProductsElement import ProductsElement
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
@@ -195,8 +199,8 @@ def test():
     render.render(products, DataStrFormat.WIDE)
 
 def test2():
-    from ParserProductComparison.ProductsElementAvto import ProductsElementAvto
-    from ProductsElement import ProductsElement
+    from ProductsElements.ProductsElementAvto import ProductsElementAvto
+    from ProductsElements.ProductsElement import ProductsElement
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
