@@ -20,7 +20,13 @@ class SeleniumWebDriver:
     @staticmethod
     def anonymize_web_driver():
 
-        driver = uc.Chrome()
+        # driver = uc.Chrome()
+        #
+        # from session not created: This version of ChromeDriver only supports Chrome version 117
+        # Current browser version is 116.0.5845.188
+
+        driver = uc.Chrome(version_main=116)
+
         # driver.get("https://proxy6.net/privacy")
         # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")
         # sleep(100)

@@ -9,7 +9,8 @@ from ParserAbstract.SeleniumNextPageTypes import SeleniumNextPageTypes
 
 class ParserWithSeleniumDinamicSite(ParserSite): # rename to SeleniumParser
 
-    def __init__(self, site_url:str, time_to_read_first_page=10, time_to_read_next_page=0):
+    # def __init__(self, site_url:str, time_to_read_first_page=10, time_to_read_next_page=0):
+    def __init__(self, site_url:str, time_to_read_first_page=0, time_to_read_next_page=0):
         super().__init__(site_url)
         # self.currentPage = 0
         self.webDriver = SeleniumWebDriver(time_to_read_first_page, time_to_read_next_page)

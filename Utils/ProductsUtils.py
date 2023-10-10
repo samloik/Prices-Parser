@@ -1,4 +1,4 @@
-from Products import Products
+from ProductsElements.Products import Products
 from ProductsElements.ProductsElement import ProductsElement
 from loguru import logger
 from ProductsElements.ElementName import ElementName

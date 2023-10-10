@@ -1,4 +1,4 @@
-from Products import Products
+from ProductsElements.Products import Products
 from pyzabbix import ZabbixAPI, ZabbixMetric, ZabbixSender, ZabbixAPIException
 # from config import *
 from ProductsElements.ElementName import ElementName
@@ -210,16 +210,22 @@ class ZabbixUtils:
 
             packet = []
 
-            for key in products.products.keys():
+            for key in products.keys():
                 name = ElementName(key)
                 translit_name = name.translit_name()
+
+                # logger.warning( f'{(products.get_element_by_name(key)).get_monitoring_value()=}' )
+
                 packet.append(
                     ZabbixMetric(
                         host=host_name,
                         key=self.get_normalized_key(translit_name, value),
                         # считаем значение - цена за килограмм
                         # getattr(zs, 'host_name')
-                        value=float(f'{float(getattr(products.get_products_element_by_name(key), value)):.2f}'))
+                        # value=float(f'{float(getattr(products.get_element_by_name(key), value)):.2f}'))
+                        # value=float(f'{float((products.get_element_by_name(key)).get_monitoring_value()[value]):.2f}'))
+                        value=(products.get_element_by_name(key)).get_monitoring_value()[value]
+                    )
                 )
 
             sender = ZabbixSender(zabbix_server=zabbix_sender_server)
@@ -233,7 +239,7 @@ class ZabbixUtils:
             return None
 
 
-    def send_items_values(self, products:Products, value="price"):
+    def send_items_with_values(self, products:Products, value="price"):
         zabbix_sender_server, host_name, zapi = self.sender_server, self.host_name, self.zapi
 
         # проверяем наличие хоста, если нет, то создаем такой хост
@@ -249,7 +255,7 @@ class ZabbixUtils:
         names_of_items_to_add = []
 
         # если список с сайта содержит новые items, то добавить такой item в names_of_items_to_add
-        for name in products.products.keys():
+        for name in products.keys():
             if self.get_normalized_key(name, value) not in items_names:
                 names_of_items_to_add.append(name)
 
@@ -259,7 +265,7 @@ class ZabbixUtils:
         for key in names_of_items_to_add:
             name = ElementName(key)
             translit_name = name.translit_name()
-            self.createItem(
+            self.create_item(
                 name=self.get_normalized_key(key, value),
                 key=self.get_normalized_key(translit_name, value)
             )
@@ -268,7 +274,7 @@ class ZabbixUtils:
         if names_of_items_to_add:
             # необходима задержка после создания, иначе данные не запишутся
             sec = 60
-            logger.info(f'ждем {sec}сек, чтобы успешно отправить данные')
+            logger.info(f'ждем [{sec}] сек, чтобы успешно отправить данные')
             sleep(sec)
 
         # устанавливаем значения items списком
@@ -295,14 +301,13 @@ def test2():
     # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
 
     from DataRenderer import DataRenderer
-    from DataStrFormat import DataStrFormat
     from ProductsUtils import ProductsUtils
     from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
     # logger.remove()
 
-    logger.add("ZabbixSender.log", level="INFO", rotation="100 MB")
+    logger.add("ZabbixUtils.log", level="INFO", rotation="100 MB")
 
     products_utils = ProductsUtils()
     products = products_utils.load_products_from_file("cleaned_stock_centr_save_file.txt")
@@ -332,7 +337,7 @@ def test2():
 
     sender = ZabbixUtils(zabbix_config)
 
-    sender.send_items_values(products)
+    sender.send_items_with_values(products)
 
 
 if __name__ == '__main__':

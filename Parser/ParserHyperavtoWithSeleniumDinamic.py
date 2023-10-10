@@ -1,5 +1,5 @@
 
-from Products import Products
+from ProductsElements.Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
 from ProductsElements.ProductsElement import ProductsElement
@@ -168,7 +168,7 @@ def test():
     # from DataRenderer import DataRenderer
     # from Products import Products
     # from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -181,7 +181,7 @@ def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -232,7 +232,7 @@ def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
 
     products_utils = ProductsUtils()
     products = products_utils.load_products_from_file("cleaned_ParserHyperavtoWithSeleniumDinamic_save_file.txt")

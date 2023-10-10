@@ -1,5 +1,5 @@
 
-from Products import Products
+from ProductsElements.Products import Products
 from ParserAbstract.Response import Response
 from loguru import logger
 

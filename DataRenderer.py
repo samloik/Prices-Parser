@@ -1,6 +1,6 @@
 from DataStrFormat import DataStrFormat
 from ProductsElements.ProductsElement import ProductsElement
-from Products import Products
+from ProductsElements.Products import Products
 
 class DataRenderer:
 

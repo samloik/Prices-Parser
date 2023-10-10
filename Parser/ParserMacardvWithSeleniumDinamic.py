@@ -1,5 +1,5 @@
 
-from Products import Products
+from ProductsElements.Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
 # from ProductsElement import ProductsElement
@@ -177,7 +177,7 @@ def test():
     # from DataRenderer import DataRenderer
     # from Products import Products
     # from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -190,7 +190,7 @@ def test2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -235,7 +235,7 @@ def test2():
 def test3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 

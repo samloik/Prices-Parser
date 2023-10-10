@@ -1,5 +1,5 @@
 
-from Products import Products
+from ProductsElements.Products import Products
 # from ParserSite import ParserSite
 from ParserAbstract.Response import Response
 from ProductsElements.ProductsElementWithQuantity import ProductsElementWithQuantity
@@ -11,22 +11,15 @@ from ParserAbstract.ParserWithSeleniumPaginationSite import ParserWithSeleniumPa
 
 import requests
 from time import sleep
-from Utils.time_decorator import timeit
+from time_decorator import timeit
+
 
 class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
     def __init__(self, siteUrl:str, region_code:str='habarovsk'):
-        super().__init__(siteUrl, 10, 5)
+        super().__init__(siteUrl, 5, 0)
         self._region_code = region_code
 
-        # self.next_x_path_button = '/html/body/div[1]/div/div[2]/main/div/div[5]/ul/li[last()]/a'
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]'
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div/svg'
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]/span/div'
-        # # contains[aria-label="Следующая страница: 8"]
-        # self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div'
         self.next_x_path_button = '//*[@id="root"]/div/main/div[2]/div[2]/div/section/div[6]/section/div[2]/div/div/a[5]'
 
 
@@ -190,7 +183,6 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
             # # === 15-03-2023 правка конец =========================================================
 
-
         try:
             stores = response.json()['stocks']
             num = 0
@@ -208,8 +200,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
     def get_products_from_site(self):
         products = super(ParserLeroyMerlinWithSeleniumPagination, self).get_products_from_site()
-        # products_with_quantity = get_quantity(products)
-        # return products_with_quantity
+
         return products
 
 
@@ -229,7 +220,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         except Exception as Err:
             logger.error(f'{Err}')
 
-        logger.info(f'"Это была последняя страница [{self.get_current_page()}]')
+        logger.info(f'Это была последняя страница [{self.get_current_page()}]')
         return False
 
 
@@ -299,7 +290,7 @@ def test():
     # from DataRenderer import DataRenderer
     # from Products import Products
     # from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -317,7 +308,7 @@ def test2():
 
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -368,7 +359,7 @@ def test3():
     # проверяем как извлекаются единицы измерения из имен
 
     from DataRenderer import DataRenderer
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
@@ -398,11 +389,8 @@ def test4():
     # проверяем как конвертируется цена в цену за единицу
     # проверяем как парсятся остаки товара
     # проверяем как загружаются в файл товарные позиции и остаткки товара
-    # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
 
-    from DataRenderer import DataRenderer
-    from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
     # logger.remove()
@@ -452,7 +440,95 @@ def test4():
 
     products_utils.save_products_to_file(peq, "quantity_ParserLeroyMerlinWithSeleniumPagination_save_file4.txt")
 
+@timeit
+def test5():
+    # проверяем как загружаются из файла
+    # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
+
+    from Utils.ProductsUtils import ProductsUtils
+    from Utils.ZabbixUtils import ZabbixUtils
+
+    # logger.remove()
+
+    products_utils = ProductsUtils()
+    products = products_utils.load_products_from_file("quantity_ParserLeroyMerlinWithSeleniumPagination_save_file4.txt", ProductsElementWithQuantity)
+
+    zabbix_config = {
+        'ZABBIX_SERVER': "http://192.168.1.60",  # http://192.168.1.60   - не работает на ZabbixSender()
+        'ZABBIX_USER': "Admin",
+        'ZABBIX_PASSWORD': "zabbix",
+        'ZABBIX_HOST': "STC.test",
+        'ZABBIX_SENDER_SERVER': '192.168.1.60'  # работает на ZabbixSender() только без 'http://'
+    }
+
+    sender = ZabbixUtils(zabbix_config)
+    sender.send_items_with_values(products, 'price')
+    sender.send_items_with_values(products, 'quantity')
+
+@timeit
+def test6():
+    # проверяем как загружаются из файла
+    # проверяем как очищается список по стоп словам
+    # проверяем как очищается по отсуствию единиц измерения меры в имени (кг, литры, шт)
+    # проверяем как конвертируется цена в цену за единицу
+    # проверяем как парсятся остаки товара
+    # проверяем как загружаются в файл товарные позиции и остаткки товара
+    # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
+
+    from Utils.ProductsUtils import ProductsUtils
+    from UnitsTypes import UnitsTypes
+    from Utils.ZabbixUtils import ZabbixUtils
+
+    # logger.remove()
+
+    products_utils = ProductsUtils()
+
+    parser = ParserLeroyMerlinWithSeleniumPagination("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=")
+    products = parser.get_products_from_site()
+
+    # render = DataRenderer()
+    # render.render(products, DataStrFormat.WIDE)
+    logger.info(f'{len(products)=}')
+
+    stop_list = [
+        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
+        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
+        "алебастр", "Шпаклевка", "газоблоков", "Шпаклёвка", "стекло", "Глина", "Бетонконтакт", "Финишпаста",
+        "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
+    ]
+
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
+                                                                               [UnitsTypes.KG, UnitsTypes.LITR])
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, [UnitsTypes.KG, UnitsTypes.LITR])
+
+
+    parser.set_products(el)
+    products = parser.get_quantity_of_products()
+
+    products_utils.save_products_to_file(products, "quantity_ParserLeroyMerlinWithSeleniumPagination_save_file4.txt")
+
+    # ###
+    #
+    # products = products_utils.load_products_from_file("quantity_ParserLeroyMerlinWithSeleniumPagination_save_file4.txt", ProductsElementWithQuantity)
+    #
+    # ####
+
+
+    zabbix_config = {
+        'ZABBIX_SERVER': "http://192.168.1.60",  # http://192.168.1.60   - не работает на ZabbixSender()
+        'ZABBIX_USER': "Admin",
+        'ZABBIX_PASSWORD': "zabbix",
+        'ZABBIX_HOST': "LM2.test",
+        'ZABBIX_SENDER_SERVER': '192.168.1.60'  # работает на ZabbixSender() только без 'http://'
+    }
+
+    sender = ZabbixUtils(zabbix_config)
+    sender.send_items_with_values(products, 'price')
+    sender.send_items_with_values(products, 'quantity')
+
+
 if __name__ == '__main__':
-    test4()
+    test6()
 
 

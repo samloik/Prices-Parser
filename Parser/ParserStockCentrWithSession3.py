@@ -2,7 +2,7 @@
 # Этот файл сущетвует как начальные для разработки ParserWithSession
 # после удачных тестов - его можно удалить
 
-from Products import Products
+from ProductsElements.Products import Products
 from ParserAbstract.ParserSite import ParserSite
 from ParserAbstract.Response import Response
 
@@ -129,7 +129,7 @@ def main():
     # from DataRenderer import DataRenderer
     # from Products import Products
     # from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
 
     render = DataRenderer()
     render.render(products, DataStrFormat.WIDE)
@@ -142,7 +142,7 @@ def main2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from UnitsTypes import UnitsTypes
 
     logger.remove()
@@ -189,7 +189,7 @@ def main2():
 def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
-    from ProductsUtils import ProductsUtils
+    from Utils.ProductsUtils import ProductsUtils
     from ProductsElements.ElementName import ElementName
     from UnitsTypes import UnitsTypes
 
