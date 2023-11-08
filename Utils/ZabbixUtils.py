@@ -239,7 +239,7 @@ class ZabbixUtils:
             return None
 
 
-    def send_items_with_values(self, products:Products, value="price"):
+    def send_items_with_values(self, products:Products, value="price_for_kg"):
         zabbix_sender_server, host_name, zapi = self.sender_server, self.host_name, self.zapi
 
         # проверяем наличие хоста, если нет, то создаем такой хост

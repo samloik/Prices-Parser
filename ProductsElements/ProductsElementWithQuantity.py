@@ -1,4 +1,5 @@
 from ProductsElements.ProductsElement import ProductsElement
+from logger import loguru
 
 
 class ProductsElementWithQuantity(ProductsElement):
@@ -67,15 +68,31 @@ class ProductsElementWithQuantity(ProductsElement):
         # if self.get_quantity() == None:
         #     logger.warning(f'[{self.get_name()=}] [{self.get_price()=}] [{self.get_quantity()=} {self.get_url()=}]')
 
-        quantity = float(f'{float(self.get_quantity()):.2f}')
+        # TODO
+        #
+        # quantity = float(f'{float(self.get_quantity()):.2f}')
+        #                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        # TypeError: float() argument must be a string or a real number, not 'NoneType'
+
+
+        # quantity = float(f'{float(self.get_quantity()):.2f}')
+
+        try:
+            quantity = float(f'{float(self.get_quantity()):.2f}')
+        except Exception as Err:
+            logger.error('{Err}')
+            logger.error("quantity = float(f'{float(self.get_quantity()):.2f}')")
+            logger.info(f'{self.get_name()=} {self.get_quantity()=} {self.get_url()=}')
+
         return {
-            'price': self.get_price(),
+            # 'price': self.get_price(),
+            'price_for_kg': self.get_price(),
             'quantity': quantity
         }
 
 
     def get_str_format_for_write_to_file(self):
-        global SEPARATOR
+        SEPARATOR = self.SEPARATOR
         return super().get_str_format_for_write_to_file()+f"{SEPARATOR}{self.get_quantity()}"
         # return f"{self.kod}{SEPARATOR}{self.article}{SEPARATOR}{self.brend}{SEPARATOR}{product_element}"
 
@@ -84,7 +101,7 @@ class ProductsElementWithQuantity(ProductsElement):
 
     @staticmethod
     def get_copy_from_str_format(string:str):
-        global SEPARATOR
+        SEPARATOR = self.SEPARATOR
         from_string = string.split(SEPARATOR)
         quantity = from_string[-1]
         product_element = ProductsElement.get_copy_from_str_format(f'{SEPARATOR}'.join(from_string[:-1]))

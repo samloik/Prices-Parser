@@ -81,7 +81,7 @@ class ProductsElementWithContent(ProductsElement):
 
 
     def get_str_format_for_write_to_file(self):
-        global SEPARATOR
+        SEPARATOR = self.SEPARATOR
         return super().get_str_format_for_write_to_file()+f"{SEPARATOR}{str(self.get_content())}"
         # return f"{self.kod}{SEPARATOR}{self.article}{SEPARATOR}{self.brend}{SEPARATOR}{product_element}"
 
@@ -90,7 +90,7 @@ class ProductsElementWithContent(ProductsElement):
 
     @staticmethod
     def get_copy_from_str_format(string:str):
-        global SEPARATOR
+        SEPARATOR = self.SEPARATOR
         from_string = string.split(SEPARATOR)
         content = from_string[-1]
         product_element = ProductsElement.get_copy_from_str_format(f'{SEPARATOR}'.join(from_string[:-1]))

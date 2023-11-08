@@ -12,6 +12,9 @@ from ParserAbstract.ParserWithSeleniumPaginationSite import ParserWithSeleniumPa
 import requests
 from time import sleep
 from time_decorator import timeit
+from UnitsTypes import UnitsTypes
+from Utils.ProductsUtils import ProductsUtils
+from Utils.ZabbixUtils import ZabbixUtils
 
 
 class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
@@ -231,7 +234,9 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # logger.info(f'{str(response)=}')
 
         soup = BeautifulSoup(response.html, 'lxml')
-        all_products = soup.find_all(class_='po1t094_plp largeCard')
+        # logger.warning(f'{soup=}')
+        # all_products = soup.find_all(class_='po1t094_plp largeCard')
+        all_products = soup.find_all(class_='p155f0re_plp largeCard')
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
 
         # sleep(100)
@@ -273,7 +278,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
 
 
-def test():
+def run():
     # проверяем как парсятся товарные позиции с сайта
     # проверяем как загружаются в файл
 
@@ -299,7 +304,7 @@ def test():
     products_utils.save_products_to_file(products, "ParserLeroyMerlinWithSeleniumPagination_save_file3.txt")
 
 
-def test2():
+def run2():
     # проверяем как загружаются из файла
     # проверяем как очищается список по стоп словам
     # проверяем как очищается по отсуствию единиц измерения меры в имени (кг, литры, шт)
@@ -354,7 +359,7 @@ def test2():
     products_utils.save_products_to_file(el, "cleaned_ParserLeroyMerlinWithSeleniumPagination_save_file.txt")
 
 
-def test3():
+def run3():
     # проверяем как загружаются из файла
     # проверяем как извлекаются единицы измерения из имен
 
@@ -382,7 +387,7 @@ def test3():
             print(f'[-] {name:>100} | Null  {element_name.get_units_types()}')
 
 @timeit
-def test4():
+def run4():
     # проверяем как загружаются из файла
     # проверяем как очищается список по стоп словам
     # проверяем как очищается по отсуствию единиц измерения меры в имени (кг, литры, шт)
@@ -441,7 +446,7 @@ def test4():
     products_utils.save_products_to_file(peq, "quantity_ParserLeroyMerlinWithSeleniumPagination_save_file4.txt")
 
 @timeit
-def test5():
+def run5():
     # проверяем как загружаются из файла
     # проверяем как отправляются на zabbix-сервер товарные позиции и остаткки товара
 
@@ -466,7 +471,7 @@ def test5():
     sender.send_items_with_values(products, 'quantity')
 
 @timeit
-def test6():
+def run6():
     # проверяем как загружаются из файла
     # проверяем как очищается список по стоп словам
     # проверяем как очищается по отсуствию единиц измерения меры в имени (кг, литры, шт)
@@ -524,11 +529,200 @@ def test6():
     }
 
     sender = ZabbixUtils(zabbix_config)
-    sender.send_items_with_values(products, 'price')
+    sender.send_items_with_values(products, 'price_for_kg')
     sender.send_items_with_values(products, 'quantity')
 
 
+# @timeit
+def get_working_version(url, units_types, zabbix_config, stop_list):
+
+    parser = ParserLeroyMerlinWithSeleniumPagination(siteUrl=url)
+
+    # zabbix_config=zabbix_config,
+    # units_types=["кг"]
+
+    products = parser.get_products_from_site()
+
+    logger.info(f'{len(products)=}')
+
+    products_utils = ProductsUtils()
+    cleaned_by_stop_list_products = products_utils.get_cleaned_products_by_stop_list(products, stop_list)
+    cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
+                                                                               units_types)
+
+    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, units_types)
+
+    parser.set_products(el)
+
+    sender = ZabbixUtils(zabbix_config)
+    sender.send_items_with_values(products, 'price_for_kg')
+    sender.send_items_with_values(products, 'quantity')
+
+
+def run7():
+
+    # СМЕСИ
+    url='https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page='
+    units_types = [UnitsTypes.KG, UnitsTypes.LITR]
+
+    ZABBIX_SERVER_ADRESS = '192.168.1.60'
+
+    zabbix_config = {
+        'ZABBIX_SERVER': f"http://{ZABBIX_SERVER_ADRESS}",  # http://192.168.1.60   - не работает на ZabbixSender()
+        'ZABBIX_USER': "Admin",
+        'ZABBIX_PASSWORD': "zabbix",
+
+        # 'ZABBIX_HOST': "LERUA-price-NEW3",
+        'ZABBIX_HOST': "LM2.test",
+        # 'ZABBIX_HOST-QUANTITY': "LERUA-quantity-NEW3",
+        'ZABBIX_HOST-QUANTITY': "LM3.test",
+        'ZABBIX_SENDER_SERVER': ZABBIX_SERVER_ADRESS  # работает на ZabbixSender() только без 'http://'
+    }
+
+    stop_list=[
+        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
+        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
+        "алебастр", "Шпаклевка", "газоблоков", "Шпаклёвка", "стекло", "Глина", "Бетонконтакт", "Финишпаста",
+        "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
+    ]
+
+    logger.add("out-lerua-class.log", backtrace=True, diagnose=True, level='INFO')
+
+    get_working_version(url, units_types, zabbix_config, stop_list)
+
+
+@timeit
+def main_working_version():
+    logger.add("out-lerua-class.log", backtrace=True, diagnose=True, level='INFO')
+
+    ZABBIX_SERVER_ADRESS = '192.168.1.60'
+
+    zabbix_config = {
+        'ZABBIX_SERVER': f"http://{ZABBIX_SERVER_ADRESS}",  # http://192.168.1.60   - не работает на ZabbixSender()
+        'ZABBIX_USER': "Admin",
+        'ZABBIX_PASSWORD': "zabbix",
+
+        # 'ZABBIX_HOST': "LERUA-price-NEW3",
+        'ZABBIX_HOST': "LM2.test",
+        # 'ZABBIX_HOST-QUANTITY': "LERUA-quantity-NEW3",
+        'ZABBIX_HOST-QUANTITY': "LM3.test",
+        'ZABBIX_SENDER_SERVER': ZABBIX_SERVER_ADRESS  # работает на ZabbixSender() только без 'http://'
+    }
+
+    # СМЕСИ
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=',
+        stop_list=[
+            "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
+            "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
+            "алебастр", "Шпаклевка", "газоблоков", "Шпаклёвка", "стекло", "Глина", "Бетонконтакт", "Финишпаста",
+            "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
+        ],
+        zabbix_config=zabbix_config,
+        units_types=["кг"]
+    )
+
+    lerua.start_parsing()
+
+    # ПЕСОК
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page=',
+        stop_list=[
+            "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
+            "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
+        ],
+        zabbix_config=zabbix_config,
+        units_types=["кг"]
+    )
+
+    lerua.start_parsing()
+
+    # ИЗВЕСТЬ
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page=',
+        stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"],
+        zabbix_config=zabbix_config,
+        units_types=["кг", "литр"]
+    )
+
+    lerua.start_parsing()
+
+    # ПУШОНКА
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page=',
+        stop_list=[],
+        zabbix_config=zabbix_config,
+        units_types=["кг", "литр"]
+    )
+
+    lerua.start_parsing()
+
+    # zabbix_config['ZABBIX_HOST']= "LERUA-price-NEW"
+    # zabbix_config['ZABBIX_HOST-QUANTITY']= "LERUA-quantity-NEW"
+
+    # МУКА
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page=',
+        stop_list=["семена", "гидрогель", "постер"],
+        zabbix_config=zabbix_config,
+        units_types=["кг"]
+    )
+
+    lerua.start_parsing()
+
+    # КЛЕЙ ДЛЯ ОБОЕВ
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page=',
+        stop_list=['поклейкой'],
+        zabbix_config=zabbix_config,
+        units_types=["литр", "кг"]
+    )
+
+    lerua.start_parsing()
+
+    # БОКАШИ - Хабаровск
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
+        stop_list=[],
+        zabbix_config=zabbix_config,
+        units_types=["литр", "кг"]
+    )
+
+    lerua.start_parsing()
+
+    # БОКАШИ - Новосибирск
+    lerua = ParsingLerua(
+        url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
+        stop_list=[],
+        zabbix_config=zabbix_config,
+        region_code='novosibirsk',
+        units_types=["литр", "кг"]
+    )
+
+    lerua.start_parsing()
+
+    # БОКАШИ - Москва
+    lerua = ParsingLerua(
+        url='https://leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
+        stop_list=[],
+        zabbix_config=zabbix_config,
+        region_code='moscow',
+        units_types=["литр", "кг"]
+    )
+
+    lerua.start_parsing()
+
+    # Биогумус - Хабаровск
+    lerua = ParsingLerua(
+        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page=',
+        stop_list=[],
+        zabbix_config=zabbix_config,
+        units_types=["литр", "кг"]
+    )
+
+    lerua.start_parsing()
+
 if __name__ == '__main__':
-    test6()
+    run7()
 
 
