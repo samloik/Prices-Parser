@@ -739,9 +739,6 @@ def main_working_version():
     send_products_to_zabbix(zabbix_config, all_products)
 
 if __name__ == '__main__':
-    run7()
-    # main_working_version()
+    # run7()
+    main_working_version()
 
-
-# pip install undetected-chromedriver -U
-# driver = uc.Chrome(version_main=121
