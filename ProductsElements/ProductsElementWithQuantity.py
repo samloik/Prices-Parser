@@ -1,5 +1,5 @@
 from ProductsElements.ProductsElement import ProductsElement
-from logger import loguru
+from loguru import logger
 
 
 class ProductsElementWithQuantity(ProductsElement):
@@ -78,10 +78,12 @@ class ProductsElementWithQuantity(ProductsElement):
         # quantity = float(f'{float(self.get_quantity()):.2f}')
 
         try:
-            quantity = float(f'{float(self.get_quantity()):.2f}')
+            # quantity = float(f'{float(self.get_quantity()):.2f}')
+            quantity = round(self.get_quantity(), 2)
         except Exception as Err:
             logger.error('{Err}')
-            logger.error("quantity = float(f'{float(self.get_quantity()):.2f}')")
+            # logger.error("quantity = float(f'{float(self.get_quantity()):.2f}')")
+            logger.error("quantity = round(self.get_quantity(), 2)")
             logger.info(f'{self.get_name()=} {self.get_quantity()=} {self.get_url()=}')
 
         return {

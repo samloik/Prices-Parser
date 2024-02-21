@@ -246,7 +246,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             try:
                 # меняют названия классов с "t3y6ha_plp xc1n09g_plp p1q9hgmc_plp" на "mvc4syb_plp"
                 # TODO возможно будет плавать при изменении структуры, тогда доработать на примере
-                item_name = next.find(class_='t9jup0e_plp').text
+                # item_name = next.find(class_='t9jup0e_plp').text
+                item_name = next.find(class_='p1h8lbu4_plp').text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
                 exit(1)
@@ -273,7 +274,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 product_url = ""
 
             logger.info(f"[добавление] {item_name=}:{item_price=}:{product_url=}")
-            products.append(ProductsElementWithQuantity(item_name, float(item_price), product_url))
+            products.append(ProductsElementWithQuantity(item_name, float(item_price.replace(',','.')), product_url))
         return products
 
 
@@ -534,9 +535,9 @@ def run6():
 
 
 # @timeit
-def get_working_version(url, units_types, zabbix_config, stop_list):
+def get_products_from_site(url, units_types, stop_list, region_code:str='habarovsk'):
 
-    parser = ParserLeroyMerlinWithSeleniumPagination(siteUrl=url)
+    parser = ParserLeroyMerlinWithSeleniumPagination(siteUrl=url, region_code=region_code)
 
     # zabbix_config=zabbix_config,
     # units_types=["кг"]
@@ -550,10 +551,17 @@ def get_working_version(url, units_types, zabbix_config, stop_list):
     cleaned_by_units_type = products_utils.get_cleaned_products_by_units_types(cleaned_by_stop_list_products,
                                                                                units_types)
 
-    el = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, units_types)
+    products_with_price_for_unit = products_utils.convert_price_to_price_for_unit(cleaned_by_units_type, units_types)
 
-    parser.set_products(el)
+    # AttributeError: 'Products' object has no attribute 'get_quantity_of_products'
+    parser.set_products(products_with_price_for_unit)
 
+    products_with_quantity = parser.get_quantity_of_products()
+
+    return products_with_quantity
+
+
+def send_products_to_zabbix(zabbix_config, products):
     sender = ZabbixUtils(zabbix_config)
     sender.send_items_with_values(products, 'price_for_kg')
     sender.send_items_with_values(products, 'quantity')
@@ -586,9 +594,18 @@ def run7():
         "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
     ]
 
-    logger.add("out-lerua-class.log", backtrace=True, diagnose=True, level='INFO')
+    logger.add(
+        "out-lerua-class.log",
+        backtrace=True,
+        diagnose=True,
+        level='INFO',
+        rotation = "1 month",
+        compression = "zip"
+    )
 
-    get_working_version(url, units_types, zabbix_config, stop_list)
+
+    products = get_products_from_site(url, units_types, stop_list)
+    send_products_to_zabbix(zabbix_config, products)
 
 
 @timeit
@@ -610,119 +627,121 @@ def main_working_version():
     }
 
     # СМЕСИ
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=',
-        stop_list=[
-            "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
-            "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
-            "алебастр", "Шпаклевка", "газоблоков", "Шпаклёвка", "стекло", "Глина", "Бетонконтакт", "Финишпаста",
-            "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
-        ],
-        zabbix_config=zabbix_config,
-        units_types=["кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page='
+    stop_list=[
+        "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
+        "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
+        "алебастр", "Шпаклевка", "газоблоков", "Шпаклёвка", "стекло", "Глина", "Бетонконтакт", "Финишпаста",
+        "Краситель", "Плитонит", "Грунтовка", "Пропитка", "Ускоритель"
+    ]
 
-    lerua.start_parsing()
+    # units_types=["кг"]
+    units_types = [UnitsTypes.KG]
+
+    products_01 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_01)
+
 
     # ПЕСОК
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page=',
-        stop_list=[
-            "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
-            "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
-        ],
-        zabbix_config=zabbix_config,
-        units_types=["кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page='
+    stop_list=[
+        "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
+        "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
+    ]
+    units_types=[UnitsTypes.KG]
 
-    lerua.start_parsing()
+    products_02 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_02)
 
     # ИЗВЕСТЬ
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page=',
-        stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"],
-        zabbix_config=zabbix_config,
-        units_types=["кг", "литр"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page='
+    stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_03 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_03)
 
     # ПУШОНКА
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page=',
-        stop_list=[],
-        zabbix_config=zabbix_config,
-        units_types=["кг", "литр"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page='
+    stop_list=[]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_04 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_04)
+
 
     # zabbix_config['ZABBIX_HOST']= "LERUA-price-NEW"
     # zabbix_config['ZABBIX_HOST-QUANTITY']= "LERUA-quantity-NEW"
 
     # МУКА
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page=',
-        stop_list=["семена", "гидрогель", "постер"],
-        zabbix_config=zabbix_config,
-        units_types=["кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
+    stop_list=["семена", "гидрогель", "постер"]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_05 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_05)
+
 
     # КЛЕЙ ДЛЯ ОБОЕВ
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page=',
-        stop_list=['поклейкой'],
-        zabbix_config=zabbix_config,
-        units_types=["литр", "кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
+    stop_list=['поклейкой']
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_06 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_06)
 
     # БОКАШИ - Хабаровск
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
-        stop_list=[],
-        zabbix_config=zabbix_config,
-        units_types=["литр", "кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    stop_list=[]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+
+    products_07 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_07)
 
     # БОКАШИ - Новосибирск
-    lerua = ParsingLerua(
-        url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
-        stop_list=[],
-        zabbix_config=zabbix_config,
-        region_code='novosibirsk',
-        units_types=["литр", "кг"]
-    )
+    url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    stop_list=[]
+    region_code='novosibirsk'
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_08 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    # send_products_to_zabbix(zabbix_config, products_08)
 
     # БОКАШИ - Москва
-    lerua = ParsingLerua(
-        url='https://leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page=',
-        stop_list=[],
-        zabbix_config=zabbix_config,
-        region_code='moscow',
-        units_types=["литр", "кг"]
-    )
+    url='https://leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    stop_list=[]
+    region_code='moscow'
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_09 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    # send_products_to_zabbix(zabbix_config, products_09)
 
     # Биогумус - Хабаровск
-    lerua = ParsingLerua(
-        url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page=',
-        stop_list=[],
-        zabbix_config=zabbix_config,
-        units_types=["литр", "кг"]
-    )
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page='
+    stop_list=[]
+    units_types = [UnitsTypes.KG, UnitsTypes.LITR]
 
-    lerua.start_parsing()
+    products_10 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    # send_products_to_zabbix(zabbix_config, products_10)
+
+    all_products = products_01
+    all_products += products_02
+    all_products += products_03
+    all_products += products_04
+    all_products += products_05
+    all_products += products_06
+    all_products += products_07
+    all_products += products_08
+    all_products += products_09
+    all_products += products_10
+
+    send_products_to_zabbix(zabbix_config, all_products)
 
 if __name__ == '__main__':
     run7()
+    # main_working_version()
 
 
+# pip install undetected-chromedriver -U
+# driver = uc.Chrome(version_main=121

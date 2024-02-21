@@ -20,12 +20,12 @@ class SeleniumWebDriver:
     @staticmethod
     def anonymize_web_driver():
 
-        driver = uc.Chrome()
+        # driver = uc.Chrome()
         #
         # from session not created: This version of ChromeDriver only supports Chrome version 117
         # Current browser version is 116.0.5845.188
         #
-        # driver = uc.Chrome(version_main=116)
+        driver = uc.Chrome(version_main=121)
 
         # driver.get("https://proxy6.net/privacy")
         # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")
@@ -113,9 +113,12 @@ class SeleniumWebDriver:
         # убираем сообщение об ошибке так:
         #     time.sleep(0.1)
         # OSError: [WinError 6] Неверный дескриптор
+        # https://github.com/ultrafunkamsterdam/undetected-chromedriver/issues/955
         try:
-            # self.driver.close()
-            self.driver.quit()
+            self.driver.close()
+            sleep(0.1)
+            # self.driver.quit()
+            # sleep(1)
         except Exception as Err:
             pass
 

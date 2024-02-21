@@ -81,7 +81,11 @@ class ProductsUtils:
             element_name = ElementName(name, units_types)
             value_from_name = element_name.get_value_of_units_in_name()
 
-            price_for_unit = products.get_element_by_name(name).get_price() / float(value_from_name)
+            # price_for_unit = products.get_element_by_name(name).get_price() / float(value_from_name)
+            # 1313.321331 => 1313.32
+
+            price_for_unit = round(products.get_element_by_name(name).get_price() / float(value_from_name), 2)
+
             converted_produtcs.get_element_by_name(name).set_price(price_for_unit)
 
         return converted_produtcs
