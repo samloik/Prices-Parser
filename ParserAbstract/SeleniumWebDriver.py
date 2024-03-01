@@ -6,7 +6,12 @@ import sys
 from loguru import logger
 from ParserAbstract.Response import Response
 
-import undetected_chromedriver as uc  # pip install undetected-chromedriver
+platform = sys.platform
+if platform.endswith("linux"):
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+else:
+    import undetected_chromedriver as uc  # pip install undetected-chromedriver
 
 from time import sleep
 
@@ -30,17 +35,52 @@ class SeleniumWebDriver:
         if platform.endswith("linux"):
             self.CURRENT_SYSTEM = "linux"
 
-        print(f'{self.CURRENT_SYSTEM=}')
-        exit(0)
+        # print(f'{self.CURRENT_SYSTEM=}')
+        # exit(0)
 
+        options = None
 
         # BINARY_LOCATION = '/usr/bin/google-chrome-stable'
         if self.CURRENT_SYSTEM == "windows":
-            DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
+            # DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
+
+            driver = uc.Chrome(version_main=121)
         else:
             DRIVER_LOCATION = '/usr/bin/chromedriver'
             BINARY_LOCATION = '/usr/bin/google-chrome-stable'
+            # driver = uc.Chrome(driver_executable_path='/usr/bin/google-chrome-stable')
 
+            service = Service(DRIVER_LOCATION)
+            # service = Service(Service(ChromeDriverManager().install())) - не работает
+
+            options = webdriver.ChromeOptions()
+
+            global CURRENT_SYSTEM, BINARY_LOCATION
+            if CURRENT_SYSTEM == "windows":
+                pass
+            else:
+                options.binary_location = BINARY_LOCATION
+                # options.add_argument('--disable-gpu')  # Only included in Linux version
+                # options.add_argument('--no-sandbox')  # Only included in Linux version
+
+            # options.add_argument('--headless')    # - C headless не работает
+            options.add_argument('--disable-blink-features=AutomationControlled')  # первое !!!
+
+            #
+            # options.add_experimental_option('excludeSwitches', ['enable-automation'])   # дополнительно
+            # options.add_experimental_option('useAutomationExtension', False)            # дополнительно
+            #
+
+            driver = webdriver.Chrome(service=service, options=options)
+            # driver = webdriver.Chrome(options=options)
+
+            driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {  # второе !!!
+                'source': '''
+                    delete window.cdc_adoQpoasnfa76pfcZLmcfl_Array;
+                    delete window.cdc_adoQpoasnfa76pfcZLmcfl_Promise;
+                    delete window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol;
+                '''
+            })
 
 
         # driver = uc.Chrome()
@@ -48,8 +88,8 @@ class SeleniumWebDriver:
         # from session not created: This version of ChromeDriver only supports Chrome version 117
         # Current browser version is 116.0.5845.188
         #
-        driver = uc.Chrome(version_main=121)
-        # Driver = uc.Chrome(driver_executable_path='/usr/bin/google-chrome-stable')
+        # driver = uc.Chrome(version_main=121)
+        # driver = uc.Chrome(driver_executable_path='/usr/bin/google-chrome-stable')
 
         # driver.get("https://proxy6.net/privacy")
         # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")
@@ -59,7 +99,7 @@ class SeleniumWebDriver:
 
         # https://piprogramming.org/articles/How-to-make-Selenium-undetectable-and-stealth--7-Ways-to-hide-your-Bot-Automation-from-Detection-0000000017.html
 
-        return driver, None
+        return driver, options
 
     #
     # def anonymizeWebDriver2(self):
