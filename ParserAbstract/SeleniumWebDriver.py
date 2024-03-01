@@ -1,6 +1,8 @@
 # from selenium import webdriver
 # from selenium.webdriver.chrome.service import Service
 import platform
+import sys
+
 from loguru import logger
 from ParserAbstract.Response import Response
 
@@ -9,6 +11,9 @@ import undetected_chromedriver as uc  # pip install undetected-chromedriver
 from time import sleep
 
 class SeleniumWebDriver:
+    CURRENT_SYSTEM = "windows"
+    # CURRENT_SYSTEM = "linux"
+
 
     def __init__(self, time_to_read_first_page=10, time_to_read_next_page=5):
         self.driver, self.options = self.anonymize_web_driver()
@@ -17,8 +22,26 @@ class SeleniumWebDriver:
         self.is_first_page_to_load = True
 
 
-    @staticmethod
-    def anonymize_web_driver():
+
+    # @staticmethod
+    def anonymize_web_driver(self):
+
+        platform = sys.platform
+        if platform.endswith("linux"):
+            self.CURRENT_SYSTEM = "linux"
+
+        print(f'{self.CURRENT_SYSTEM=}')
+        exit(0)
+
+
+        # BINARY_LOCATION = '/usr/bin/google-chrome-stable'
+        if self.CURRENT_SYSTEM == "windows":
+            DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
+        else:
+            DRIVER_LOCATION = '/usr/bin/chromedriver'
+            BINARY_LOCATION = '/usr/bin/google-chrome-stable'
+
+
 
         # driver = uc.Chrome()
         #
@@ -26,6 +49,7 @@ class SeleniumWebDriver:
         # Current browser version is 116.0.5845.188
         #
         driver = uc.Chrome(version_main=121)
+        # Driver = uc.Chrome(driver_executable_path='/usr/bin/google-chrome-stable')
 
         # driver.get("https://proxy6.net/privacy")
         # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")
