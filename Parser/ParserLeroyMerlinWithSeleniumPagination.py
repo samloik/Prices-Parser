@@ -634,10 +634,10 @@ def main_working_version():
         'ZABBIX_USER': "Admin",
         'ZABBIX_PASSWORD': "zabbix",
 
-        # 'ZABBIX_HOST': "LERUA-price-NEW3",
-        'ZABBIX_HOST': "LM2.test",
-        # 'ZABBIX_HOST-QUANTITY': "LERUA-quantity-NEW3",
-        'ZABBIX_HOST-QUANTITY': "LM3.test",
+        'ZABBIX_HOST': "LERUA-price-NEW3",
+        # 'ZABBIX_HOST': "LM2.test",
+        'ZABBIX_HOST-QUANTITY': "LERUA-quantity-NEW3",
+        # 'ZABBIX_HOST-QUANTITY': "LM3.test",
         'ZABBIX_SENDER_SERVER': ZABBIX_SERVER_ADRESS  # работает на ZabbixSender() только без 'http://'
     }
 
