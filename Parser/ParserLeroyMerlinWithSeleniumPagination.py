@@ -564,7 +564,15 @@ def get_products_from_site(url, units_types, stop_list, region_code:str='habarov
 def send_products_to_zabbix(zabbix_config, products):
     sender = ZabbixUtils(zabbix_config)
     sender.send_items_with_values(products, 'price_for_kg')
-    sender.send_items_with_values(products, 'quantity')
+
+    # TODO
+    #  кривое решение по внедрению возможности отправки цен и количества в разные узлы
+
+    zabbix_qunatity_config = zabbix_config
+    zabbix_qunatity_config['ZABBIX_HOST'] = zabbix_config['ZABBIX_HOST-QUANTITY']
+
+    sender2 = ZabbixUtils(zabbix_config)
+    sender2.send_items_with_values(products, 'quantity')
 
 
 def run7():
@@ -599,7 +607,7 @@ def run7():
         backtrace=True,
         diagnose=True,
         level='INFO',
-        rotation = "1 month",
+        rotation = "2 month",
         compression = "zip"
     )
 
@@ -610,7 +618,14 @@ def run7():
 
 @timeit
 def main_working_version():
-    logger.add("out-lerua-class.log", backtrace=True, diagnose=True, level='INFO')
+    logger.add(
+        "out-lerua-class.log",
+        backtrace=True,
+        diagnose=True,
+        level='INFO',
+        rotation="2 month",
+        compression="zip"
+    )
 
     ZABBIX_SERVER_ADRESS = '192.168.1.60'
 
