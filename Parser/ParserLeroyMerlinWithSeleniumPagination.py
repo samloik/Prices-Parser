@@ -685,9 +685,6 @@ def main_working_version():
     # send_products_to_zabbix(zabbix_config, products_04)
 
 
-    # zabbix_config['ZABBIX_HOST']= "LERUA-price-NEW"
-    # zabbix_config['ZABBIX_HOST-QUANTITY']= "LERUA-quantity-NEW"
-
     # МУКА
     url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
     stop_list=["семена", "гидрогель", "постер"]
@@ -714,23 +711,23 @@ def main_working_version():
     products_07 = get_products_from_site(url, units_types, stop_list)
     # send_products_to_zabbix(zabbix_config, products_07)
 
-    # БОКАШИ - Новосибирск
-    url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
-    stop_list=[]
-    region_code='novosibirsk'
-    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+    # # БОКАШИ - Новосибирск
+    # url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    # stop_list=[]
+    # region_code='novosibirsk'
+    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+    #
+    # products_08 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    # # send_products_to_zabbix(zabbix_config, products_08)
 
-    products_08 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
-    # send_products_to_zabbix(zabbix_config, products_08)
-
-    # БОКАШИ - Москва
-    url='https://leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
-    stop_list=[]
-    region_code='moscow'
-    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-
-    products_09 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
-    # send_products_to_zabbix(zabbix_config, products_09)
+    # # БОКАШИ - Москва
+    # url='https://leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    # stop_list=[]
+    # region_code='moscow'
+    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+    #
+    # products_09 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    # # send_products_to_zabbix(zabbix_config, products_09)
 
     # Биогумус - Хабаровск
     url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page='
@@ -747,8 +744,8 @@ def main_working_version():
     all_products += products_05
     all_products += products_06
     all_products += products_07
-    all_products += products_08
-    all_products += products_09
+    # all_products += products_08
+    # all_products += products_09
     all_products += products_10
 
     send_products_to_zabbix(zabbix_config, all_products)

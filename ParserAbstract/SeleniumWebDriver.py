@@ -38,6 +38,7 @@ class SeleniumWebDriver:
             # DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
             driver = uc.Chrome(version_main=121)
         else:
+            # https://stackoverflow.com/questions/77869031/this-version-of-chromedriver-only-supports-chrome-version-121-current-browser-ve
             webdriver_service = Service(ChromeDriverManager().install())
             webdriver_service.start()
             driver = uc.Chrome(service=webdriver_service, options=options, version_main=120)
