@@ -55,11 +55,6 @@ class SeleniumWebDriver:
 
             options = webdriver.ChromeOptions()
 
-            global CURRENT_SYSTEM, BINARY_LOCATION
-            if CURRENT_SYSTEM == "windows":
-                pass
-            else:
-                options.binary_location = BINARY_LOCATION
                 # options.add_argument('--disable-gpu')  # Only included in Linux version
                 # options.add_argument('--no-sandbox')  # Only included in Linux version
 
