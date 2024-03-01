@@ -112,10 +112,10 @@ class SeleniumWebDriver:
             self.driver.get(url)
             if self.is_first_page_to_load:
                 self.is_first_page_to_load = False
-                logger.info(f'Ждем загрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд')
+                logger.info(f'Ждем загрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд [{url}]')
                 sleep(self.TIME_TO_READ_FIRST_PAGE)
             else:
-                logger.info(f'Ждем загрузки следующей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд')
+                logger.info(f'Ждем загрузки следующей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд [{url}]')
                 sleep(self.TIME_TO_READ_NEXT_PAGE)   # TODO отрегулировать параметр времени
             html = self.driver.page_source
             response = Response("200", html, None)
