@@ -571,7 +571,7 @@ def send_products_to_zabbix(zabbix_config, products):
     zabbix_qunatity_config = zabbix_config
     zabbix_qunatity_config['ZABBIX_HOST'] = zabbix_config['ZABBIX_HOST-QUANTITY']
 
-    sender2 = ZabbixUtils(zabbix_config)
+    sender2 = ZabbixUtils(zabbix_qunatity_config)
     sender2.send_items_with_values(products, 'quantity')
 
 
