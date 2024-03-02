@@ -34,6 +34,7 @@ class SeleniumWebDriver:
 
         options = None
 
+
         if self.CURRENT_SYSTEM == "windows":
             # DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
             driver = uc.Chrome(version_main=121)
@@ -42,6 +43,13 @@ class SeleniumWebDriver:
             webdriver_service = Service(ChromeDriverManager().install())
             webdriver_service.start()
             driver = uc.Chrome(service=webdriver_service, options=options, version_main=120)
+
+        try:
+            browser_version = driver.capabilities['browserVersion']
+            driver_version = driver.capabilities['chrome']['chromedriverVersion'].split(' ')[0]
+            logger.info( f'[Платформа: {self.CURRENT_SYSTEM}] [{browser_version=}] [{driver_version}]')
+        except Exception as Err:
+            logger.error('Ошибка при определении версий браузера и хромдрайвера')
 
         # driver.get("https://proxy6.net/privacy")
         # driver.get("https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page=2")

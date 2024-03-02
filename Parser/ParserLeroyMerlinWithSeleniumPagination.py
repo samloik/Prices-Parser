@@ -734,7 +734,7 @@ def main_working_version():
     stop_list=[]
     units_types = [UnitsTypes.KG, UnitsTypes.LITR]
 
-    products_10 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
+    products_10 = get_products_from_site(url, units_types, stop_list, region_code='habarovsk')
     # send_products_to_zabbix(zabbix_config, products_10)
 
     all_products = products_01
