@@ -635,12 +635,12 @@ def main_working_version():
         compression="zip"
     )
 
-    try:
-        logger.info(f'Start Run8 function...')
-        run8()
-        logger.info(f'End Run8 function!')
-    except Err as Err:
-        logger.error(f'{Err}')
+    # try:
+    #     logger.info(f'Start Run8 function...')
+    #     run8()
+    #     logger.info(f'End Run8 function!')
+    # except Err as Err:
+    #     logger.error(f'{Err}')
 
 
     ZABBIX_SERVER_ADDRESS = '192.168.1.60'
