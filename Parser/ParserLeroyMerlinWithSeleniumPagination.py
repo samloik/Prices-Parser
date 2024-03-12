@@ -673,59 +673,59 @@ def main_working_version():
     # send_products_to_zabbix(zabbix_config, products_01)
 
 
-    # # ПЕСОК
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page='
-    # stop_list=[
-    #     "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
-    #     "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
-    # ]
-    # units_types=[UnitsTypes.KG]
-    #
-    # products_02 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_02)
+    # ПЕСОК
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page='
+    stop_list=[
+        "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
+        "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
+    ]
+    units_types=[UnitsTypes.KG]
 
-    # # ИЗВЕСТЬ
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page='
-    # stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"]
-    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    # products_03 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_03)
+    products_02 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_02)
 
-    # # ПУШОНКА
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page='
-    # stop_list=[]
-    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    # products_04 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_04)
+    # ИЗВЕСТЬ
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page='
+    stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
+    products_03 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_03)
 
-    # # МУКА
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
-    # stop_list=["семена", "гидрогель", "постер"]
-    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    # products_05 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_05)
+    # ПУШОНКА
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page='
+    stop_list=[]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+
+    products_04 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_04)
 
 
-    # # КЛЕЙ ДЛЯ ОБОЕВ
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
-    # stop_list=['поклейкой']
-    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    # products_06 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_06)
-    #
-    # # БОКАШИ - Хабаровск
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
-    # stop_list=[]
-    # units_types=[UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    #
-    # products_07 = get_products_from_site(url, units_types, stop_list)
-    # # send_products_to_zabbix(zabbix_config, products_07)
+    # МУКА
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
+    stop_list=["семена", "гидрогель", "постер"]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+
+    products_05 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_05)
+
+
+    # КЛЕЙ ДЛЯ ОБОЕВ
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
+    stop_list=['поклейкой']
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+
+    products_06 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_06)
+
+    # БОКАШИ - Хабаровск
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
+    stop_list=[]
+    units_types=[UnitsTypes.KG, UnitsTypes.LITR]
+
+
+    products_07 = get_products_from_site(url, units_types, stop_list)
+    # send_products_to_zabbix(zabbix_config, products_07)
 
     # # БОКАШИ - Новосибирск
     # url='https://novosibirsk.leroymerlin.ru/search/?q=%D0%B1%D0%BE%D0%BA%D0%B0%D1%88%D0%B8&page='
@@ -745,25 +745,26 @@ def main_working_version():
     # products_09 = get_products_from_site(url, units_types, stop_list, region_code=region_code)
     # # send_products_to_zabbix(zabbix_config, products_09)
 
-    # # Биогумус - Хабаровск
-    # url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page='
-    # stop_list=[]
-    # units_types = [UnitsTypes.KG, UnitsTypes.LITR]
-    #
-    # products_10 = get_products_from_site(url, units_types, stop_list, region_code='habarovsk')
-    # # send_products_to_zabbix(zabbix_config, products_10)
+    # Биогумус - Хабаровск
+    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B1%D0%B8%D0%BE%D0%B3%D1%83%D0%BC%D1%83%D1%81&page='
+    stop_list=[]
+    units_types = [UnitsTypes.KG, UnitsTypes.LITR]
+
+    products_10 = get_products_from_site(url, units_types, stop_list, region_code='habarovsk')
+    # send_products_to_zabbix(zabbix_config, products_10)
 
     all_products = products_01
-    # all_products += products_02
-    # all_products += products_03
-    # all_products += products_04
-    # all_products += products_05
-    # all_products += products_06
-    # all_products += products_07
+    all_products += products_02
+    all_products += products_03
+    all_products += products_04
+    all_products += products_05
+    all_products += products_06
+    all_products += products_07
 
     # all_products += products_08
     # all_products += products_09
-    # all_products += products_10
+
+    all_products += products_10
 
     send_products_to_zabbix(zabbix_config, all_products)
 
