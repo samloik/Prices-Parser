@@ -286,6 +286,7 @@ class ZabbixUtils:
         #   'Fibra_dlya_betonov_i_rastvorov_Fibra__150_g'
         #   Не верно работает код. Либо был сбой.
 
+        logger.warning(f'for name in products.keys():')
         for name in products.keys():
             if self.get_normalized_key(name, value) not in items_names:
                 # TODO Ошибка №11 от 2023/03/11
