@@ -278,7 +278,7 @@ class ZabbixUtils:
 
                 fibr = 'Фибра для бетонов и растворов Fibr'
 
-                logger.warning('names_of_items_to_add.append(name): [{name=}] [{value=}] [{self.get_normalized_key(name, value)=}]')
+                logger.warning(f'names_of_items_to_add.append(name): [{name=}] [{value=}] [{self.get_normalized_key(name, value)=}]')
                 logger.warning(f'[{len(products.keys())=}] [{len(items_names)}]')
 
                 # TODO конец временного кода
@@ -296,7 +296,7 @@ class ZabbixUtils:
                 name=self.get_normalized_key(key, value),
                 key=self.get_normalized_key(translit_name, value)
             )
-            logger.info(f'Item [{key=}] успешно создан [{name=} {value=}]')
+            logger.info(f'Item [{key=}] успешно создан [{str(name)=}] [{translit_name=}] [{value=}]')
 
         if names_of_items_to_add:
             # необходима задержка после создания, иначе данные не запишутся
