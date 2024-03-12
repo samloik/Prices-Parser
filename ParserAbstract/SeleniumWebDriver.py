@@ -116,21 +116,31 @@ class SeleniumWebDriver:
 
     def get_html_page(self, url):
         html = ""
-        try:
-            self.driver.get(url)
-            if self.is_first_page_to_load:
-                self.is_first_page_to_load = False
-                logger.info(f'Ждем загрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд [{url}]')
-                sleep(self.TIME_TO_READ_FIRST_PAGE)
-            else:
-                logger.info(f'Ждем загрузки следующей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд [{url}]')
-                sleep(self.TIME_TO_READ_NEXT_PAGE)   # TODO отрегулировать параметр времени
-            html = self.driver.page_source
-            response = Response("200", html, None)
-        except Exception as Err:
-            logger.error(Err)
-            response = Response("BAD", None, str(Err))
+        TIME_TO_WAIT_AFTER_ERROR = 120  # время ожидания после ошибки 120 секунд
+        NUMBER_OF_ATTEMPTS = 3          # количество попыток прочитать страницу
 
+        for number_of_attempts in range(1, NUMBER_OF_ATTEMPTS+1):
+            try:
+                self.driver.get(url)
+                if self.is_first_page_to_load:
+                    self.is_first_page_to_load = False
+                    logger.info(f'Ждем загрузки первой страницы [{self.TIME_TO_READ_FIRST_PAGE}] секунд [{url}]')
+                    sleep(self.TIME_TO_READ_FIRST_PAGE)
+                else:
+                    logger.info(f'Ждем загрузки следующей страницы [{self.TIME_TO_READ_NEXT_PAGE}] секунд [{url}]')
+                    sleep(self.TIME_TO_READ_NEXT_PAGE)   # TODO отрегулировать параметр времени
+                html = self.driver.page_source
+                response = Response("200", html, None)
+                return response
+            except Exception as Err:
+                logger.error(Err)
+                logger.info(f'Попытка [{number_of_attempts} из {NUMBER_OF_ATTEMPTS}] запроса страницы не удалась')
+                if number_of_attempts < NUMBER_OF_ATTEMPTS:
+                    logger.info(f'Спим [{TIME_TO_WAIT_AFTER_ERROR}] секунд')
+                    sleep(TIME_TO_WAIT_AFTER_ERROR)
+
+
+        response = Response("BAD", None, str(Err))
         return response
 
     def __del__(self):
