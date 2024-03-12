@@ -262,6 +262,21 @@ class ZabbixUtils:
         # Получаем список item с хоста c hostids
         items_names = self.get_items_names()
 
+        # TODO Ошибка №11 от 2023/03/11
+        #  временный код для поиска ошибки
+
+        fibr = 'Фибра для бетонов и растворов Fibr'
+        for cur_name in items_names:
+            if cur_name.startswith(fibr):
+                logger.info(f'{cur_name=}')
+                logger.info(f'{self.get_normalized_key(name, value)=}')
+
+
+        logger.info(f'Конец теста')
+        # exit(1)
+        # TODO конец временного кода
+
+
         # список имен items к созданию
         names_of_items_to_add = []
 
@@ -278,7 +293,8 @@ class ZabbixUtils:
 
                 fibr = 'Фибра для бетонов и растворов Fibr'
 
-                logger.warning(f'names_of_items_to_add.append(name): [{name=}] [{value=}] [{self.get_normalized_key(name, value)=}]')
+                logger.warning(f'names_of_items_to_add.append(name): [{name=}] [{value=}]')
+                logger.warning(f'[{self.get_normalized_key(name, value)=}]')
                 logger.warning(f'[{len(products.keys())=}] [{len(items_names)}]')
 
                 # TODO конец временного кода
