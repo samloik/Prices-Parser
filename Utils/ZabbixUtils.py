@@ -159,7 +159,7 @@ class ZabbixUtils:
                         logger.info(f'{cur_name=}')
 
                 logger.info(f'Конец теста')
-                exit(1)
+                # exit(1)
                 # TODO конец временного кода
                 return names_of_items
             except ZabbixAPIException as e:
@@ -273,6 +273,16 @@ class ZabbixUtils:
 
         for name in products.keys():
             if self.get_normalized_key(name, value) not in items_names:
+                # TODO Ошибка №11 от 2023/03/11
+                #  временный код для поиска ошибки
+
+                fibr = 'Фибра для бетонов и растворов Fibr'
+
+                logger.warning('names_of_items_to_add.append(name): [{name=}] [{value=}] [{self.get_normalized_key(name, value)=}]')
+                logger.warning(f'[{len(products.keys())=}] [{len(items_names)}]')
+
+                # TODO конец временного кода
+
                 names_of_items_to_add.append(name)
 
         logger.info(f'Список новых items в количестве [{len(names_of_items_to_add)} шт] готовы к созданию в zabbix')
@@ -281,11 +291,12 @@ class ZabbixUtils:
         for key in names_of_items_to_add:
             name = ElementName(key)
             translit_name = name.translit_name()
+
             self.create_item(
                 name=self.get_normalized_key(key, value),
                 key=self.get_normalized_key(translit_name, value)
             )
-            logger.info(f'Item [{key}] успешно создан ')
+            logger.info(f'Item [{key=}] успешно создан [{name=} {value=}]')
 
         if names_of_items_to_add:
             # необходима задержка после создания, иначе данные не запишутся
