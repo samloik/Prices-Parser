@@ -621,7 +621,6 @@ import os
 
 def run8():
     ZABBIX_SERVER_ADRESS = '192.168.1.60'
-
     logger.info(f"{s.getenv('ZABBIX_SERVER_ADRESS')=}")
 
 
@@ -636,7 +635,7 @@ def main_working_version():
         compression="zip"
     )
 
-    run8()
+    # run8()
 
     ZABBIX_SERVER_ADDRESS = '192.168.1.60'
 
