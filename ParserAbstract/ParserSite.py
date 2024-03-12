@@ -60,6 +60,7 @@ class ParserSite:
             if is_next_page:
                 self.set_next_page()
         self.set_products(all_products)
+        logger.info(f'Наименования товаров и цены успешно получены')
         return all_products
 
 

@@ -43,6 +43,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             all_dict.get_element_by_name(key).set_quantity(quantity)
 
         # self.set_products(all_dict)
+        logger.info(f'Остатки товаров на складах успешно получены')
         return all_dict
 
 
@@ -557,6 +558,7 @@ def get_products_from_site(url, units_types, stop_list, region_code:str='habarov
     parser.set_products(products_with_price_for_unit)
 
     products_with_quantity = parser.get_quantity_of_products()
+
 
     return products_with_quantity
 
