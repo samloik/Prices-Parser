@@ -636,7 +636,9 @@ def main_working_version():
     )
 
     try:
+        logger.info(f'Start Run8 function...')
         run8()
+        logger.info(f'End Run8 function!')
     except Err as Err:
         logger.error(f'{Err}')
 
