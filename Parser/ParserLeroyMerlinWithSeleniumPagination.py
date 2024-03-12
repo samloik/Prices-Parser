@@ -622,9 +622,7 @@ import os
 def run8():
     ZABBIX_SERVER_ADRESS = '192.168.1.60'
 
-    print(os.getenv('ZABBIX_SERVER_ADRESS'))#, ZABBIX_SERVER_ADRESS))
-
-
+    logger.info(f"{s.getenv('ZABBIX_SERVER_ADRESS')=}")
 
 
 @timeit
@@ -638,10 +636,12 @@ def main_working_version():
         compression="zip"
     )
 
-    ZABBIX_SERVER_ADRESS = '192.168.1.60'
+    run8()
+
+    ZABBIX_SERVER_ADDRESS = '192.168.1.60'
 
     zabbix_config = {
-        'ZABBIX_SERVER': f"http://{ZABBIX_SERVER_ADRESS}",  # http://192.168.1.60   - не работает на ZabbixSender()
+        'ZABBIX_SERVER': f"http://{ZABBIX_SERVER_ADDRESS}",  # http://192.168.1.60   - не работает на ZabbixSender()
         'ZABBIX_USER': "Admin",
         'ZABBIX_PASSWORD': "zabbix",
 
@@ -649,7 +649,7 @@ def main_working_version():
         # 'ZABBIX_HOST': "LM2.test",
         'ZABBIX_HOST-QUANTITY': "LERUA-quantity-NEW3",
         # 'ZABBIX_HOST-QUANTITY': "LM3.test",
-        'ZABBIX_SENDER_SERVER': ZABBIX_SERVER_ADRESS  # работает на ZabbixSender() только без 'http://'
+        'ZABBIX_SENDER_SERVER': ZABBIX_SERVER_ADDRESS  # работает на ZabbixSender() только без 'http://'
     }
 
     # СМЕСИ
@@ -762,6 +762,5 @@ def main_working_version():
     send_products_to_zabbix(zabbix_config, all_products)
 
 if __name__ == '__main__':
-    run8()
-    # main_working_version()
+    main_working_version()
 
