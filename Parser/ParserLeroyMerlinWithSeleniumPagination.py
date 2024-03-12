@@ -221,7 +221,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                     return True
 
         except Exception as Err:
-            logger.error(f'{Err}')
+            logger.error(f'[{response=}] {Err}')
 
         logger.info(f'Это была последняя страница [{self.get_current_page()}]')
         return False

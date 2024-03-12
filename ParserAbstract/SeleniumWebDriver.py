@@ -139,7 +139,6 @@ class SeleniumWebDriver:
                     logger.info(f'Спим [{TIME_TO_WAIT_AFTER_ERROR}] секунд')
                     sleep(TIME_TO_WAIT_AFTER_ERROR)
 
-
         response = Response("BAD", None, str(Err))
         return response
 
