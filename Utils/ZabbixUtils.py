@@ -149,7 +149,15 @@ class ZabbixUtils:
                     names_of_items.append(item['name'])
                     # print(item['itemid'], item['name'], item['key_'])
                 # print(f' len(items) = {len(items)}')
-                logger.info(f"Получен список items в количестве [{len(names_of_items)} шт] с хоста c hostids={host_id}")
+                logger.info(f"Получен список items в количестве [{len(names_of_items)} шт] с хоста hostids={host_id}")
+                # TODO Ошибка №11 от 2023/03/11
+                #  временный код для поиска ошибки
+
+                for i in names_of_items:
+                    logger.info(f'{names_of_items=}')
+                logger.info(f'Конец теста')
+                exit(1)
+                # TODO конец временного кода
                 return names_of_items
             except ZabbixAPIException as e:
                 logger.error(f'[ОШИБКА]: {e}')
@@ -255,6 +263,11 @@ class ZabbixUtils:
         names_of_items_to_add = []
 
         # если список с сайта содержит новые items, то добавить такой item в names_of_items_to_add
+        # TODO ошибка №11 от 2024/03/11
+        #   Появляется элемент к добавлению, который уже существует.
+        #   'Fibra_dlya_betonov_i_rastvorov_Fibra__150_g'
+        #   Не верно работает код. Либо был сбой.
+
         for name in products.keys():
             if self.get_normalized_key(name, value) not in items_names:
                 names_of_items_to_add.append(name)
