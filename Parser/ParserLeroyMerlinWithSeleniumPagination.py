@@ -617,6 +617,15 @@ def run7():
     products = get_products_from_site(url, units_types, stop_list)
     send_products_to_zabbix(zabbix_config, products)
 
+import os
+
+def run8():
+    ZABBIX_SERVER_ADRESS = '192.168.1.60'
+
+    print(os.getenv('ZABBIX_SERVER_ADRESS'))#, ZABBIX_SERVER_ADRESS))
+
+
+
 
 @timeit
 def main_working_version():
@@ -753,6 +762,6 @@ def main_working_version():
     send_products_to_zabbix(zabbix_config, all_products)
 
 if __name__ == '__main__':
-    # run7()
-    main_working_version()
+    run8()
+    # main_working_version()
 

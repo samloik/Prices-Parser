@@ -153,8 +153,11 @@ class ZabbixUtils:
                 # TODO Ошибка №11 от 2023/03/11
                 #  временный код для поиска ошибки
 
-                for i in names_of_items:
-                    logger.info(f'{names_of_items=}')
+                fibr = 'Фибра для бетонов и растворов Fibr'
+                for cur_name in names_of_items:
+                    if cur_name.startswith(fibr):
+                        logger.info(f'{cur_name=}')
+
                 logger.info(f'Конец теста')
                 exit(1)
                 # TODO конец временного кода
