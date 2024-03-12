@@ -617,11 +617,11 @@ def run7():
     products = get_products_from_site(url, units_types, stop_list)
     send_products_to_zabbix(zabbix_config, products)
 
-import os
-
-def run8():
-    # ZABBIX_SERVER_ADDRESS = '192.168.1.60'
-    logger.info(f"{s.getenv('ZABBIX_SERVER_ADDRESS')=}")
+# import os
+#
+# def run8():
+#     # ZABBIX_SERVER_ADDRESS = '192.168.1.60'
+#     logger.info(f"{s.getenv('ZABBIX_SERVER_ADDRESS')=}")
 
 
 @timeit
