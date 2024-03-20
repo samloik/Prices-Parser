@@ -16,6 +16,8 @@ from UnitsTypes import UnitsTypes
 from Utils.ProductsUtils import ProductsUtils
 from Utils.ZabbixUtils import ZabbixUtils
 
+import time
+
 
 class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
@@ -229,6 +231,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
 
 
+
     def get_products_from_response(self, response: Response):
         products = Products()
 
@@ -251,6 +254,11 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 item_name = next.find(class_='p1h8lbu4_plp').text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
+                timestr = time.strftime("-%Y_%m_%d-%H_%M_%S")
+                filename = 'error_on_html' + timestr + '.log'
+                with open(filename, "w") as file:
+                    file.write(html)
+                logger.info(f'Содержимое страницы записано в файл: {filename}')
                 exit(1)
             try:
                 item_price = next.find(attrs={'data-qa': 'primary-price-main'}).text.replace('\xa0', '')

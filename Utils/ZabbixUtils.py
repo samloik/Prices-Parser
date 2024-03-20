@@ -270,6 +270,7 @@ class ZabbixUtils:
             if cur_name.startswith(fibr):
                 logger.info(f'{cur_name=}')
                 logger.info(f'{self.get_normalized_key(cur_name, value)=}')
+                # translit_name = name.translit_name()
 
 
         logger.info(f'Конец теста')
@@ -295,7 +296,9 @@ class ZabbixUtils:
                 # fibr = 'Фибра для бетонов и растворов Fibr'
 
                 logger.warning(f'names_of_items_to_add.append(name): [{name=}] [{value=}]')
-                logger.warning(f'[{self.get_normalized_key(name, value)=}]')
+                # logger.warning(f'[{self.get_normalized_key(name, value)=}]')
+                # translit_name = name.translit_name()
+                logger.warning(f'[{self.get_normalized_key(name.translit_name(), value)=}]')
                 logger.warning(f'[{len(products.keys())=}] [{len(items_names)}]')
 
                 # TODO конец временного кода
