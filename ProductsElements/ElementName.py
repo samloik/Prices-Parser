@@ -10,6 +10,8 @@ class ElementName:
         self.set_name(name)
         self.set_units_types(units_types)
 
+    def __str__(self):
+        return self.get_name() # + ' : ' + str(self.get_units_types())
 
     def set_name(self, name):
         self._name = name
