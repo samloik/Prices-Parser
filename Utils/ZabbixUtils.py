@@ -298,7 +298,14 @@ class ZabbixUtils:
                 logger.warning(f'names_of_items_to_add.append(name): [{name=}] [{value=}]')
                 # logger.warning(f'[{self.get_normalized_key(name, value)=}]')
                 # translit_name = name.translit_name()
-                logger.warning(f'[{self.get_normalized_key(name.translit_name(), value)=}]')
+
+                # logger.warning(f'[{self.get_normalized_key(name.translit_name(), value)=}]')
+
+                name = self.get_normalized_key(name, value)
+                el_name = ElementName(name)
+                translit_name = el_name.translit_name()
+                logger.warning(f'[{translit_name=}]')
+
                 logger.warning(f'[{len(products.keys())=}] [{len(items_names)}]')
 
                 # TODO конец временного кода
