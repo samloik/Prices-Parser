@@ -269,7 +269,7 @@ class ZabbixUtils:
         for cur_name in items_names:
             if cur_name.startswith(fibr):
                 logger.info(f'{cur_name=}')
-                logger.info(f'{self.get_normalized_key(cur_name, value)=}')
+                # logger.info(f'{self.get_normalized_key(cur_name, value)=}')
                 # translit_name = name.translit_name()
 
 
@@ -301,7 +301,7 @@ class ZabbixUtils:
 
                 # logger.warning(f'[{self.get_normalized_key(name.translit_name(), value)=}]')
 
-                name = self.get_normalized_key(name, value)
+                # name = self.get_normalized_key(name, value)
                 el_name = ElementName(name)
                 translit_name = el_name.translit_name()
                 logger.warning(f'[{translit_name=}]')
