@@ -47,7 +47,7 @@ class SeleniumWebDriver:
         try:
             browser_version = driver.capabilities['browserVersion']
             driver_version = driver.capabilities['chrome']['chromedriverVersion'].split(' ')[0]
-            logger.info( f'[Платформа: {self.CURRENT_SYSTEM}] [{browser_version=}] [{driver_version}]')
+            logger.info( f'[Платформа: {self.CURRENT_SYSTEM}] [{browser_version=}] [{driver_version=}]')
         except Exception as Err:
             logger.error('Ошибка при определении версий браузера и хромдрайвера')
 
