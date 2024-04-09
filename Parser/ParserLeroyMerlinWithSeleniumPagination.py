@@ -175,7 +175,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 f'Не удачная попытка №[{attempt + 1}] спим [{MAX_PAGE_READ_TIMEOUT=}] ' +
                 f'секунд, для получения контента со страницы [{response=}] [{url}]'
             )
-            logger.warning( f'[{response.text[:80]=}]')
+            logger.warning( f'[{response.text[:120]=}]')
             logger.warning( f'[{response.cookies.get_dict()=}]')
             # 2023-03-24 17:16:56.821 | ERROR    | parsing_lerua_merilen:get_quantity_of_product_2:398 - Ошибка запроса тайм-аут в post запросе о количестве товара [попытка соединения № 1] HTTPSConnectionPool(host='api.leroymerlin.ru', port=443): Max retries exceeded with url: /experience/LeroymerlinWebsite/v1/navigation-pdp-api//get-stocks (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x00000237AE75D410>, 'Connection to api.leroymerlin.ru timed out. (connect timeout=30)'))
             # если будет мало времени, то можно увеличивать каждый следующий запрос
