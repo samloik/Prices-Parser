@@ -288,6 +288,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
+                continue
 
             logger.info(f"[добавление] {item_name=}:{item_price=}:{product_url=}")
             products.append(ProductsElementWithQuantity(item_name, float(item_price.replace(',','.')), product_url))
