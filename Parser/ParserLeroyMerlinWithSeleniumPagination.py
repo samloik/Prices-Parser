@@ -241,7 +241,9 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         soup = BeautifulSoup(response.html, 'lxml')
         # logger.warning(f'{soup=}')
         # all_products = soup.find_all(class_='po1t094_plp largeCard')
-        all_products = soup.find_all(class_='p155f0re_plp largeCard')
+        next_div = find('div', class_='pr7cfcb_plp largeCard')
+
+        all_products = next_div.find_all(class_='p155f0re_plp largeCard')
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
 
         # sleep(100)
@@ -282,6 +284,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                               + next.find('a', class_='bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp').get('href').replace('#reviews','')
                               # + next.find('a', class_='bex6mjh_plp b1f5t594_plp ihytpj4_plp nf842wf_plp').get('href')
                 # class="bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp"
+                # bex6mjh_plp b1f5t594_plp p5y548z_plp pblwt5z_plp n1ydjecc_plp
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
