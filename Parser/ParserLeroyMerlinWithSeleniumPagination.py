@@ -278,7 +278,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
             try:
                 product_url = 'https://habarovsk.leroymerlin.ru' \
-                              + next.find('a', class_='bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp').get('href')
+                              + next.find('a', class_='bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp').get('href').replace('#reviews','')
                               # + next.find('a', class_='bex6mjh_plp b1f5t594_plp ihytpj4_plp nf842wf_plp').get('href')
                 # class="bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp"
             except Exception as Err:
