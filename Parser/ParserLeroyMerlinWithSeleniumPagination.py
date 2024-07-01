@@ -288,6 +288,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
+                logger.warning(f"[НЕ УДАЛОСЬ ДОБАВИТЬ] {item_name=}:{item_price=}:{product_url=}")
                 continue
 
             logger.info(f"[добавление] {item_name=}:{item_price=}:{product_url=}")
@@ -573,7 +574,16 @@ def get_products_from_site(url, units_types, stop_list, region_code:str='habarov
     # AttributeError: 'Products' object has no attribute 'get_quantity_of_products'
     parser.set_products(products_with_price_for_unit)
 
-    products_with_quantity = parser.get_quantity_of_products()
+    # костыль
+
+    # products_with_quantity = parser.get_quantity_of_products()
+
+    global is_products_quantity_parsing_needed
+    if is_products_quantity_parsing_needed == True:
+        products_with_quantity = parser.get_quantity_of_products()
+    else:
+        return products_with_price_for_unit
+    # конец костыля
 
 
     return products_with_quantity
@@ -589,8 +599,16 @@ def send_products_to_zabbix(zabbix_config, products):
     zabbix_qunatity_config = zabbix_config
     zabbix_qunatity_config['ZABBIX_HOST'] = zabbix_config['ZABBIX_HOST-QUANTITY']
 
-    sender2 = ZabbixUtils(zabbix_qunatity_config)
-    sender2.send_items_with_values(products, 'quantity')
+    # костыль
+
+    # sender2 = ZabbixUtils(zabbix_qunatity_config)
+    # sender2.send_items_with_values(products, 'quantity')
+
+    global is_products_quantity_parsing_needed
+    if is_products_quantity_parsing_needed == True:
+        sender2 = ZabbixUtils(zabbix_qunatity_config)
+        sender2.send_items_with_values(products, 'quantity')
+    # конец костыля
 
 
 def run7():
@@ -784,6 +802,8 @@ def main_working_version():
 
     send_products_to_zabbix(zabbix_config, all_products)
 
+
+is_products_quantity_parsing_needed = False
 if __name__ == '__main__':
     main_working_version()
 
