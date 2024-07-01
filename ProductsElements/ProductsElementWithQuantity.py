@@ -89,7 +89,11 @@ class ProductsElementWithQuantity(ProductsElement):
         return {
             # 'price': self.get_price(),
             'price_for_kg': self.get_price(),
-            'quantity': quantity
+
+            # костыль quantity
+
+            #'quantity': quantity
+            # конец костыля
         }
 
 
