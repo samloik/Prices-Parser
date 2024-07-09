@@ -280,11 +280,15 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 logger.error(f'Не удалось найти цену продукта [{item_name}]')
 
             try:
-                product_url = 'https://habarovsk.leroymerlin.ru' \
-                              + next.find('a', class_='bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp').get('href').replace('#reviews','')
-                              # + next.find('a', class_='bex6mjh_plp b1f5t594_plp ihytpj4_plp nf842wf_plp').get('href')
-                # class="bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp"
-                # bex6mjh_plp b1f5t594_plp p5y548z_plp pblwt5z_plp n1ydjecc_plp
+                # product_url = 'https://habarovsk.leroymerlin.ru' \
+                #               + next.find('a', class_='bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp').get('href').replace('#reviews','')
+                # 2024/07/09
+                # class : 'bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp'  ==>  'rz97q1i_plp'
+                # 'https://habarovsk.leroymerlin.ru'                           ==> 'https://habarovsk.lemanapro.ru'
+                product_url = 'https://habarovsk.lemanapro.ru' \
+                              + next.find('a', class_='rz97q1i_plp').get('href').replace('#reviews','')
+
+
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
