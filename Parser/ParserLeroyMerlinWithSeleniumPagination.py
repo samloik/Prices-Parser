@@ -806,7 +806,7 @@ def main_working_version():
     send_products_to_zabbix(zabbix_config, all_products)
 
 
-is_products_quantity_parsing_needed = False
+is_products_quantity_parsing_needed = True
 if __name__ == '__main__':
     main_working_version()
 

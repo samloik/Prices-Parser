@@ -90,9 +90,9 @@ class ProductsElementWithQuantity(ProductsElement):
             # 'price': self.get_price(),
             'price_for_kg': self.get_price(),
 
-            # костыль quantity
+            # костыль quantity - is_products_quantity_parsing_needed
 
-            #'quantity': quantity
+            'quantity': quantity
             # конец костыля
         }
 
