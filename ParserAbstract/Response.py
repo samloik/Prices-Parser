@@ -14,7 +14,7 @@ class Response:
 
 
     def __str__(self):
-        html_len = 50
+        html_len = 200
 
         if not self.html or len(self.html) == 0:
             html = ""
