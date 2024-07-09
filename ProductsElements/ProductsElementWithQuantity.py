@@ -92,7 +92,7 @@ class ProductsElementWithQuantity(ProductsElement):
 
             # костыль quantity - is_products_quantity_parsing_needed
 
-            'quantity': quantity
+            # 'quantity': quantity
             # конец костыля
         }
 

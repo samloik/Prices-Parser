@@ -809,7 +809,7 @@ def main_working_version():
     logger.info('Программа закончила свою работу')
 
 
-is_products_quantity_parsing_needed = True
+is_products_quantity_parsing_needed =False
 if __name__ == '__main__':
     main_working_version()
 
