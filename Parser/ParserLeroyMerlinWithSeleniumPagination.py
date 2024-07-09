@@ -672,6 +672,7 @@ def main_working_version():
         compression="zip"
     )
 
+    logger.info('Программа начала свою работу...')
     # try:
     #     logger.info(f'Start Run8 function...')
     #     run8()
@@ -804,6 +805,8 @@ def main_working_version():
     all_products += products_10
 
     send_products_to_zabbix(zabbix_config, all_products)
+
+    logger.info('Программа закончила свою работу')
 
 
 is_products_quantity_parsing_needed = True
