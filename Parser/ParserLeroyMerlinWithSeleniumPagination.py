@@ -672,7 +672,7 @@ def main_working_version():
         compression="zip"
     )
 
-    logger.info('Программа начала свою работу...')
+    logger.info('>>>>>>>>>>>>>>>>> Программа начала свою работу... <<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
     # try:
     #     logger.info(f'Start Run8 function...')
     #     run8()
@@ -696,7 +696,7 @@ def main_working_version():
     }
 
     # СМЕСИ
-    url='https://habarovsk.leroymerlin.ru/catalogue/suhie-smesi-i-gruntovki/?page='
+    url='https://habarovsk.lemanapro.ru/catalogue/suhie-smesi-i-gruntovki/?page='
     stop_list=[
         "латекс", "гипс", "замазка", "шпакрил", "керамзит", "мастика", "мел", "добавка", "жаростой",
         "шпатлевка", "шпатлёвк", "декоратив", "огнеупор", "наливной", "глино",
@@ -712,7 +712,7 @@ def main_working_version():
 
 
     # ПЕСОК
-    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page='
+    url='https://habarovsk.lemanapro.ru/search/?q=%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&page='
     stop_list=[
         "Краска", "Затирка", "Грунт", "Гидрогель", "Набор", "Ширма", "Интерактивный", "Штукатурка", "Морской",
         "Гидроизоляция", "лепки", "Смесь", "Ваза", "Герметик", "Покрытие"
@@ -723,7 +723,7 @@ def main_working_version():
     # send_products_to_zabbix(zabbix_config, products_02)
 
     # ИЗВЕСТЬ
-    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page='
+    url='https://habarovsk.lemanapro.ru/search/?q=%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D1%8C&page='
     stop_list=["гуашь", "краска", "средство", "краскопульт", "аэрограф", "пневма"]
     units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
@@ -731,7 +731,7 @@ def main_working_version():
     # send_products_to_zabbix(zabbix_config, products_03)
 
     # ПУШОНКА
-    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page='
+    url='https://habarovsk.lemanapro.ru/search/?q=%D0%BF%D1%83%D1%88%D0%BE%D0%BD%D0%BA%D0%B0&page='
     stop_list=[]
     units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
@@ -740,7 +740,7 @@ def main_working_version():
 
 
     # МУКА
-    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
+    url='https://habarovsk.lemanapro.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0&page='
     stop_list=["семена", "гидрогель", "постер"]
     units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
@@ -749,7 +749,7 @@ def main_working_version():
 
 
     # КЛЕЙ ДЛЯ ОБОЕВ
-    url='https://habarovsk.leroymerlin.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
+    url='https://habarovsk.lemanapro.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
     stop_list=['поклейкой']
     units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
@@ -806,7 +806,7 @@ def main_working_version():
 
     send_products_to_zabbix(zabbix_config, all_products)
 
-    logger.info('Программа закончила свою работу')
+    logger.info('>>>>>>>>>>>>>>>>>>> Программа закончила свою работу <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
 
 
 is_products_quantity_parsing_needed =False
