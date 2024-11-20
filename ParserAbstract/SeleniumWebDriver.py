@@ -37,7 +37,7 @@ class SeleniumWebDriver:
 
         if self.CURRENT_SYSTEM == "windows":
             # DRIVER_LOCATION = 'C:\PycharmProjects\Price-monitoring-project\chromedriver.exe'
-            driver = uc.Chrome(version_main=121)
+            driver = uc.Chrome(version_main=129)
         else:
             # https://stackoverflow.com/questions/77869031/this-version-of-chromedriver-only-supports-chrome-version-121-current-browser-ve
             webdriver_service = Service(ChromeDriverManager().install())
@@ -133,13 +133,18 @@ class SeleniumWebDriver:
                 response = Response("200", html, None)
                 return response
             except Exception as Err:
-                logger.error(Err)
+                logger.error(f'Ошибка [{Err}]')
                 logger.info(f'Попытка [{number_of_attempts} из {NUMBER_OF_ATTEMPTS}] запроса страницы не удалась')
+                # logger.info(f'Ошибка [{str(Err)}]')
                 if number_of_attempts < NUMBER_OF_ATTEMPTS:
                     logger.info(f'Спим [{TIME_TO_WAIT_AFTER_ERROR}] секунд')
                     sleep(TIME_TO_WAIT_AFTER_ERROR)
 
-        response = Response("BAD", None, str(Err))
+        # response = Response("BAD", None, str(Err))
+        # return response
+
+        error_msg = "Все попытки поллучить страницу иcчерпаны - страница не получена"
+        response = Response("BAD", None, error_msg)
         return response
 
     def __del__(self):

@@ -214,7 +214,30 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
     def is_next_page(self, response: Response):
         try:
             soup = BeautifulSoup(response.html, 'lxml')
-            pages = soup.find(attrs={'aria-label': 'Pagination'}).findAll('a')
+            # pages = soup.find(attrs={'aria-label': 'Pagination'}).findAll('a')
+
+            # ===>
+            # pages = soup.findAll( 'a', attrs={'aria-label': 'data-qa-pagination-item'})
+            pages = soup.findAll('a')
+            # pages2 = soup.findAll('a', {'data-qa-pagination-item'})
+
+            #data-qa-pagination-item
+            logger.error(f'{pages=}')
+            # logger.info(f'{pages2=}')
+
+            pages3 = []
+            for page in pages:
+                if 'data-qa-pagination-item' in page.attrs:
+                    logger.error(f"!!! {page}")
+                    pages3.append(page)
+
+            # logger.info(f'{pages3[-1]=}')
+            pages = pages3
+
+            # exit(1)
+
+            # ===<
+
 
             # print(f'{len(pages)=} {pages=}')
             for item in pages:
@@ -228,6 +251,12 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             logger.info(f'[{str(response)=}] {Err}')
 
         logger.info(f'Это была последняя страница [{self.get_current_page()}]')
+
+        # ===>
+        # exit(2)
+        # ===<
+
+
         return False
 
 
