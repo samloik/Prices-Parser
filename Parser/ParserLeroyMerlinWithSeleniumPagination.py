@@ -60,7 +60,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         REQUESTS_CONNECT_TIMEOUT = 30  # тайм-аут подключения
         REQUESTS_READ_TIMEOUT = 28  # тайм-аут чтения
 
-        url = 'https://api.leroymerlin.ru/experience/LeroymerlinWebsite/v1/navigation-pdp-api//get-stocks'
+        url = 'https://api.lemanapro.ru/experience/LeroymerlinWebsite/v1/navigation-pdp-api//get-stocks'
+        # url = 'https://api.leroymerlin.ru/experience/LeroymerlinWebsite/v1/navigation-pdp-api//get-stocks'
         # url = 'https://178.248.235.76/experience/LeroymerlinWebsite/v1/navigation-pdp-api//get-stocks'
 
         cookies = {
