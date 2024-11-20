@@ -222,13 +222,13 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             # pages2 = soup.findAll('a', {'data-qa-pagination-item'})
 
             #data-qa-pagination-item
-            logger.error(f'{pages=}')
+            # logger.error(f'{pages=}')
             # logger.info(f'{pages2=}')
 
             pages3 = []
             for page in pages:
                 if 'data-qa-pagination-item' in page.attrs:
-                    logger.error(f"!!! {page}")
+                    # logger.error(f"!!! {page}")
                     pages3.append(page)
 
             # logger.info(f'{pages3[-1]=}')
@@ -283,6 +283,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # меняют названия классов с "t3y6ha_plp xc1n09g_plp p1q9hgmc_plp" на "mvc4syb_plp"
                 # TODO возможно будет плавать при изменении структуры, тогда доработать на примере
                 # item_name = next.find(class_='t9jup0e_plp').text
+                # item_name = next.find(class_='p1h8lbu4_plp').text
                 item_name = next.find(class_='p1h8lbu4_plp').text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
