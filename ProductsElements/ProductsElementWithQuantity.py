@@ -81,7 +81,7 @@ class ProductsElementWithQuantity(ProductsElement):
             # quantity = float(f'{float(self.get_quantity()):.2f}')
             quantity = round(self.get_quantity(), 2)
         except Exception as Err:
-            logger.error('{Err}')
+            logger.error(f'{Err=}')
             # logger.error("quantity = float(f'{float(self.get_quantity()):.2f}')")
             logger.error("quantity = round(self.get_quantity(), 2)")
             logger.info(f'{self.get_name()=} {self.get_quantity()=} {self.get_url()=}')
