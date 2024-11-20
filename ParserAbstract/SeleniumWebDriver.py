@@ -143,7 +143,7 @@ class SeleniumWebDriver:
         # response = Response("BAD", None, str(Err))
         # return response
 
-        error_msg = "Все попытки поллучить страницу иcчерпаны - страница не получена"
+        error_msg = "Все попытки получить страницу иcчерпаны - страница не получена"
         response = Response("BAD", None, error_msg)
         return response
 

@@ -287,6 +287,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 item_name = next.find(class_='p1h8lbu4_plp').text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
+                logger.error(f'{response=}')
                 timestr = time.strftime("-%Y_%m_%d-%H_%M_%S")
                 filename = 'error_on_html' + timestr + '.log'
                 with open(filename, "w") as file:
