@@ -782,7 +782,7 @@ def main_working_version():
 
     # КЛЕЙ ДЛЯ ОБОЕВ
     url='https://habarovsk.lemanapro.ru/search/?q=%D0%BA%D0%BB%D0%B5%D0%B9+%D0%B4%D0%BB%D1%8F+%D0%BE%D0%B1%D0%BE%D0%B5%D0%B2&suggest=true&page='
-    stop_list=['поклейкой']
+    stop_list=['поклейкой', 'жидкие обои']
     units_types=[UnitsTypes.KG, UnitsTypes.LITR]
 
     products_06 = get_products_from_site(url, units_types, stop_list)
