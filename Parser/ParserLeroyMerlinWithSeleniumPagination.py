@@ -284,15 +284,17 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # меняют названия классов с "t3y6ha_plp xc1n09g_plp p1q9hgmc_plp" на "mvc4syb_plp"
                 # TODO возможно будет плавать при изменении структуры, тогда доработать на примере
                 # item_name = next.find(class_='t9jup0e_plp').text
-                item_name = next.find(class_='p1h8lbu4_plp').text
+                # item_name = next.find(class_='p1h8lbu4_plp').text
+                item_name = next.find(class_='pblwt5z_plp').text
+
                 # item_name = next.find(class_='p155f0re_plp largeCard').text
             except Exception as Err:
                 logger.error(f'Не удалось найти имя продукта [{Err}]')
-                logger.error(f'{response=}')
+                logger.error(f'{response.__str__()=}')
                 timestr = time.strftime("-%Y_%m_%d-%H_%M_%S")
                 filename = 'error_on_html' + timestr + '.log'
                 with open(filename, "w") as file:
-                    file.write(html)
+                    file.write(response.html)
                 logger.info(f'Содержимое страницы записано в файл: {filename}')
                 exit(1)
             try:
