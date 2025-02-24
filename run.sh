@@ -1,4 +1,7 @@
 #!/bin/bash
+echo 'Kill all Chrome and Chromedriver processes...'
+pkill -f chrome
+pkill -f chromedriver
 echo 'Starting SH file...'
 date
 cd /home/alex/Price-monitoring-project/Prices-Parser/ && \

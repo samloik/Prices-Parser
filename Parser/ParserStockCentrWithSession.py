@@ -68,7 +68,7 @@ class ParserStockCentrWithSession(ParserWithSession):
 
 
 
-def test():
+def main():
     from DataRenderer import DataRenderer
     from DataStrFormat import DataStrFormat
 
@@ -91,7 +91,7 @@ def test():
     products_utils.save_products_to_file(products, "stock_centr_with_session_save_file2.txt")
 
 
-def test2():
+def main2():
     from DataRenderer import DataRenderer
     # from Products import Products
     from DataStrFormat import DataStrFormat
@@ -141,7 +141,7 @@ def test2():
     products = products_utils.save_products_to_file(el, "cleaned_stock_centr_save_file.txt")
 
 
-def test3():
+def main3():
     from DataRenderer import DataRenderer
     # from Products import Products
     from Utils.ProductsUtils import ProductsUtils
@@ -164,12 +164,14 @@ def test3():
         values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+            # print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+            print(f'[+] {name:>100} | {values_from_name} {element_name.get_units_types()}')
         else:
-            print(f'[-] {name:>100} | Null  {element_name.units_types}')
+            # print(f'[-] {name:>100} | Null  {element_name.units_types}')
+            print(f'[-] {name:>100} | Null  {element_name.get_units_types()}')
 
 
-def test4():
+def main4():
     from DataRenderer import DataRenderer
     # from Products import Products
     from Utils.ProductsUtils import ProductsUtils
@@ -191,15 +193,17 @@ def test4():
         values_from_name = element_name.get_value_of_units_in_name()
         if  values_from_name != "":
             # print(f'[+] {products.products[name]:>50} | {valuesFromName}')
-            print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+            # print(f'[+] {name:>100} | {values_from_name} {element_name.units_types}')
+            print(f'[+] {name:>100} | {values_from_name} {element_name.get_units_types()}')
         else:
-            print(f'[-] {name:>100} | Null  {element_name.units_types}')
+            # print(f'[-] {name:>100} | Null  {element_name.units_types}')
+            print(f'[-] {name:>100} | Null  {element_name.get_units_types()}')
 
 
 if __name__ == '__main__':
-    test()
-    test2()
-    test3()
-    test4()
+    main()
+    main2()
+    main3()
+    main4()
 
 

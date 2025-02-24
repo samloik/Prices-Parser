@@ -72,7 +72,7 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         try:
             res = self.session.get(url)
             html = res.content
-            logger(f'Спим [{self.get_next_page_pause_time()}] секунд перед запросом следующей страницы')
+            logger.info(f'Спим [{self.get_next_page_pause_time()}] секунд перед запросом следующей страницы')
             sleep(self.get_next_page_pause_time())   # TODO отрегулировать параметр времени
             # response = Response("200", html, None)
             response = Response( str(res.status_code), html, None)
@@ -96,11 +96,11 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
                 # записать html
                 logger.error(
                     f'[Error:] Максимальное количество попыток [{self.get_max_response_number()}] получить ответ от сайта достигнуто')
-                logger.info(f'[Error:] [{response=}]')
+                logger.info(f'[Error:] [{response.__str__()=}]')
                 exit(1)
             else:
                 logger.warning(f'[!] Неверный ответ от сервера: попытка номер [{self.get_current_response_number()}]')
-                logger.info(f'[!] [{response=}]')
+                logger.info(f'[!] [{response.__str__()=}]')
         return response
 
 
@@ -118,7 +118,7 @@ class ParserWithSession(ParserSite): # rename to SeleniumParser
         if response.is_response_ok():
             logger.info(f'Страница [{self.get_current_page()}] получена без ошибок')
         else:
-            logger.warning(f'Страница [{self.get_current_page()}] получена c ошибкой [{srt(response)=}]')
+            logger.warning(f'Страница [{self.get_current_page()}] получена c ошибкой [{response.__str__()=}]')
 
         return response
 
