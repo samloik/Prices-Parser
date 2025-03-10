@@ -273,7 +273,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # all_products = soup.find_all(class_='po1t094_plp largeCard')
         # next_div = soup.find('div', class_='pr7cfcb_plp largeCard')
 
-        all_products = soup.find_all(class_='p155f0re_plp largeCard')
+        # all_products = soup.find_all(class_='p155f0re_plp largeCard')
+        all_products = soup.find_all(class_='pr7cfcb_plp largeCard')
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
 
         # sleep(100)
@@ -285,7 +286,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # TODO возможно будет плавать при изменении структуры, тогда доработать на примере
                 # item_name = next.find(class_='t9jup0e_plp').text
                 # item_name = next.find(class_='p1h8lbu4_plp').text
-                item_name = next.find(class_='pblwt5z_plp').text
+                # item_name = next.find(class_='pblwt5z_plp').text
+                item_name = next.find(class_='p1pkpd8l_plp').text
 
                 # item_name = next.find(class_='p155f0re_plp largeCard').text
             except Exception as Err:
