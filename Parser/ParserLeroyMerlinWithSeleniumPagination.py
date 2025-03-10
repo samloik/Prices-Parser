@@ -274,7 +274,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # next_div = soup.find('div', class_='pr7cfcb_plp largeCard')
 
         # all_products = soup.find_all(class_='p155f0re_plp largeCard')
-        all_products = soup.find_all(class_='pr7cfcb_plp largeCard')
+        all_products = soup.find_all(class_='p155f0re_plp p14mt2bm_plp largeCard')
+
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
 
         # sleep(100)
