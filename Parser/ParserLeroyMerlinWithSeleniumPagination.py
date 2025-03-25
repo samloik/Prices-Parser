@@ -274,7 +274,10 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # next_div = soup.find('div', class_='pr7cfcb_plp largeCard')
 
         # all_products = soup.find_all(class_='p155f0re_plp largeCard')
-        all_products = soup.find_all(class_='p155f0re_plp p14mt2bm_plp largeCard')
+        # bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp
+        # all_products = soup.find_all(class_='p155f0re_plp p14mt2bm_plp largeCard')
+        all_products = soup.find_all(class_='bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp')
+
 
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
 
@@ -288,7 +291,8 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # item_name = next.find(class_='t9jup0e_plp').text
                 # item_name = next.find(class_='p1h8lbu4_plp').text
                 # item_name = next.find(class_='pblwt5z_plp').text
-                item_name = next.find(class_='p1pkpd8l_plp').text
+                # item_name = next.find(class_='p1pkpd8l_plp').text
+                item_name = next.find(class_='pblwt5z_plp').text
 
                 # item_name = next.find(class_='p155f0re_plp largeCard').text
             except Exception as Err:
