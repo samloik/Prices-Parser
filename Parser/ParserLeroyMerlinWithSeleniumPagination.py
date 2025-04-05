@@ -211,8 +211,9 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
         return products
 
-
-    def is_next_page(self, response: Response):
+    # старая версия - 05/04/2025 - разрабатываю новую версию - эта пока висит - пока новая не отработает норм
+    # === после испытания is_next_page - этот код можно удалить
+    def is_next_page_2(self, response: Response):
         try:
             soup = BeautifulSoup(response.html, 'lxml')
             # pages = soup.find(attrs={'aria-label': 'Pagination'}).findAll('a')
@@ -259,7 +260,27 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
 
 
         return False
+    # === после испытания is_next_page - этот код можно удалить
 
+    def is_next_page(self, response: Response):
+        try:
+            soup = BeautifulSoup(response.html, 'lxml')
+
+            # ищем класс роследней страницы
+            last_page_class = 'KoocXYq7Ip_plp Pf3dOM3cCK_plp'
+            pages = soup.findAll(class_=last_page_class)
+
+
+            if len(pages):
+                logger.info(f'Следующая страница [{self.get_current_page()+1}] существует ')
+                return True
+
+        except Exception as Err:
+            logger.info(f'[{str(response)=}] {Err}')
+
+        logger.info(f'Это была последняя страница [{self.get_current_page()}]')
+
+        return False
 
 
 
@@ -277,7 +298,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp
         # all_products = soup.find_all(class_='p155f0re_plp p14mt2bm_plp largeCard')
         class_list_name = 'p155f0re_plp p1nn3tkz_plp largeCard'
-        class_name = 'bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp'
+        class_url_name = 'bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp'
 
         all_products = soup.find_all(class_=class_list_name)
 
@@ -334,7 +355,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp
 
                 product_url = 'https://habarovsk.lemanapro.ru' \
-                              + next.find('a', class_=class_name).get('href').replace('#reviews','')
+                              + next.find('a', class_=class_url_name).get('href').replace('#reviews','')
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
