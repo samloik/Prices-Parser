@@ -263,8 +263,15 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
     # === после испытания is_next_page - этот код можно удалить
 
     def is_next_page(self, response: Response):
+
         try:
             soup = BeautifulSoup(response.html, 'lxml')
+
+            # ищем панель постраничной навигации
+            navigation = soup.find_all('nav', {aria-label:"Постраничная навигация"})
+            if len(navigation) == 0:
+                logger.info(f'Это была единственная страница (без постраничной навигации) [{self.get_current_page()}]')
+                return False
 
             # ищем класс роследней страницы
             last_page_class = 'KoocXYq7Ip_plp Pf3dOM3cCK_plp'
