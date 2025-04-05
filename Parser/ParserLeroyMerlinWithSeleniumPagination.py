@@ -271,7 +271,7 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             pages = soup.findAll(class_=last_page_class)
 
 
-            if len(pages):
+            if len(pages) == 0:
                 logger.info(f'Следующая страница [{self.get_current_page()+1}] существует ')
                 return True
 
