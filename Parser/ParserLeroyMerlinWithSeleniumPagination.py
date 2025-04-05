@@ -276,7 +276,10 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
         # all_products = soup.find_all(class_='p155f0re_plp largeCard')
         # bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp
         # all_products = soup.find_all(class_='p155f0re_plp p14mt2bm_plp largeCard')
-        all_products = soup.find_all(class_='bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp')
+        class_list_name = 'p155f0re_plp p1nn3tkz_plp largeCard'
+        class_name = 'bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp'
+
+        all_products = soup.find_all(class_=class_list_name)
 
 
         logger.info(f'Получили от html страницы [{len(all_products)}] элементов')
@@ -327,8 +330,11 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
                 # class : 'bex6mjh_plp lf842wf_plp p177n3uc_plp n1ydjecc_plp'  ==>  'rz97q1i_plp'
                 #         'bex6mjh_plp b1f5t594_plp ihytpj4_plp n1ydjecc_plp'
                 # 'https://habarovsk.leroymerlin.ru'                           ==> 'https://habarovsk.lemanapro.ru'
+                # + next.find('a', class_='bex6mjh_plp b1f5t594_plp ihytpj4_plp n1ydjecc_plp').get('href').replace('#reviews','')
+                # bex6mjh_plp b1f5t594_plp p1wlzyl0_plp p16wqyak_plp n1ydjecc_plp
+
                 product_url = 'https://habarovsk.lemanapro.ru' \
-                              + next.find('a', class_='bex6mjh_plp b1f5t594_plp ihytpj4_plp n1ydjecc_plp').get('href').replace('#reviews','')
+                              + next.find('a', class_=class_name).get('href').replace('#reviews','')
             except Exception as Err:
                 logger.error(f'Не удалось найти URL продукта [{item_name}] [{Err}]')
                 product_url = ""
