@@ -272,10 +272,13 @@ class ParserLeroyMerlinWithSeleniumPagination(ParserWithSeleniumPaginationSite):
             if len(navigation) == 0:
                 logger.info(f'Это была единственная страница (без постраничной навигации) [{self.get_current_page()}]')
                 return False
+            else:
+                logger.info(f'Постраничная навигация присутствует. Страница номер [{self.get_current_page()}]')
 
             # ищем класс роследней страницы
             last_page_class = 'KoocXYq7Ip_plp Pf3dOM3cCK_plp'
-            pages = soup.findAll(class_=last_page_class)
+            # pages = soup.findAll(class_=last_page_class)
+            pages = soup.find_all(class_=last_page_class)
 
 
             if len(pages) == 0:
