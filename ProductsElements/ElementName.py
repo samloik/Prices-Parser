@@ -102,68 +102,75 @@ class ElementName:
 
 
     def get_value_of_units_in_name(self):
-        result = ''
-        units_types = self.get_units_types()
+        try:
+            result = ''
+            units_types = self.get_units_types()
 
-        if not units_types or len(units_types) == 0 or UnitsTypes.KG in units_types:
-            # logger.info(f'f[ ] "кг" пробуем извлечь [{units_types=}] [{self.name}]')
-            # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
-            unitsList = ["килограмм", "кг!"]
-            for units in unitsList:
-                result = self._get_value_of_units_in_name_by_content(units)
-                if len(result) > 0:
-                    break
-
-            # добавляем проверку на граммы
-            if len(result) == 0:
-                # logger.info(f'f[ ] "грамм" пробуем извлечь [{units_types=}] [{self.name}]')
-                unitsList = ["грамм", "г!"]
+            if not units_types or len(units_types) == 0 or UnitsTypes.KG in units_types:
+                # logger.info(f'f[ ] "кг" пробуем извлечь [{units_types=}] [{self.name}]')
+                # если unit_types=None, или список пуст, или есть UnitsTypes.KG в списке, то:
+                unitsList = ["килограмм", "кг!"]
                 for units in unitsList:
                     result = self._get_value_of_units_in_name_by_content(units)
                     if len(result) > 0:
-                        result = str(float(result)/1000)
                         break
 
-        if units_types and UnitsTypes.LITR in units_types and len(result) == 0:
-            # если unit_types не None и есть UnitsTypes.LITR в списке, то:
-            # добавляем проверку на литр
-            # logger.info(f'f[ ] "литр" пробуем извлечь [{units_types=}] [{self.name}]')
-            # [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
-            # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
-            unitsList = ["литр", "л!"]
-            for units in unitsList:
-                result = self._get_value_of_units_in_name_by_content(units)
-                if len(result) > 0:
-                    break
+                # добавляем проверку на граммы
+                if len(result) == 0:
+                    # logger.info(f'f[ ] "грамм" пробуем извлечь [{units_types=}] [{self.name}]')
+                    unitsList = ["грамм", "г!"]
+                    for units in unitsList:
+                        result = self._get_value_of_units_in_name_by_content(units)
+                        if len(result) > 0:
+                            result = str(float(result)/1000)
+                            break
 
-            # добавляем проверку на милилитры
-            if len(result) == 0:
-                # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{units_types=}] [{self.name}]')
-                unitsList = ["миллилитр", "мл!"]
+            if units_types and UnitsTypes.LITR in units_types and len(result) == 0:
+                # если unit_types не None и есть UnitsTypes.LITR в списке, то:
+                # добавляем проверку на литр
+                # logger.info(f'f[ ] "литр" пробуем извлечь [{units_types=}] [{self.name}]')
+                # [Ceresit СN-178 Легковыравнивающаяся смесь (5-80мм) 25кг для внутр. и нар. работ
+                # ] сохранено valueFromName='178.0' units_types=[<UnitsTypes.LITR: 2>]
+                unitsList = ["литр", "л!"]
                 for units in unitsList:
                     result = self._get_value_of_units_in_name_by_content(units)
                     if len(result) > 0:
-                        result = str(float(result)/1000)
                         break
 
-        if units_types and UnitsTypes.SHTUK in units_types and len(result) == 0:
-            # logger.info(f'f[ ] "штук" пробуем извлечь [{units_types=}] [{self.name}]')
-            unitsList = ["штук!", "шт!"]
-            for units in unitsList:
-                result = self._get_value_of_units_in_name_by_content(units)
-                if len(result) > 0:
-                    break
+                # добавляем проверку на милилитры
+                if len(result) == 0:
+                    # logger.info(f'f[ ] "миллилитр" пробуем извлечь [{units_types=}] [{self.name}]')
+                    unitsList = ["миллилитр", "мл!"]
+                    for units in unitsList:
+                        result = self._get_value_of_units_in_name_by_content(units)
+                        if len(result) > 0:
+                            result = str(float(result)/1000)
+                            break
+
+            if units_types and UnitsTypes.SHTUK in units_types and len(result) == 0:
+                # logger.info(f'f[ ] "штук" пробуем извлечь [{units_types=}] [{self.name}]')
+                unitsList = ["штук!", "шт!"]
+                for units in unitsList:
+                    result = self._get_value_of_units_in_name_by_content(units)
+                    if len(result) > 0:
+                        break
 
 
-        if len(result) > 0:
-            try:
-                number = float(result)
-                result = str(number)
-                logger.info(f'[+] Удалось извлечь число из [{result}] [{self.get_name()=}]')
-            except Exception as Error:
-                logger.warning(f'[-] Не удалось извлечь число из [{self.get_name()=}] {Error=}')
-                result = ''
-        return result
+            if len(result) > 0:
+                try:
+                    number = float(result)
+                    result = str(number)
+                    logger.info(f'[+] Удалось извлечь число из [{result}] [{self.get_name()=}]')
+                except Exception as Error:
+                    logger.warning(f'[-] Не удалось извлечь число из [{self.get_name()=}] {Error=}')
+                    result = ''
+            return result
+        except Exception as Error:
+            logger.error(Error)
+            logger.trace(Error)
+            logger.info(f"get_name(): {self.get_name()}")
+            logger.info(f"get_units_types(): {self.get_units_types()}")
+            exit(1)
 
     def _get_value_of_units_in_name_by_content(self, content):
 
