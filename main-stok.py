@@ -1,6 +1,6 @@
 
 
-from Parser.ParserStockCentrWithSession.py import main_working_version
+from Parser.ParserStockCentrWithSession import main_working_version
 
 
 
